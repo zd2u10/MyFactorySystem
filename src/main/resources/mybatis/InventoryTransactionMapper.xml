@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.InventoryTransactionMapper">
+	
+	<insert id="insert">
+		INSERT INTO inventory_transactions
+		(stock_id, transaction_type, quantity_change, transaction_date, note,)
+		VALUES 
+        (#{stockId}, #{transactionType}, #{quantityChange}, #{transactionDate}, #{note})
+	</insert>
+	
+</mapper>

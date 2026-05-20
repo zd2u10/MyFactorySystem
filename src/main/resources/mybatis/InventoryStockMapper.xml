@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.InventoryStockMapper">
+	
+	<insert id="upsertStock" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO inventory_stocks
+		(material_id, lot_number, origin, qantity, expiry_date, arrival_date, is_inspected)
+		VALUES
+		(#{materialId}, #{lotNumber}, #{origin}, #{qantity}, #{expiryDate}, #{arrivalDate})
+		ON DUPLICATE KEY UPDATE
+		quantity = quantity + VALUES(quantity),
+		is_inspected = VALUES(is_inspected)
+	</insert>
+	
+	<select id="findByMaterialIdOrderByCreatedAtAsc" resultType="InventoryStock">
+		SELECT * FROM inventory_stocks
+		WHERE material_id = #{materialId}
+		AND quantity > 0
+		ORDER BY expiry_date ASC, created_at ASC
+	</select>
+	
+	<update id="updateQuantity">
+		UPDATE inventory_stocks
+		SET quantity = #{quantity}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
