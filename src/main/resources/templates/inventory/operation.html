@@ -21,7 +21,7 @@
 		<div>
 		    <label>原料名:</label>
 		  	<select th:field="*{materialId}" required>
-				<optin value="">選択してください</optin>
+				<option value="">選択してください</option>
 				<option th:each="m : ${materialList}" 
 						th:value="${m.id}"
 						th:text="${m.name}"></option>
