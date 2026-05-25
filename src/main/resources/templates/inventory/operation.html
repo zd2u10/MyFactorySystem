@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>在庫操作ページ</title>
+</head>
+<body>
+	<h1>在庫操作ページ</h1>
+	
+	<div th:if="${message}" style="color: blue; font-weight: bold; margin-bottom: 10px;">
+	        <p th:text="${message}"></p>
+	</div>
+	
+	<div th:if="${errorMessage}" style="color: red; margin-bottom: 10px;">
+	        <p th:text="${errorMessage}"></p>
+	</div>
+	
+	<form th:action="@{/inventory/operation}" method="post" th:object="${inventoryForm}">
+		<input type="hidden" th:value="IN" th:name="transactionType"/>
+		
+		<div>
+		    <label>原料名:</label>
+		  	<select th:field="*{materialId}" required>
+				<optin value="">選択してください</optin>
+				<option th:each="m : ${materialList}" 
+						th:value="${m.id}"
+						th:text="${m.name}"></option>
+			</select>
+		</div>
+		
+		<div>
+		    <label>数量:</label>
+		    <input type="number" th:field="*{quantity}" required>
+	    </div>		
+				
+		<div>
+		    <label id="dateLabel">入荷日:</label>
+		    <input type="date" th:field="*{transactionDate}" required>
+		</div>
+
+		<div id="inFields" style="display: none;">
+		    <label>ロット番号(原料):</label>
+		    <input type="text" th:field="*{lotNumber}">
+		</div>
+		
+		<button type="submit">登録</button>
+	</form>
+	
+	<script th:src="@{/js/inventory.js}"></script>
+</body>
+</html>

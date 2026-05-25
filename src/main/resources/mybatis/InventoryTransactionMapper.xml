@@ -4,9 +4,11 @@
 	
 	<insert id="insert">
 		INSERT INTO inventory_transactions
-		(stock_id, transaction_type, quantity_change, transaction_date, note,)
+		(stock_id, transaction_type, quantity_change, product_code,
+		product_number, note, transaction_date, created_at)
 		VALUES 
-        (#{stockId}, #{transactionType}, #{quantityChange}, #{transactionDate}, #{note})
+        (#{stockId}, #{transactionType}, #{quantityChange}, #{productCode}, 
+        #{productNumber}, #{note}, #{transactionDate}, #{createdAt})
 	</insert>
 	
 </mapper>

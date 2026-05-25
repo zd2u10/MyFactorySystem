@@ -9,6 +9,6 @@ import lombok.Data;
 @Data
 public class MaterialForm {
 	private String name;
-	private String unit;
-	private BigDecimal netWeight;
+	private String unit; // 数量
+	private BigDecimal netWeight; // 1つあたりの賞味量
 }

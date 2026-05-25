@@ -2,6 +2,7 @@ package com.example.app.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class InventoryServiceImpl implements InventoryService {
 		transaction.setTransactionType("IN");
 		transaction.setQuantityChange(quantity);
 		transaction.setTransactionDate(arrivalDate);
+		transaction.setCreatedAt(LocalDateTime.now());
 		transaction.setNote("入荷: " + lotNumber);
 
 		inventoryTransactionMapper.insert(transaction);
@@ -51,7 +53,8 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	@Transactional
-	public void consumeMaterial(Long materialId, BigDecimal quantity, LocalDate productionDate) {
+	public void consumeMaterial(Long materialId, BigDecimal quantity, LocalDate productionDate,
+			String transactionType, String productCode, String productNumber, String note) {
 		// 1. 在庫取得(入荷順または賞味期限の古い順)
 		List<InventoryStock> stocks = inventoryStockMapper.findByMaterialIdOrderByCreatedAtAsc(materialId);
 
@@ -71,20 +74,26 @@ public class InventoryServiceImpl implements InventoryService {
 			stock.setQuantity(stock.getQuantity().subtract(consumeFromThisLot));
 			inventoryStockMapper.updateQuantity(stock);
 
+			// 履歴の記録項目
 			// 履歴の記録
 			InventoryTransaction transaction = new InventoryTransaction();
 			transaction.setStockId(stock.getId());
-			transaction.setTransactionType("OUT");
-			transaction.setQuantityChange(consumeFromThisLot);
+			transaction.setTransactionType(transactionType);
+			transaction.setQuantityChange(consumeFromThisLot.negate());
 			transaction.setTransactionDate(productionDate);
-			transaction.setNote("消費");
+			transaction.setProductCode(productCode);
+			transaction.setProductNumber(productNumber);
+			transaction.setNote(note);
+			transaction.setCreatedAt(LocalDateTime.now());
+
+			// 記録処理
 			inventoryTransactionMapper.insert(transaction);
 
 			// 残りの必要量を減らす
 			remainingQuantity = remainingQuantity.subtract(consumeFromThisLot);
 		}
 
-		// 必要量が残っていたらエラーを投げる
+		// brake(消費が在庫を上回っていた場合)エラーを投げる
 		if (remainingQuantity.compareTo(BigDecimal.ZERO) > 0) {
 			throw new RuntimeException("在庫が不足しています。不足分: " + remainingQuantity);
 		}

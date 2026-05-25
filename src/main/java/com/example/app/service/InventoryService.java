@@ -29,6 +29,7 @@ public interface InventoryService {
 	 * @param productionDate 製造日（履歴記録用）
 	 */
 
-	void consumeMaterial(Long materialId, BigDecimal quantity, LocalDate productionDate);
+	void consumeMaterial(Long materialId, BigDecimal quantity, LocalDate productionDate,
+			String transactionType, String productCode, String productNumber, String note);
 
 }

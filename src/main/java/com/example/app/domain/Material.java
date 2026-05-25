@@ -10,6 +10,6 @@ import lombok.Data;
 public class Material {
 	private Long id;
 	private String name;
-	private String unit; // 数量
+	private String unit; // 単位
 	private BigDecimal netWeight; // 1つあたりの賞味量 
 }
