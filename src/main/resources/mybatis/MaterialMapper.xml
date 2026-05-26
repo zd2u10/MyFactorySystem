@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.MaterialMapper">
+	
+	<select id="findAll" resultType="Material">	
+		SELECT * FROM materials
+	</select>
+	
+	<select id="findById" resultType="Material">
+		SELECT * FROM materials where id = #{id}
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO materials (name, unit, net_weight)
+		VALUES (#{name}, #{unit}, #{netWeight})
+	</insert>
+	
+	<update id="update">
+		UPDATE materials
+		SET name = #{name},
+			unit = #{unit},
+			net_weight=#{netWeight}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteById">
+		DELETE FROM materials WHERE id = #{id}
+	</delete>
+</mapper>
