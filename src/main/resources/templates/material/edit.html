@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>原料・添加物の編集</title>
+<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
+</head>
+<body>
+	<header th:replace="~{fragments/common :: headerNav('情報の編集')}"></header>
+	
+	<hr />
+	
+	<form id="editForm" th:action="@{/material/edit}" method="post" th:object="${material}">
+		<input type="hidden" th:field="*{id}"/>
+		<div>
+			<label>原料名：</label>
+			<input type="text" th:field="*{name}" required/>
+		</div>
+		
+		<div>
+			<label>単位：</label>
+			<input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" required/>
+		</div>
+		
+		<div>
+			<label>正味量</label>
+			<input type="number" step="0.01" min="0" th:field="*{netWeight}" required/>
+		</div>
+		
+		<button type="button"onclick="openEditConfirmModal()">更新する</button>
+	</form>
+	
+	<dialog id="editConfirmModal">
+		<h3>更新情報の確認</h3>
+		<p>以下の内容で更新しますか？</p>
+		
+		<div id="editConfirmContent" style="font-weight: bold; margin: 10px 0;"></div>
+		
+		<div class="modal-actions">
+			<button type="button" onclick="submitEditForm()">更新確定</button>
+			<button type="button" onclick="cancelEditModal()" style="background-color: #ccc;">キャンセル</button>
+		</div>
+	</dialog>
+<script th:src="@{/js/material/common.js}" defer></script>
+</body>
+</html>

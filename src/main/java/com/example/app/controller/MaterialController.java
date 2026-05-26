@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,15 +22,17 @@ public class MaterialController {
 
 	@GetMapping("/list")
 	public String list(Model model) {
-		// 全原料リストを取得
+		// 一覧
 		model.addAttribute("materialList", materialService.getAllMaterials());
+		model.addAttribute("currentPage", "list");
 		return "material/list";
 	}
 
-	// 登録画面を表示
+	// 登録画面
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
 		model.addAttribute("material", new Material());
+		model.addAttribute("currentPage", "register");
 		return "material/register";
 	}
 
@@ -38,5 +41,44 @@ public class MaterialController {
 	public String register(@ModelAttribute Material material) {
 		materialService.registerMaterial(material);
 		return "redirect:/material/list";
+	}
+
+	// 編集
+	@GetMapping("/edit/{id}")
+	public String showEditForm(@PathVariable Long id, Model model) {
+		// IDで検索し、存在しなければ例外を投げる
+		model.addAttribute("material", materialService.getMaterialById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid material Id:" + id)));
+		model.addAttribute("currentPage", "list");
+		return "material/edit";
+	}
+
+	// 編集処理
+	@PostMapping("/edit")
+	public String update(@ModelAttribute Material material) {
+		materialService.updateMaterial(material);
+		return "redirect:/material/list";
+	}
+
+	// 理論削除処理
+	@PostMapping("/delete/{id}")
+	public String delete(@PathVariable Long id) {
+		materialService.logicalDelete(id);
+		return "redirect:/material/list";
+	}
+
+	//削除済み一覧表示用
+	@GetMapping("/deleted")
+	public String showDeletedList(Model model) {
+		model.addAttribute("materialList", materialService.findDeletedMaterials());
+		model.addAttribute("currentPage", "deleted");
+		return "material/deleted";
+	}
+
+	//復旧処理用
+	@PostMapping("/deleted/{id}")
+	public String restore(@PathVariable Long id) {
+		materialService.restore(id);
+		return "redirect:/material/deleted";
 	}
 }

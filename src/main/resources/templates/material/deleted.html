@@ -2,11 +2,11 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>原料一覧表示</title>
+<title>削除済み一覧表示</title>
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('原料一覧')}"></header>
+	<header th:replace="~{fragments/common :: headerNav('削除済み一覧')}"></header>
 	
 	<hr>
 	
@@ -26,15 +26,13 @@
 				<td th:text="${m.unit}">単位</td>
 				<td th:text="${m.netWeight}">正味量</td>
 				<td>
-					<a th:href="@{/material/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
-					
-					<form th:action="@{/material/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
-						<button type="submit" class="btn btn-delete" onclick="return confirm('この原料を無効化(削除)しますか？');">削除</button>
-					</form>						
+					<form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post" style="display:inline;">
+						<button type="submit" class="btn btn-restore" 
+					         onclick="return confirm('この原料を一覧に復旧させますか？');">復旧</button>
+					</form>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	
 </body>
 </html>
