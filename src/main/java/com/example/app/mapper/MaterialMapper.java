@@ -23,6 +23,12 @@ public interface MaterialMapper {
 	// 編集・更新
 	void update(Material material);
 
-	// 削除
-	void deleteById(Long id);
+	// 理論削除
+	void logicalDelete(Long id);
+
+	// 理論削除済み一覧取得
+	List<Material> findDeletedMaterials();
+
+	// 削除済みを復旧する
+	void restore(Long id);
 }

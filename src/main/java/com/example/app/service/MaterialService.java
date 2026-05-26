@@ -19,7 +19,13 @@ public interface MaterialService {
 	// 編集・更新
 	void updateMaterial(Material material);
 
-	// 削除
-	void deleteMaterial(Long id);
+	// 理論削除
+	void logicalDelete(Long id);
+
+	// 理論削除された一覧取得
+	List<Material> findDeletedMaterials();
+
+	// 復旧用
+	void restore(Long id);
 
 }

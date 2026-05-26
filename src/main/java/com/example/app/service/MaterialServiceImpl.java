@@ -43,10 +43,21 @@ public class MaterialServiceImpl implements MaterialService {
 		materialMapper.update(material);
 	}
 
-	// 削除
+	// 理論削除
 	@Override
-	public void deleteMaterial(Long id) {
-		materialMapper.deleteById(id);
+	public void logicalDelete(Long id) {
+		materialMapper.logicalDelete(id);
+	}
+
+	// 理論削除された一覧取得
+	@Override
+	public List<Material> findDeletedMaterials() {
+		return materialMapper.findDeletedMaterials();
+	}
+
+	@Override
+	public void restore(Long id) {
+		materialMapper.restore(id);
 	}
 
 }

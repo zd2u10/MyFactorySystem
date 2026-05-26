@@ -3,7 +3,11 @@
 <mapper namespace="com.example.app.mapper.MaterialMapper">
 	
 	<select id="findAll" resultType="Material">	
-		SELECT * FROM materials
+		SELECT * FROM materials WHERE is_deleted = 0
+	</select>
+	
+	<select id="findDeletedMaterials" resultType="Material">
+		SELECT * FROM materials WHERE is_deleted = 1
 	</select>
 	
 	<select id="findById" resultType="Material">
@@ -23,7 +27,13 @@
 		WHERE id = #{id}
 	</update>
 	
-	<delete id="deleteById">
-		DELETE FROM materials WHERE id = #{id}
-	</delete>
+	<update id="logicalDelete">
+		UPDATE materials 
+		SET is_deleted = 1
+		WHERE id = #{id}
+	</update>
+	
+	<update id="restore">
+		UPDATE materials SET is_deleted = 0 WHERE id = #{id}
+	</update>
 </mapper>
