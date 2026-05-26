@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<script th:src="@{/js/material/register}" defer></script>
+<title>原料・添加物登録画面</title>
+</head>
+<body>
+	<h1>原料・添加物の登録</h1>
+	
+	<div style="margin-bottom: 20px;">
+		<a th:href="@{/material/list}">原料一覧へ戻る</a>
+	</div>
+	<form th:action="@{/material/register}" method="post" th:object="${material}">
+		<div>
+			<label>原料名：</label>
+			<input type="text" th:field="*{name}" required/>
+		</div>
+		
+		<div>
+			<label>単位：</label>
+			<input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" required/>
+		</div>
+		
+		<div>
+			<labe>正味量</label>
+			<input type="number" step="0.01" min="0" th:field="*{netWeight}" required/>
+		</div>
+		
+		<button type="submit">登録する</button>
+	</form>
+	
+	<dialog id="confirmModal">
+		<h3>登録情報の確認</h3>
+		<p>以下の内容で登録しますか？</p>
+		
+		<div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
+		
+		<div class="modal-actions">
+			<button type="button" onclick="document.getElementById('materialForm').submit()">登録確定</button>
+			<button type="button" onclick="document.getElementById('confirmModal').close()" style="background-color: #ccc;">キャンセル</button>
+		</div>
+	</dialog>
+</body>
+</html>

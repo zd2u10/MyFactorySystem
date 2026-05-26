@@ -1,6 +1,7 @@
 package com.example.app.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,8 +15,14 @@ public interface MaterialMapper {
 	List<Material> findAll();
 
 	// IDごとにマテリアルを1件取得
-	Material findById(Long id);
+	Optional<Material> findById(Long id);
 
 	// 原料・添加物の追加
 	void insert(Material material);
+
+	// 編集・更新
+	void update(Material material);
+
+	// 削除
+	void deleteById(Long id);
 }

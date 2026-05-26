@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/* モーダル全体の見た目 */
+dialog {
+	border: none;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+	width: 300px;
+}
+
+/* モーダルの背景(オーバーレイ) */
+dialog::backdrop{
+	background-color: rgba(0,0,0,0.5);
+}
+
+/* ボタンの配置を整える */
+.model-actions {
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10;
+}
