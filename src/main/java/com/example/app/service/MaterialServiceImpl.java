@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.app.domain.Material;
+import com.example.app.dto.MaterialForm;
 import com.example.app.mapper.MaterialMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -55,9 +56,15 @@ public class MaterialServiceImpl implements MaterialService {
 		return materialMapper.findDeletedMaterials();
 	}
 
+	// 削除されたものを復元
 	@Override
 	public void restore(Long id) {
 		materialMapper.restore(id);
+	}
+
+	@Override
+	public void registerMaterialFromForm(MaterialForm form) {
+		materialMapper.insert(form.toEntity());
 	}
 
 }

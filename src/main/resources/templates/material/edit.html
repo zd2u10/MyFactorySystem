@@ -10,11 +10,11 @@
 	
 	<hr />
 	
-	<form id="editForm" th:action="@{/material/edit}" method="post" th:object="${material}">
+	<form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
 		<input type="hidden" th:field="*{id}"/>
 		<div>
 			<label>原料名：</label>
-			<input type="text" th:field="*{name}" required/>
+			<input type="text" id="editName" th:field="*{name}" required/>
 		</div>
 		
 		<div>
@@ -24,21 +24,21 @@
 		
 		<div>
 			<label>正味量</label>
-			<input type="number" step="0.01" min="0" th:field="*{netWeight}" required/>
+			<input type="number" id="editNetWeight" step="0.01" min="0" th:field="*{netWeight}" required/>
 		</div>
 		
-		<button type="button"onclick="openEditConfirmModal()">更新する</button>
+		<button type="button"onclick="openConfirmModal('editForm', 'editConfirmModal', 'editContent', ['editName', 'editNetWeight'])">更新する</button>
 	</form>
 	
 	<dialog id="editConfirmModal">
 		<h3>更新情報の確認</h3>
 		<p>以下の内容で更新しますか？</p>
 		
-		<div id="editConfirmContent" style="font-weight: bold; margin: 10px 0;"></div>
+		<div id="editContent" style="font-weight: bold; margin: 10px 0;"></div>
 		
 		<div class="modal-actions">
-			<button type="button" onclick="submitEditForm()">更新確定</button>
-			<button type="button" onclick="cancelEditModal()" style="background-color: #ccc;">キャンセル</button>
+			<button type="button" onclick="submitForm('editForm')">更新確定</button>
+			<button type="button" onclick="cancelModal('editConfirmModal')" style="background-color: #ccc;">キャンセル</button>
 		</div>
 	</dialog>
 <script th:src="@{/js/material/common.js}" defer></script>

@@ -10,10 +10,10 @@
 	
 	<hr />
 	
-	<form id="materialForm" th:action="@{/material/register}" method="post" th:object="${material}">
+	<form id="registerForm" th:action="@{/material/register}" method="post" th:object="${material}">
 		<div>
 			<label>原料名：</label>
-			<input type="text" id="name" th:field="*{name}" required/>
+			<input type="text" id="regName" th:field="*{name}" required/>
 		</div>
 		
 		<div>
@@ -23,10 +23,10 @@
 		
 		<div>
 			<label>正味量：</label>
-			<input type="number" step="0.01" min="0" th:field="*{netWeight}" required/>
+			<input type="number" id="regNetWeight" step="0.01" min="0" th:field="*{netWeight}" required/>
 		</div>
 		
-		<button type="button" onclick="openConfirmModal()">登録する</button>
+		<button type="button" onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', ['regName', 'regNetWeight'])">登録する</button>
 	</form>
 	
 	<dialog id="confirmModal">

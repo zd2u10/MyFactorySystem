@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.app.domain.Material;
+import com.example.app.dto.MaterialForm;
 
 public interface MaterialService {
 
@@ -28,4 +29,5 @@ public interface MaterialService {
 	// 復旧用
 	void restore(Long id);
 
+	void registerMaterialFromForm(MaterialForm form);
 }
