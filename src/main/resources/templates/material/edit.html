@@ -4,27 +4,35 @@
 <meta charset="UTF-8">
 <title>原料・添加物の編集</title>
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
-<script th:src="@{/js/material/common.js}"></script>
+<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('情報の編集')}"></header>
-    <hr />
+    
+	<div th:if="${message}" th:text="${message}" 
+	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
+	</div>
+	
+	<hr />
     
     <form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
         <input type="hidden" th:field="*{id}"/>
         <div>
             <label>原料名：</label>
-            <input type="text" id="editName" th:field="*{name}" required/>
+            <input type="text" id="editName" th:field="*{name}" />
         </div>
         <div>
             <label>単位：</label>
-            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" required/>
+            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" />
         </div>
         <div>
             <label>正味量</label>
-            <input type="number" id="editNetWeight" step="0.01" min="0" th:field="*{netWeight}" required/>
+            <input type="number" id="editNetWeight" step="0.01" min="0" th:field="*{netWeight}" />
         </div>
-        <button type="button" onclick="openConfirmModal('editForm', 'editConfirmModal', 'editContent', ['editName', 'editNetWeight'])">更新する</button>
+        <button type="button" 
+			onclick="openConfirmModal(
+				'editForm', 'editConfirmModal', 'editContent', 
+				['editName', 'editNetWeight'], ['原料名', '正味量'])">更新する</button>
     </form>
     
     <dialog id="editConfirmModal">

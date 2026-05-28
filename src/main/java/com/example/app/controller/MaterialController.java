@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.app.domain.Material;
 import com.example.app.dto.MaterialForm;
@@ -35,19 +36,24 @@ public class MaterialController {
 	// 登録画面
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
-		model.addAttribute("material", new Material());
+		model.addAttribute("materialForm", new MaterialForm());
 		model.addAttribute("currentPage", "register");
 		return "material/register";
 	}
 
 	// 登録処理を実行
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("materialForm") MaterialForm form, BindingResult result) {
+	public String register(@Valid @ModelAttribute("materialForm") MaterialForm form,
+			BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
+			// エラー時はフォームを保持して画面へ戻す
+			model.addAttribute("currentPage", "register");
 			return "material/register"; // エラーがあれば登録画面へ戻す
 		}
 		// 変換処理をServiceに任せる
 		materialService.registerMaterialFromForm(form);
+		// 成功メッセージ
+		redirectAttributes.addFlashAttribute("message", "原料を登録しました");
 		return "redirect:/material/list";
 	}
 
@@ -71,7 +77,7 @@ public class MaterialController {
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
 			@Valid @ModelAttribute("materialForm") MaterialForm form,
-			BindingResult result) {
+			BindingResult result, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			return "material/edit";
 		}
@@ -81,14 +87,17 @@ public class MaterialController {
 
 		// Service経由で更新を実行
 		materialService.updateMaterial(material);
-
+		// 成功メッセージ
+		redirectAttributes.addFlashAttribute("message", "更新しました");
 		return "redirect:/material/list";
 	}
 
 	// 理論削除処理
 	@PostMapping("/delete/{id}")
-	public String delete(@PathVariable Long id) {
+	public String delete(@PathVariable Long id,
+			RedirectAttributes redirectAttributes) {
 		materialService.logicalDelete(id);
+		redirectAttributes.addFlashAttribute("message", "削除しました");
 		return "redirect:/material/list";
 	}
 
@@ -102,8 +111,11 @@ public class MaterialController {
 
 	//復旧処理用
 	@PostMapping("/deleted/{id}")
-	public String restore(@PathVariable Long id) {
+	public String restore(@PathVariable Long id,
+			RedirectAttributes redirectAttributes) {
 		materialService.restore(id);
+		// 成功メッセージ
+		redirectAttributes.addFlashAttribute("message", "復旧しました");
 		return "redirect:/material/deleted";
 	}
 }

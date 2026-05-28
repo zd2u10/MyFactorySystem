@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>製品の新規登録</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <h1>製品の新規登録</h1>
+	
+	<div th:if="${message}" th:text="${message}" 
+	    style="padding: 10px; margin-bottom: 20px; background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb;">
+	</div>
+   
+
+    <form id="registerForm" th:action="@{/items/register}" method="post" th:object="${itemForm}">
+        <div>
+            <label>製品名：</label>
+            <input type="text" id="regName" th:field="*{name}"/>
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div>
+            <label>販売単位：</label>
+            <input type="text" id="regSalesUnit" th:field="*{salesUnit}" placeholder="例: 個, パック" />
+            <div class="error" th:if="${#fields.hasErrors('salesUnit')}" th:errors="*{salesUnit}"></div>
+        </div>
+        <div>
+            <label>バッチ製造数：</label>
+            <input type="number" id="regBatchSize" step="0.01" th:field="*{batchSize}" placeholder="1バッチあたりの製造量" />
+            <small style="display: block; color: #666;">※ この製品を1回製造する際の製造量(単位：個)を入力してください。</small>
+            <div class="error" th:if="${#fields.hasErrors('batchSize')}" th:errors="*{batchSize}"></div>
+        </div>
+        <div>
+            <label>標準原価：</label>
+            <input type="number" id="regStandardCost" step="0.01" th:field="*{standardCost}"/>
+            <div class="error" th:if="${#fields.hasErrors('standardCost')}" th:errors="*{standardCost}"></div>
+        </div>
+        <div>
+            <label>販売価格：</label>
+            <input type="number" id="regSalesPrice" step="0.01" th:field="*{salesPrice}"/>
+            <div class="error" th:if="${#fields.hasErrors('salesPrice')}" th:errors="*{salesPrice}"></div>
+        </div>
+
+        <button type="button"
+            onclick="openConfirmModal(
+                'registerForm',
+                'confirmModal',
+                'confirmContent',
+                ['regName', 'regSalesUnit', 'regBatchSize', 'regStandardCost', 'regSalesPrice'],
+                ['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格']
+            )">
+            登録する
+        </button>
+    </form>
+
+    <dialog id="confirmModal">
+        <h3>登録情報の確認</h3>
+        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
+        <div class="modal-actions">
+            <button type="button" onclick="submitForm('registerForm')">登録確定</button>
+            <button type="button" onclick="closeModal('confirmModal')" style="background-color: #ccc;">キャンセル</button>
+        </div>
+    </dialog>
+</body>
+</html>

@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+/* バリデーションエラーメッセージ用共通スタイル */
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}

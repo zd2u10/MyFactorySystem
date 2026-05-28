@@ -3,27 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>原料の登録</title>
+<link rel="stylesheet" th:href="@{/css/common.css}" />
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
-<script th:src="@{/js/material/common.js}"></script>
+<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('原料の登録')}"></header>
-    <hr />
     
-    <form id="registerForm" th:action="@{/material/register}" method="post" th:object="${material}">
+	<div th:if="${message}" th:text="${message}" 
+	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
+	</div>
+	
+	<hr />
+    
+    <form id="registerForm" th:action="@{/material/register}" method="post" th:object="${materialForm}">
         <div>
             <label>原料名：</label>
-            <input type="text" id="regName" th:field="*{name}" required/>
-        </div>
-        <div>
+            <input type="text" id="regName" th:field="*{name}" /></div>
+			<div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        
+		<div>
             <label>単位：</label>
-            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" required/>
-        </div>
-        <div>
+            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" /></div>
+			<div class="error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
+        
+		<div>
             <label>正味量：</label>
-            <input type="number" id="regNetWeight" step="0.01" min="0" th:field="*{netWeight}" required/>
-        </div>
-        <button type="button" onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', ['regName', 'regNetWeight'])">登録する</button>
+            <input type="number" id="regNetWeight" step="0.01" min="0" th:field="*{netWeight}" /></div>
+			<div class="error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
+			
+        <button type="button" 
+			onclick="openConfirmModal(
+				'registerForm', 'confirmModal', 'confirmContent', 
+				['regName', 'regNetWeight'], ['原料名', '正味量'])">登録する</button>
     </form>
     
     <dialog id="confirmModal">

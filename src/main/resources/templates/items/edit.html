@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>製品情報の編集</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+	<h1>製品情報の編集</h1>
+	
+	<div th:if="${message}" th:text="${message}" 
+	     style="padding: 10px; margin-bottom: 20px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;">
+	</div>
+
+	<form id="editForm" th:action="@{/items/edit/{id}(id=${id})}" method="post" th:object="${itemForm}">
+		<div>
+			<label>製品名：</label>
+			<input type="text" id="editName" th:field="*{name}"/>
+			<div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+		</div>
+
+		<div>
+		    <label>販売単位：</label>
+		    <input type="text" id="editSalesUnit" th:field="*{salesUnit}" />
+		    <div class="error" th:if="${#fields.hasErrors('salesUnit')}" th:errors="*{salesUnit}"></div>
+		</div>
+
+		<div>
+		    <label>バッチ製造数：</label>
+		    <input type="number" id="editBatchSize" step="1.0" min="0" th:field="*{batchSize}" placeholder="例: 100.0" />
+		    <div class="error" th:if="${#fields.hasErrors('batchSize')}" th:errors="*{batchSize}"></div>
+		</div>
+
+		<div>
+			<label>標準原価：</label>
+		    <input type="number" id="editStandardCost" step="0.01" min="0" th:field="*{standardCost}" required/>
+		    <div class="error" th:if="${#fields.hasErrors('standardCost')}" th:errors="*{standardCost}"></div>
+		</div>
+
+	    <div>
+		    <label>販売価格：</label>
+		    <input type="number" id="editSalesPrice" step="1.0" min="0" th:field="*{salesPrice}" />
+		    <div class="error" th:if="${#fields.hasErrors('salesPrice')}" th:errors="*{salesPrice}"></div>
+		</div>
+
+		<button type="button"
+			onclick="openConfirmModal(
+				'editForm', 'editConfirmModal', 'editContent',
+				['editName', 'editSalesUnit', 'editBatchSize', 'editStandardCost', 'editSalesPrice'],
+				['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格'])">更新する
+		</button>
+	</form>
+
+	<dialog id="editConfirmModal">
+		<h3>更新情報の確認</h3>
+		<div id="editContent" style="font-weight: bold; margin: 10px 0;"></div>
+		<div class="modal-actions">
+			<button type="button" onclick="submitForm('editForm')">更新確定</button>
+			<button type="button" onclick="closeModal('editConfirmModal')">キャンセル</button>
+		</div>
+	</dialog>
+
+</body>
+</html>
