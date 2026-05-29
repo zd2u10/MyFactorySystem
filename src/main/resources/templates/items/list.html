@@ -3,59 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>製品一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
 </head>
 <body>
-    <h1>製品一覧</h1>
-	
-	<div th:if="${message}" th:text="${message}" 
-	    style="padding: 10px; margin-bottom: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-	</div>
-
-    <a th:href="@{/items/register}"
-   style="display: inline-block; padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc; text-decoration: underline; color: blue;">
-   新規登録
-</a>
-
-<a th:href="@{/items/deleted}"
-   style="display: inline-block; padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc; text-decoration: underline; color: blue;">
-   削除済み一覧へ
-</a>
-
-<table border="1">
-    <thead>
-        <tr>
-            <th>製品名</th>
-            <th>レシピ</th>
-            <th>販売単位</th>
-            <th>バッチ製造数</th>
-            <th>標準原価</th>
-            <th>販売価格</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="item : ${itemList}">
-            <td th:text="${item.name}">製品名</td>
-            <td style="text-align: center;">
-                <a th:href="@{/items/{itemId}/recipes/list(itemId=${item.id})}"
-                   title="レシピ一覧を表示"
-                   style="text-decoration: none; font-size: 1.2em;">
-                   📖 <span style="font-size: 0.8em;"></span>
-                </a>
-            </td>
-            <td th:text="${item.salesUnit}"></td>
-            <td th:text="${item.batchSize}"></td>
-            <td th:text="${item.standardCost}"></td>
-            <td th:text="${item.salesPrice}"></td>
-            <td>
-                <a th:href="@{/items/edit/{id}(id=${item.id})}">編集</a>
-                <form th:id="'deleteForm' + ${item.id}" th:action="@{/items/delete/{id}(id=${item.id})}" method="post" style="display:inline;">
-                    <button type="button" th:onclick="'submitForm(\'deleteForm' + ${item.id} + '\')'">削除</button>
-                </form>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<script th:src="@{/js/common.js}"></script>
+    <header th:replace="~{fragments/common :: headerNav('/items', '製品一覧', 'list')}"></header>
+    
+    <table class="content-table">
+        <thead><tr><th>製品名</th><th>販売単位</th><th>製造数</th><th>標準原価</th><th>販売価格</th><th>操作</th></tr></thead>
+        <tbody>
+            <tr th:each="item : ${itemList}">
+                <td th:text="${item.name}"></td><td th:text="${item.salesUnit}"></td>
+                <td th:text="${item.batchSize}"></td><td th:text="${item.standardCost}"></td>
+                <td th:text="${item.salesPrice}"></td>
+                <td><a th:href="@{/items/edit/{id}(id=${item.id})}" class="btn btn-edit">編集</a></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

@@ -3,32 +3,33 @@
 <mapper namespace="com.example.app.mapper.AdditiveMapper">
 	
     <select id="findAll" resultType="Additive">
-        SELECT id, name, unit, is_deleted 
+        SELECT id, name, unit, is_powder
         FROM additives 
         WHERE is_deleted = 0
     </select>
     
     <select id="findDeletedAdditives" resultType="Additive">
-		SELECT id, name, unit, is_deleted 
+		SELECT id, name, unit, is_powder 
         FROM additives 
         WHERE is_deleted = 1
 	</select>
 
 	<select id="findById" resultType="Additive">
-		SELECT id, name, unit, is_deleted 
+		SELECT id, name, unit, is_powder 
 		FROM additives 
 		WHERE id = #{id}
 	</select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO additives (name, unit)
-        VALUES (#{name}, #{unit})
+        INSERT INTO additives (name, unit, is_powder)
+        VALUES (#{name}, #{unit}, #{isPowder})
     </insert>
     
     <update id="update">
         UPDATE additives 
         SET name = #{name}, 
-        unit = #{unit} 
+        unit = #{unit},
+        is_powder = #{isPowder}
         WHERE id = #{id}
     </update>
 	

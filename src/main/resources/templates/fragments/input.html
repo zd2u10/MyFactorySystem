@@ -6,25 +6,30 @@
 </head>
 <body>
 	
-	<div th:fragment="input-fields(formObject)">
-	    <div>
-	        <label>名前：</label>
-	        <input type="text" id="regName" th:field="*{name}" />
-	        <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+	<div th:fragment="text(label, fieldName)">
+	        <div>
+	            <label th:text="${label} + '：'"></label>
+	            <input type="text" th:field="*{__${fieldName}__}" />
+	            <div class="error" th:if="${#fields.hasErrors('__${fieldName}__')}" th:errors="*{__${fieldName}__}"></div>
+	        </div>
 	    </div>
-	    <div>
-	        <label>単位：</label>
-	        <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" />
-	        <div class="error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
-	    </div>
-	</div>
 
-	<dialog th:fragment="confirm-modal" id="confirmModal">
-	    <h3>登録情報の確認</h3>
-	    <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
-	    <button type="button" onclick="submitForm('registerForm')">確定</button>
-	    <button type="button" onclick="closeModal('confirmModal')">キャンセル</button>
-	</dialog>
+	    <div th:fragment="radio-powder(label, fieldName)">
+	        <div>
+	            <label th:text="${label} + '：'"></label>
+	            <input type="radio" th:id="${fieldName} + 'True'" th:field="*{__${fieldName}__}" value="true" />
+	            <label th:for="${fieldName} + 'True'">粉体</label>
+	            <input type="radio" th:id="${fieldName} + 'False'" th:field="*{__${fieldName}__}" value="false" />
+	            <label th:for="${fieldName} + 'False'">液体</label>
+	        </div>
+	    </div>
+
+	    <dialog th:fragment="confirm-modal" id="confirmModal">
+	        <h3>登録情報の確認</h3>
+	        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
+	        <button type="button" onclick="submitForm('registerForm')">確定</button>
+	        <button type="button" onclick="closeModal('confirmModal')">キャンセル</button>
+	    </dialog>
 	
 </body>
 </html>

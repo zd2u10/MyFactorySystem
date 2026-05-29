@@ -1,8 +1,24 @@
 @charset "UTF-8";
 
-/* バリデーションエラーメッセージ用共通スタイル */
-.error {
-    color: red;
-    font-size: 0.9em;
-    margin-bottom: 10px;
-}
+/* --- 1. 基本・レイアウト --- */
+body { font-family: "Helvetica Neue", Arial, sans-serif; padding: 20px; background-color: #f4f7f6; }
+.error { color: red; font-size: 0.9em; margin-bottom: 10px; }
+hr { margin: 20px 0; }
+
+/* --- 2. ボタン・ナビゲーション --- */
+.btn { padding: 8px 16px; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #ccc; display: inline-block; transition: 0.3s; }
+.btn:hover { filter: brightness(90%); }
+.btn-action { background-color: #2c3e50; color: #fff; border: none; }
+.btn-edit { background-color: #e0f7fa; color: #006064; border-color: #b2ebf2; }
+.btn-delete { background-color: #ffebee; color: #c62828; border-color: #ffcdd2; }
+.btn-restore { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+
+/* ヘッダーナビ */
+.header-nav { margin-bottom: 20px; }
+.nav-container { display: flex; gap: 10px; margin-bottom: 20px; }
+.nav-btn { padding: 10px 20px; border: 1px solid #007bff; background: #fff; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: bold; }
+.nav-btn.active { background-color: #007bff; color: #fff; }
+
+/* メニューカード */
+.menu-container { display: flex; justify-content: center; gap: 30px; margin-top: 50px; }
+.menu-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 300px; }

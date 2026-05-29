@@ -6,33 +6,21 @@
         <link rel="stylesheet" th:href="@{/css/common.css}" />
     </head>
     <body>
-        <h1>削除済み製品一覧</h1>
-		
-		<div th:if="${message}" th:text="${message}" 
-		     style="padding: 10px; margin-bottom: 20px; background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb;">
-		</div>
+		<header th:replace="~{fragments/common :: headerNav('/items', '削除済み製品一覧', 'deleted')}"></header>
 
-        <div style="margin-top: 20px;">
-            <a th:href="@{/items/list}">製品一覧に戻る</a>
-        </div>
-
-        <table border="1">
-            <thead>
-            <tr>
-                <th>製品名</th><th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="item : ${itemList}">
-                <td th:text="${item.name}"></td>
-                <td>
-                    <form th:action="@{/items/deleted/{id}(id=${item.id})}" method="post">
-                        <button type="submit" class="btn btn-edit">復旧</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+		<table class="content-table">
+		    <thead><tr><th>製品名</th><th>操作</th></tr></thead>
+		    <tbody>
+		        <tr th:each="item : ${itemList}">
+		            <td th:text="${item.name}"></td>
+		            <td>
+		                <form th:action="@{/items/deleted/{id}(id=${item.id})}" method="post">
+		                    <button type="submit" class="btn btn-restore">復旧</button>
+		                </form>
+		            </td>
+		        </tr>
+		    </tbody>
+		</table>
 
 </body>
 </html>

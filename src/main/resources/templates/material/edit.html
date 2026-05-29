@@ -12,42 +12,16 @@
 	<div th:if="${message}" th:text="${message}" 
 	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
 	</div>
+    
+	<form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
+	    <input type="hidden" th:field="*{id}"/>
+	    <div th:replace="~{input :: text('原料名', 'name')}"></div>
+	    <div th:replace="~{input :: text('単位', 'unit')}"></div>
+	    <div th:replace="~{input :: radio-powder('種類', 'isPowder')}"></div>
+	    <button type="button" class="btn btn-action" 
+	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['原料名'])">更新する</button>
+	</form>
+	<dialog th:replace="~{input :: confirm-modal}"></dialog>
 	
-	<hr />
-    
-    <form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
-        <input type="hidden" th:field="*{id}"/>
-        <div>
-            <label>原料名：</label>
-            <input type="text" id="editName" th:field="*{name}" />
-        </div>
-        <div>
-            <label>単位：</label>
-            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" />
-        </div>
-		<div>
-		    <label>種類：</label>
-		    <input type="radio" id="regPowder" th:field="*{isPowder}" th:value="true" />
-		    <label for="regPowder">粉体</label>
-		    <input type="radio" id="regLiquid" th:field="*{isPowder}" th:value="false" />
-		    <label for="regLiquid">液体</label>
-		</div>
-		
-		
-        <button type="button" 
-			onclick="openConfirmModal(
-				'editForm', 'editConfirmModal', 'editContent', 
-				['editName'], ['原料名'])">更新する</button>
-    </form>
-    
-    <dialog id="editConfirmModal">
-        <h3>更新情報の確認</h3>
-        <p>以下の内容で更新しますか？</p>
-        <div id="editContent" style="font-weight: bold; margin: 10px 0;"></div>
-        <div class="modal-actions">
-            <button type="button" onclick="submitForm('editForm')">更新確定</button>
-            <button type="button" onclick="closeModal('editConfirmModal')" style="background-color: #ccc;">キャンセル</button>
-        </div>
-    </dialog>
 </body>
 </html>

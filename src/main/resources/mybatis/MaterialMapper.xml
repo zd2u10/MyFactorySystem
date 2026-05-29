@@ -3,20 +3,20 @@
 <mapper namespace="com.example.app.mapper.MaterialMapper">
 	
 	<select id="findAll" resultType="Material">	
-		SELECT id, name, unit, is_powder, is_deleted
+		SELECT id, name, unit, is_powder
 		FROM materials 
 		WHERE is_deleted = 0
 		
 	</select>
 	
 	<select id="findDeletedMaterials" resultType="Material">
-		SELECT id, name, unit, is_powder, is_deleted 
+		SELECT id, name, unit, is_powder
         FROM materials 
         WHERE is_deleted = 1
 	</select>
 	
 	<select id="findById" resultType="Material">
-		SELECT id, name, unit, is_powder, is_deleted 
+		SELECT id, name, unit, is_powder
 		FROM materials 
 		WHERE id = #{id}
 	</select>

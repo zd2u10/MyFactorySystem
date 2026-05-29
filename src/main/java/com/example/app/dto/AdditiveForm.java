@@ -17,12 +17,15 @@ public class AdditiveForm {
 	@NotBlank(message = "単位を入力して下さい")
 	private String unit; // 数量
 
+	private Boolean isPowder = false;
+
 	// Entityへの変換
 	public Additive toEntity() {
 		Additive additive = new Additive();
 		additive.setId(this.id);
 		additive.setName(this.name);
 		additive.setUnit(this.unit);
+		additive.setIsPowder(isPowder);
 		return additive;
 	}
 
@@ -31,6 +34,7 @@ public class AdditiveForm {
 		this.id = additive.getId();
 		this.name = additive.getName();
 		this.unit = additive.getUnit();
+		this.isPowder = additive.getIsPowder();
 	}
 
 }

@@ -4,43 +4,28 @@
 <meta charset="UTF-8">
 <title>添加物の登録</title>
 <link rel="stylesheet" th:href="@{/css/common.css}" />
-<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('/additive', '添加物の登録')}"></header>
     
-	<div th:if="${message}" th:text="${message}" 
-	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
-	</div>
-	
-	<hr />
-    
     <form id="registerForm" th:action="@{/additive/register}" method="post" th:object="${additiveForm}">
-        <div>
-            <label>原料名：</label>
-            <input type="text" id="regName" th:field="*{name}" /></div>
-			<div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-        
+        <div th:replace="~{input :: field('添加物名', 'name', 'name')}"></div>
+		<div＞ th:replace="~{input :: field('単位', 'unit', 'unit')}"></div>        
+		
 		<div>
-            <label>単位：</label>
-            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" /></div>
-			<div class="error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
+		    <label>種類：</label>
+		    <input type="radio" id="regPowder" th:field="*{isPowder}" th:value="true" />粉体
+		    <input type="radio" id="regLiquid" th:field="*{isPowder}" th:value="false" />液体
+		    
+		</div>	
 			
         <button type="button" 
 			onclick="openConfirmModal(
-				'registerForm', 'confirmModal', 'confirmContent', 
-				['regName'], ['添加物名'])">登録する</button>
+				'regForm', 'confirmModal', 'confirmContent', 
+				['regName'], ['添加物'])">登録する</button>
     </form>
     
-    <dialog id="confirmModal">
-        <h3>登録情報の確認</h3>
-        <p>以下の内容で登録しますか？</p>
-        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
-        <div class="modal-actions">
-            <button type="button" onclick="submitForm('registerForm')">登録確定</button>
-            <button type="button" onclick="closeModal('confirmModal')" style="background-color: #ccc;">キャンセル</button>
-        </div>
-    </dialog>
+    <dialog id="confirmModal" th:replace="~{input :: confirm-modal}"></dialog>
 </body>
 </html>

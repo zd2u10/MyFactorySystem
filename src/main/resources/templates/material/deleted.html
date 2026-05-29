@@ -6,35 +6,22 @@
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/material', '削除済み原料一覧')}"></header>
-	
-	<div th:if="${message}" th:text="${message}" 
-	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
-	</div>
-	
-	<hr>
-	
-	<table border="1" style="margin-top: 20px; border-collapse: collapse; width: 80%;">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>原料名</th>
-				<th>単位</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="m : ${materialList}">
-				<td th:text="${m.id}">ID</td>
-				<td th:text="${m.name}">名前</td>
-				<td th:text="${m.unit}">単位</td>
-				<td>
-					<form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post" style="display:inline;">
-						<button type="submit" class="btn btn-restore" 
-					         onclick="return confirm('この原料を一覧に復旧させますか？');">復旧</button>
-					</form>
-				</td>
-			</tr>
-		</tbody>
+	<header th:replace="~{fragments/common :: headerNav('/material', '削除済み原料一覧', 'deleted')}"></header>
+
+	<table class="content-table">
+	    <thead><tr><th>ID</th><th>原料名</th><th>単位</th><th>操作</th></tr></thead>
+	    <tbody>
+	        <tr th:each="m : ${materialList}">
+	            <td th:text="${m.id}"></td>
+	            <td th:text="${m.name}"></td>
+	            <td th:text="${m.unit}"></td>
+	            <td>
+	                <form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post">
+	                    <button type="submit" class="btn btn-restore">復旧</button>
+	                </form>
+	            </td>
+	        </tr>
+	    </tbody>
 	</table>
 </body>
 </html>

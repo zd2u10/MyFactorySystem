@@ -2,53 +2,22 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>原料の登録</title>
+<title>添加物の登録</title>
 <link rel="stylesheet" th:href="@{/css/common.css}" />
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/material', '原料の登録')}"></header>
-    
-	<div th:if="${message}" th:text="${message}" 
-	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
-	</div>
-	
-	<hr />
-    
-    <form id="registerForm" th:action="@{/material/register}" method="post" th:object="${materialForm}">
-        <div>
-            <label>原料名：</label>
-            <input type="text" id="regName" th:field="*{name}" /></div>
-			<div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-        
-		<div>
-            <label>単位：</label>
-            <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" /></div>
-			<div class="error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
-			
-		<div>
-		    <label>種類：</label>
-		    <input type="radio" id="regPowder" th:field="*{isPowder}" th:value="true" />
-		    <label for="regPowder">粉体</label>
-		    <input type="radio" id="regLiquid" th:field="*{isPowder}" th:value="false" />
-		    <label for="regLiquid">液体</label>
-		</div>	
-			
-        <button type="button" 
-			onclick="openConfirmModal(
-				'registerForm', 'confirmModal', 'confirmContent', 
-				['regName'], ['原料名'])">登録する</button>
-    </form>
-    
-    <dialog id="confirmModal">
-        <h3>登録情報の確認</h3>
-        <p>以下の内容で登録しますか？</p>
-        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
-        <div class="modal-actions">
-            <button type="button" onclick="submitForm('registerForm')">登録確定</button>
-            <button type="button" onclick="closeModal('confirmModal')" style="background-color: #ccc;">キャンセル</button>
-        </div>
-    </dialog>
+	<header th:replace="~{fragments/common :: headerNav('/material', '原料の登録', 'register')}"></header>
+
+	<form id="registerForm" th:action="@{/material/register}" method="post" th:object="${materialForm}">
+	    <div th:replace="~{fragments/input :: text('原料名', 'name')}"></div>
+	    <div th:replace="~{fragments/input :: text('単位', 'unit')}"></div>
+	    <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder')}"></div>
+	    
+	    <button type="button" class="btn btn-action"
+	        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', ['regName'], ['原料名'])">登録する</button>
+	</form>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

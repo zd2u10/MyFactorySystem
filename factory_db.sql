@@ -16,6 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `additives`
+--
+
+DROP TABLE IF EXISTS `additives`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `additives` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `unit` varchar(20) NOT NULL,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `additives`
+--
+
+LOCK TABLES `additives` WRITE;
+/*!40000 ALTER TABLE `additives` DISABLE KEYS */;
+INSERT INTO `additives` VALUES (1,'α米','kg',0);
+/*!40000 ALTER TABLE `additives` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `inventory_stocks`
 --
 
@@ -29,10 +55,12 @@ CREATE TABLE `inventory_stocks` (
   `origin` varchar(255) NOT NULL,
   `quantity` decimal(12,3) NOT NULL DEFAULT '0.000',
   `expiry_date` date DEFAULT NULL,
+  `arrival_date` date DEFAULT NULL,
+  `inspected` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_material_lot_origin` (`material_id`,`lot_number`,`origin`),
-  CONSTRAINT `inventory_stocks_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `materials` (`id`)
+  CONSTRAINT `fk_stock_material` FOREIGN KEY (`material_id`) REFERENCES `materials` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,12 +85,14 @@ CREATE TABLE `inventory_transactions` (
   `stock_id` bigint NOT NULL,
   `transaction_type` varchar(20) NOT NULL,
   `quantity_change` decimal(12,3) NOT NULL,
-  `transaction_date` date NOT NULL,
+  `product_code` varchar(100) DEFAULT NULL,
+  `product_number` varchar(100) DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
+  `transaction_date` date NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `stock_id` (`stock_id`),
-  CONSTRAINT `inventory_transactions_ibfk_1` FOREIGN KEY (`stock_id`) REFERENCES `inventory_stocks` (`id`)
+  KEY `fk_transaction_stock` (`stock_id`),
+  CONSTRAINT `fk_transaction_stock` FOREIGN KEY (`stock_id`) REFERENCES `inventory_stocks` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -76,6 +106,35 @@ LOCK TABLES `inventory_transactions` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `items`
+--
+
+DROP TABLE IF EXISTS `items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `items` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `sales_unit` varchar(20) NOT NULL,
+  `batch_size` decimal(12,3) DEFAULT NULL,
+  `standard_cost` decimal(12,3) DEFAULT NULL,
+  `sales_price` decimal(12,3) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `items`
+--
+
+LOCK TABLES `items` WRITE;
+/*!40000 ALTER TABLE `items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `materials`
 --
 
@@ -86,7 +145,7 @@ CREATE TABLE `materials` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `unit` varchar(20) NOT NULL,
-  `net_weight` decimal(12,3) NOT NULL DEFAULT '0.000',
+  `is_powder` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -102,31 +161,6 @@ LOCK TABLES `materials` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `products`
---
-
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `unit` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `products`
---
-
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `recipes`
 --
 
@@ -135,14 +169,14 @@ DROP TABLE IF EXISTS `recipes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `recipes` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `product_id` bigint NOT NULL,
+  `item_id` bigint NOT NULL,
   `material_id` bigint NOT NULL,
   `quantity` decimal(12,3) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
-  KEY `material_id` (`material_id`),
-  CONSTRAINT `recipes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
-  CONSTRAINT `recipes_ibfk_2` FOREIGN KEY (`material_id`) REFERENCES `materials` (`id`)
+  KEY `fk_recipe_item` (`item_id`),
+  KEY `fk_recipe_material` (`material_id`),
+  CONSTRAINT `fk_recipe_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
+  CONSTRAINT `fk_recipe_material` FOREIGN KEY (`material_id`) REFERENCES `materials` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -164,4 +198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-20 12:35:14
+-- Dump completed on 2026-05-29 13:59:45
