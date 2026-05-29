@@ -2,11 +2,11 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>削除済み原料一覧表示</title>
+<title>削除済み添加物一覧表示</title>
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/material', '削除済み原料一覧')}"></header>
+	<header th:replace="~{fragments/common :: headerNav('/additive', 削除済み添加物一覧')}"></header>
 	
 	<div th:if="${message}" th:text="${message}" 
 	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
@@ -18,19 +18,19 @@
 		<thead>
 			<tr>
 				<th>ID</th>
-				<th>原料名</th>
+				<th>添加物名</th>
 				<th>単位</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="m : ${materialList}">
-				<td th:text="${m.id}">ID</td>
-				<td th:text="${m.name}">名前</td>
-				<td th:text="${m.unit}">単位</td>
+			<tr th:each="a : ${additiveList}">
+				<td th:text="${a.id}">ID</td>
+				<td th:text="${a.name}">名前</td>
+				<td th:text="${a.unit}">単位</td>
 				<td>
-					<form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post" style="display:inline;">
+					<form th:action="@{/additive/deleted/{id}(id=${a.id})}" method="post" style="display:inline;">
 						<button type="submit" class="btn btn-restore" 
-					         onclick="return confirm('この原料を一覧に復旧させますか？');">復旧</button>
+					         onclick="return confirm('この添加物を一覧に復旧させますか？');">復旧</button>
 					</form>
 				</td>
 			</tr>

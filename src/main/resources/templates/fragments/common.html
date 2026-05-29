@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <body>
-    <nav th:fragment="headerNav(title)" class="header-nav">
-        <h1>原料管理システム</h1>
+    <nav th:fragment="headerNav(basePath, title)" class="header-nav">
+        <h1>管理システム</h1>
         <h2 th:text="${title}">画面タイトル</h2>
         
         <div class="nav-container">
-            <a th:href="@{/material/list}"
+            <a th:href="@{${basePath + '/list'}}"
                th:classappend="${currentPage == 'list'} ? 'active' : ''"
-               class="nav-btn">原料一覧</a>
+               class="nav-btn">一覧</a>
                
-            <a th:href="@{/material/register}"
+            <a th:href="@{${basePath + '/register'}}"
                th:classappend="${currentPage == 'register'} ? 'active' : ''"
-               class="nav-btn">原料登録</a>
+               class="nav-btn">登録</a>
                
-            <a th:href="@{/material/deleted}"
+            <a th:href="@{${basePath + '/deleted'}}"
                th:classappend="${currentPage == 'deleted'} ? 'active' : ''"
                class="nav-btn">削除済み一覧</a>
         </div>

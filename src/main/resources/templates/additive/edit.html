@@ -2,12 +2,12 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>原料情報の編集</title>
+<title>添加物情報の編集</title>
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/material', '原料情報の編集')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/additive', '添加物情報の編集')}"></header>
     
 	<div th:if="${message}" th:text="${message}" 
 	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
@@ -15,29 +15,21 @@
 	
 	<hr />
     
-    <form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
+    <form id="editForm" th:action="@{/additive/edit/{id}(id=${id})}" method="post" th:object="${additiveForm}">
         <input type="hidden" th:field="*{id}"/>
         <div>
-            <label>原料名：</label>
+            <label>添加物：</label>
             <input type="text" id="editName" th:field="*{name}" />
         </div>
         <div>
             <label>単位：</label>
             <input type="text" th:field="*{unit}" placeholder="例:kg,g,ml" />
         </div>
-		<div>
-		    <label>種類：</label>
-		    <input type="radio" id="regPowder" th:field="*{isPowder}" th:value="true" />
-		    <label for="regPowder">粉体</label>
-		    <input type="radio" id="regLiquid" th:field="*{isPowder}" th:value="false" />
-		    <label for="regLiquid">液体</label>
-		</div>
-		
 		
         <button type="button" 
 			onclick="openConfirmModal(
 				'editForm', 'editConfirmModal', 'editContent', 
-				['editName'], ['原料名'])">更新する</button>
+				['editName'], ['添加物名'])">更新する</button>
     </form>
     
     <dialog id="editConfirmModal">
