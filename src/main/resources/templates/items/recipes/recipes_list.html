@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<table>
+	    <tr th:each="recipe : ${recipes}">
+	        <td th:text="${recipe.materialName}">原料名</td>
+	        <td th:text="${recipe.quantity}">数量</td>
+	        <td th:text="${recipe.unit}">単位</td>
+	    </tr>
+		<tr class="water-info">
+		    <td>水（加水率管理）</td>
+		    <td colspan="2" th:text="${waterCalculationResult}">
+		        56%～62%： 8960ml～9920ml
+		    </td>
+		</tr>	
+	</table>
+	
+</body>
+</html>

@@ -12,110 +12,113 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.app.domain.Material;
-import com.example.app.dto.MaterialForm;
-import com.example.app.service.MaterialService;
+import com.example.app.domain.Item;
+import com.example.app.dto.ItemForm;
+import com.example.app.service.ItemService;
 
 import lombok.RequiredArgsConstructor;
 
-// ビューへの操作を担うクラス
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/material")
-public class MaterialController {
-	private final MaterialService materialService;
+@RequestMapping("/items")
+public class ItemController {
 
+	private final ItemService itemService;
+
+	// 1.一覧表示
 	@GetMapping("/list")
 	public String list(Model model) {
-		// 一覧
-		model.addAttribute("materialList", materialService.getAllMaterials());
+		model.addAttribute("itemList", itemService.getAllItems());
 		model.addAttribute("currentPage", "list");
-		return "material/list";
+		return "items/list";
 	}
 
-	// 登録画面
+	// 2.登録画面の表示
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
-		model.addAttribute("materialForm", new MaterialForm());
+		model.addAttribute("itemForm", new ItemForm());
 		model.addAttribute("currentPage", "register");
-		return "material/register";
+		return "items/register";
 	}
 
-	// 登録処理を実行
+	// 3. 登録処理
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("materialForm") MaterialForm form,
+	public String register(@Valid @ModelAttribute("itemForm") ItemForm form,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			// エラー時はフォームを保持して画面へ戻す
 			model.addAttribute("currentPage", "register");
-			return "material/register"; // エラーがあれば登録画面へ戻す
+			return "items/register";
 		}
-		// 変換処理をServiceに任せる
-		materialService.registerMaterialFromForm(form);
+		// 入力項目をformに一任
+		itemService.registerItemFromForm(form);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "原料を登録しました");
-		return "redirect:/material/list";
+		redirectAttributes.addFlashAttribute("message", "商品を登録しました");
+		return "redirect:/items/list";
 	}
 
-	// 編集
+	// 4.編集画面表示
 	@GetMapping("/edit/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) {
-		Material material = materialService.getMaterialById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid material Id:" + id));
+		// 1. データ取得（フラットに記述）
+		Item item = itemService.getItemById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid item Id:" + id));
 
-		// DTOを作成し、Entityからコピー
-		MaterialForm form = new MaterialForm();
-		form.copyFrom(material);
+		// 2. 詰め替え
+		ItemForm form = new ItemForm();
+		form.copyFrom(item);
 
-		model.addAttribute("materialForm", form);
+		// 3. モデルへのセット
+		model.addAttribute("itemForm", form);
 		model.addAttribute("id", id);
 		model.addAttribute("currentPage", "list");
-		return "material/edit";
+		return "items/edit";
 	}
 
-	// 編集処理
+	// 5.更新処理
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
-			@Valid @ModelAttribute("materialForm") MaterialForm form,
+			@Valid @ModelAttribute("itemForm") ItemForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
-			return "material/edit";
+			return "items/edit";
 		}
 
 		// FormをEntityに変換
-		Material material = form.toEntity();
+		Item item = form.toEntity();
 
 		// Service経由で更新を実行
-		materialService.updateMaterial(material);
+		itemService.updateItem(item);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "更新しました");
-		return "redirect:/material/list";
+		return "redirect:/item/list";
 	}
 
-	// 理論削除処理
+	// 6.論理削除処理
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		materialService.logicalDelete(id);
+		itemService.logicalDelete(id);
 		redirectAttributes.addFlashAttribute("message", "削除しました");
-		return "redirect:/material/list";
+		return "redirect:/items/list";
 	}
 
-	//削除済み一覧表示用
+	// 7.削除一覧表示
 	@GetMapping("/deleted")
-	public String showDeletedList(Model model) {
-		model.addAttribute("materialList", materialService.findDeletedMaterials());
+	public String showDeletedItem(Model model) {
+		model.addAttribute("itemList", itemService.findDeletedItem());
 		model.addAttribute("currentPage", "deleted");
-		return "material/deleted";
+		return "items/deleted";
 	}
 
-	//復旧処理用
+	//8. 復元処理
 	@PostMapping("/deleted/{id}")
 	public String restore(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		materialService.restore(id);
+		itemService.restoreItem(id);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "復旧しました");
-		return "redirect:/material/deleted";
+		return "redirect:/items/deleted";
 	}
+
 }

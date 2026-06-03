@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="headerNav(basePath, title, currentPage)" class="header-nav">
+		<div th:if="${currentPage != 'home'}">
+		        <a th:href="@{/home}" style="margin-bottom: 10px;">← ホームに戻る</a>
+		    </div>
+		
+        <h1>管理システム</h1>
+		
+        <h2 th:text="${title}">画面タイトル</h2>
+        
+        <div class="nav-container" th:if="${currentPage != 'home'}">
+			<a th:href="@{${basePath + '/list'}}"
+			   th:classappend="${currentPage == 'list'} ? 'active' : ''"
+			   class="nav-btn">一覧</a>
+			               
+			<a th:href="@{${basePath + '/register'}}"
+			   th:classappend="${currentPage == 'register'} ? 'active' : ''"
+			   class="nav-btn">登録</a>
+			               
+			<a th:href="@{${basePath + '/deleted'}}"
+			   th:classappend="${currentPage == 'deleted'} ? 'active' : ''"
+			   class="nav-btn">削除済み一覧</a>
+			      
+		</div>
+        
+        <hr th:if="${currentPage != 'home'}">
+    </nav>
+</body>
+</html>

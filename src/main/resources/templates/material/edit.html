@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>原料情報の編集</title>
+<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
+<script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/material', '原料情報の編集')}"></header>
+    
+	<div th:if="${message}" th:text="${message}" 
+	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
+	</div>
+    
+	<form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
+	    <input type="hidden" th:field="*{id}"/>
+	    <div th:replace="~{fragmentsinput :: text('原料名', 'name')}"></div>
+	    <div th:replace="~{fragmentsinput :: text('単位', 'unit')}"></div>
+	    <div th:replace="~{fragmentsinput :: radio-powder('種類', 'isPowder')}"></div>
+	    <button type="button" class="btn btn-action" 
+	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['原料名'])">更新する</button>
+	</form>
+	<dialog th:replace="~{input :: confirm-modal}"></dialog>
+	
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>削除済み添加物一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/additive', '削除済み添加物一覧', 'deleted')}"></header>
+
+    <table class="content-table">
+        <thead>
+            <tr><th>ID</th><th>名前</th><th>単位</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="a : ${additiveList}">
+                <td th:text="${a.id}"></td>
+                <td th:text="${a.name}"></td>
+                <td th:text="${a.unit}"></td>
+                <td>
+                    <form th:action="@{/additive/deleted/{id}(id=${a.id})}" method="post">
+                        <button type="submit" class="btn btn-restore">復旧</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

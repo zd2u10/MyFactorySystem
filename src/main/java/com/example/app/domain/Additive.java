@@ -2,12 +2,10 @@ package com.example.app.domain;
 
 import lombok.Data;
 
-// 原料・添加物の基本情報クラス
-
 @Data
-public class Material {
+public class Additive {
 	private Long id;
 	private String name;
-	private String unit; // 単位
+	private String unit;
 	private Boolean isPowder;
 }

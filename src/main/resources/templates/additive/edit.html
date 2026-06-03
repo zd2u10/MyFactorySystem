@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加物情報の編集</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/additive', '添加物情報の編集', 'edit')}"></header>
+
+    <form id="editForm" th:action="@{/additive/edit/{id}(id=${id})}" method="post" th:object="${additiveForm}">
+        <input type="hidden" th:field="*{id}"/>
+        <div th:replace="~{fragmentsinput :: text('添加物名', 'name')}"></div>
+        <div th:replace="~{fragmentsinput :: text('単位', 'unit')}"></div>
+        <div th:replace="~{fragmentsinput :: radio-powder('種類', 'isPowder')}"></div>
+        
+        <button type="button" class="btn btn-action"
+            onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['添加物名'])">更新する</button>
+    </form>
+    <dialog th:replace="~{fragmentsinput :: confirm-modal}"></dialog>
+</body>
+</html>

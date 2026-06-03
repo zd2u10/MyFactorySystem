@@ -12,110 +12,104 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.app.domain.Material;
-import com.example.app.dto.MaterialForm;
-import com.example.app.service.MaterialService;
+import com.example.app.domain.Additive;
+import com.example.app.dto.AdditiveForm;
+import com.example.app.service.AdditiveService;
 
 import lombok.RequiredArgsConstructor;
 
-// ビューへの操作を担うクラス
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/material")
-public class MaterialController {
-	private final MaterialService materialService;
+@RequestMapping("/additive")
+public class AdditiveController {
+	private final AdditiveService additiveService;
 
 	@GetMapping("/list")
 	public String list(Model model) {
-		// 一覧
-		model.addAttribute("materialList", materialService.getAllMaterials());
+		model.addAttribute("additiveList", additiveService.getAllAdditives());
 		model.addAttribute("currentPage", "list");
-		return "material/list";
+		return "additive/list";
 	}
 
-	// 登録画面
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
-		model.addAttribute("materialForm", new MaterialForm());
+		model.addAttribute("additiveForm", new AdditiveForm());
 		model.addAttribute("currentPage", "register");
-		return "material/register";
+		return "additive/register";
 	}
 
-	// 登録処理を実行
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("materialForm") MaterialForm form,
+	public String register(@Valid @ModelAttribute("additiveForm") AdditiveForm form,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			// エラー時はフォームを保持して画面へ戻す
 			model.addAttribute("currentPage", "register");
-			return "material/register"; // エラーがあれば登録画面へ戻す
+			return "additive/register";
 		}
-		// 変換処理をServiceに任せる
-		materialService.registerMaterialFromForm(form);
+		//変換処理をServiceに任せる
+		additiveService.registerAdditiveFromForm(form);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "原料を登録しました");
-		return "redirect:/material/list";
+		redirectAttributes.addFlashAttribute("message", "添加物を登録しました");
+		return "redirect:/additive/list";
 	}
 
-	// 編集
 	@GetMapping("/edit/{id}")
-	public String showEditForm(@PathVariable Long id, Model model) {
-		Material material = materialService.getMaterialById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid material Id:" + id));
+	public String edit(@PathVariable Long id, Model model) {
+		Additive additive = additiveService.getAdditiveById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid additive Id:" + id));
 
-		// DTOを作成し、Entityからコピー
-		MaterialForm form = new MaterialForm();
-		form.copyFrom(material);
+		AdditiveForm form = new AdditiveForm();
+		form.copyFrom(additive);
 
-		model.addAttribute("materialForm", form);
+		model.addAttribute("additiveForm", form);
 		model.addAttribute("id", id);
 		model.addAttribute("currentPage", "list");
-		return "material/edit";
+		return "additive/edit";
 	}
 
-	// 編集処理
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
-			@Valid @ModelAttribute("materialForm") MaterialForm form,
+			@Valid @ModelAttribute("additiveForm") AdditiveForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
-			return "material/edit";
+			return "additive/edit";
 		}
 
 		// FormをEntityに変換
-		Material material = form.toEntity();
+		Additive additive = form.toEntity();
 
 		// Service経由で更新を実行
-		materialService.updateMaterial(material);
+		additiveService.updateAdditive(additive);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "更新しました");
-		return "redirect:/material/list";
+		return "redirect:/additive/list";
 	}
 
-	// 理論削除処理
+	//理論削除処理
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		materialService.logicalDelete(id);
+		additiveService.logicalDelete(id);
 		redirectAttributes.addFlashAttribute("message", "削除しました");
-		return "redirect:/material/list";
+		return "redirect:/additive/list";
 	}
 
 	//削除済み一覧表示用
 	@GetMapping("/deleted")
 	public String showDeletedList(Model model) {
-		model.addAttribute("materialList", materialService.findDeletedMaterials());
+		model.addAttribute("additiveList", additiveService.findDeletedAdditives());
 		model.addAttribute("currentPage", "deleted");
-		return "material/deleted";
+		return "additive/deleted";
 	}
 
 	//復旧処理用
 	@PostMapping("/deleted/{id}")
 	public String restore(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		materialService.restore(id);
+		additiveService.restore(id);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "復旧しました");
-		return "redirect:/material/deleted";
+		return "redirect:/additive/deleted";
 	}
+
 }

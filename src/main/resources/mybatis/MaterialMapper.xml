@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.MaterialMapper">
+	
+	<select id="findAll" resultType="Material">	
+		SELECT id, name, unit, is_powder
+		FROM materials 
+		WHERE is_deleted = 0
+		
+	</select>
+	
+	<select id="findDeletedMaterials" resultType="Material">
+		SELECT id, name, unit, is_powder
+        FROM materials 
+        WHERE is_deleted = 1
+	</select>
+	
+	<select id="findById" resultType="Material">
+		SELECT id, name, unit, is_powder
+		FROM materials 
+		WHERE id = #{id}
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO materials (name, unit, is_powder)
+		VALUES (#{name}, #{unit}, #{isPowder})
+	</insert>
+	
+	<update id="update">
+		UPDATE materials
+		SET name = #{name},
+			unit = #{unit},
+			is_powder = #{isPowder}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="logicalDelete">
+		UPDATE materials 
+		SET is_deleted = 1
+		WHERE id = #{id}
+	</update>
+	
+	<update id="restore">
+		UPDATE materials 
+		SET is_deleted = 0 
+		WHERE id = #{id}
+	</update>
+</mapper>

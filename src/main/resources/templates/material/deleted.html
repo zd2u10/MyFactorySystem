@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>削除済み原料一覧表示</title>
+<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
+</head>
+<body>
+	<header th:replace="~{fragments/common :: headerNav('/material', '削除済み原料一覧', 'deleted')}"></header>
+
+	<table class="content-table">
+	    <thead><tr><th>ID</th><th>原料名</th><th>単位</th><th>操作</th></tr></thead>
+	    <tbody>
+	        <tr th:each="m : ${materialList}">
+	            <td th:text="${m.id}"></td>
+	            <td th:text="${m.name}"></td>
+	            <td th:text="${m.unit}"></td>
+	            <td>
+	                <form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post">
+	                    <button type="submit" class="btn btn-restore">復旧</button>
+	                </form>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+</body>
+</html>
