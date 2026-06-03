@@ -24,7 +24,7 @@
                 <td>
                     <a th:href="@{/material/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
                     <button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${m.id}]]', 
-							'confirmModal', 'confirmContent', ['deleteName[[${m.id}]]'], ['削除する原料'])">
+							'confirmModal', 'confirmContent', ['deleteName[[${m.id}]]'], ['原料'], '削除')">
                         削除
                     </button>
                     <form th:id="'deleteForm' + ${m.id}" th:action="@{/material/delete/{id}(id=${m.id})}" method="post" style="display:none;">

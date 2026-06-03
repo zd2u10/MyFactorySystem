@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>原料情報の編集</title>
-<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
+<link rel="stylesheet" th:href="@{/css/commomn.css}" />
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/material', '原料情報の編集')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/material', '原料情報の編集', 'edit')}"></header>
     
 	<div th:if="${message}" th:text="${message}" 
 	     style="padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; background-color: #f9f9f9;">
@@ -15,13 +15,15 @@
     
 	<form id="editForm" th:action="@{/material/edit/{id}(id=${id})}" method="post" th:object="${materialForm}">
 	    <input type="hidden" th:field="*{id}"/>
-	    <div th:replace="~{fragmentsinput :: text('原料名', 'name')}"></div>
-	    <div th:replace="~{fragmentsinput :: text('単位', 'unit')}"></div>
-	    <div th:replace="~{fragmentsinput :: radio-powder('種類', 'isPowder')}"></div>
+	    <div th:replace="~{fragments/input :: text('原料名', 'name', 'editName')}"></div>
+	    <div th:replace="~{fragments/input :: text('単位', 'unit', 'editUnit')}"></div>
+	    <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'editIsPowder')}"></div>
 	    <button type="button" class="btn btn-action" 
-	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['原料名'])">更新する</button>
+	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
+			['editName', 'editUnit', 'editIsPowderTrue'], 
+			['原料名', '単位', '種類'], '更新')">更新</button>
 	</form>
-	<dialog th:replace="~{input :: confirm-modal}"></dialog>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 	
 </body>
 </html>
