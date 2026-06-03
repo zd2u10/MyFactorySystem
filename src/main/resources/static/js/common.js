@@ -43,6 +43,12 @@ function openConfirmModal(formId, modalId, contentId, nameIds, labels, actionNam
             document.getElementById(formId).submit();
         };
     }
+		// タイトルの動的変更
+	    // モーダル内の <h3> 要素を書き換える
+	    const modalTitle = modal.querySelector('h3');
+	    if (modalTitle) {
+	        modalTitle.innerText = actionName + "内容の確認";
+	    }
     
     modal.showModal();
 }

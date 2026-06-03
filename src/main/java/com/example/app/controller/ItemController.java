@@ -91,7 +91,7 @@ public class ItemController {
 		itemService.updateItem(item);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "更新しました");
-		return "redirect:/item/list";
+		return "redirect:/items/list";
 	}
 
 	// 6.論理削除処理

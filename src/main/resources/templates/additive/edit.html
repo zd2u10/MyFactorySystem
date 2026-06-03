@@ -11,13 +11,15 @@
 
     <form id="editForm" th:action="@{/additive/edit/{id}(id=${id})}" method="post" th:object="${additiveForm}">
         <input type="hidden" th:field="*{id}"/>
-        <div th:replace="~{fragmentsinput :: text('添加物名', 'name')}"></div>
-        <div th:replace="~{fragmentsinput :: text('単位', 'unit')}"></div>
-        <div th:replace="~{fragmentsinput :: radio-powder('種類', 'isPowder')}"></div>
+        <div th:replace="~{fragments/input :: text('添加物名', 'name', 'editName')}"></div>
+        <div th:replace="~{fragments/input :: text('単位', 'unit', 'editUnit')}"></div>
+        <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'editIsPowder')}"></div>
         
         <button type="button" class="btn btn-action"
-            onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['添加物名'])">更新する</button>
+            onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
+			['editName', 'editUnit', 'editIsPowderTrue'], 
+			['添加物名', '単位', '種類'],'更新')">更新</button>
     </form>
-    <dialog th:replace="~{fragmentsinput :: confirm-modal}"></dialog>
+    <dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>
