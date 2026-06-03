@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>製品一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/items', '製品一覧', 'list')}"></header>
+    
+	<div th:if="${message}" th:text="${message}" class="error" style="color: green;"></div>
+    <table class="content-table">
+        <thead>
+			<tr><th>製品名</th><th>販売単位</th><th>製造数</th><th>標準原価</th><th>販売価格</th><th>操作</th></tr>
+		</thead>
+        <tbody>
+            <tr th:each="i : ${itemList}">
+                <td th:text="${i.name}"></td>
+				<td th:text="${i.salesUnit}"></td>
+                <td th:text="${i.batchSize}"></td>
+				<td th:text="${i.standardCost}"></td>
+                <td th:text="${i.salesPrice}"></td>
+                <td>
+					<a th:href="@{/items/edit/{id}(id=${i.id})}" class="btn btn-edit">編集</a>
+					<button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${i.id}]]',
+						    'confirmModal', 'confirmContent', ['deleteName[[${i.id}]]'], ['製品'])">
+					        削除
+					</button>
+					<form th:id="'deleteForm' + ${i.id}" th:action="@{/items/delete/{id}(id=${i.id})}" method="post" style="display:none;">
+						<input type="hidden" th:id="'deleteName' + ${i.id}" th:value="${i.name}" />
+					</form>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
+</body>
+</html>

@@ -3,27 +3,34 @@
 <mapper namespace="com.example.app.mapper.MaterialMapper">
 	
 	<select id="findAll" resultType="Material">	
-		SELECT * FROM materials WHERE is_deleted = 0
+		SELECT id, name, unit, is_powder
+		FROM materials 
+		WHERE is_deleted = 0
+		
 	</select>
 	
 	<select id="findDeletedMaterials" resultType="Material">
-		SELECT * FROM materials WHERE is_deleted = 1
+		SELECT id, name, unit, is_powder
+        FROM materials 
+        WHERE is_deleted = 1
 	</select>
 	
 	<select id="findById" resultType="Material">
-		SELECT * FROM materials where id = #{id}
+		SELECT id, name, unit, is_powder
+		FROM materials 
+		WHERE id = #{id}
 	</select>
 	
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO materials (name, unit, net_weight)
-		VALUES (#{name}, #{unit}, #{netWeight})
+		INSERT INTO materials (name, unit, is_powder)
+		VALUES (#{name}, #{unit}, #{isPowder})
 	</insert>
 	
 	<update id="update">
 		UPDATE materials
 		SET name = #{name},
 			unit = #{unit},
-			net_weight=#{netWeight}
+			is_powder = #{isPowder}
 		WHERE id = #{id}
 	</update>
 	
@@ -34,6 +41,8 @@
 	</update>
 	
 	<update id="restore">
-		UPDATE materials SET is_deleted = 0 WHERE id = #{id}
+		UPDATE materials 
+		SET is_deleted = 0 
+		WHERE id = #{id}
 	</update>
 </mapper>

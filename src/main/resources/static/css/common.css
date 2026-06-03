@@ -1,0 +1,60 @@
+/* 基本スタイル */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+}
+
+/* テーブルスタイル */
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.content-table th, .content-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.content-table th {
+    background-color: #f2f2f2;
+}
+
+/* フォームスタイル */
+.content-form {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    max-width: 500px;
+}
+.content-form div {
+    margin-bottom: 15px;
+}
+.content-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ボタン共通 */
+.btn {
+    padding: 8px 12px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.btn-edit { background-color: #4CAF50; color: white; }
+.btn-delete { background-color: #f44336; color: white; }
+.btn-save { background-color: #008CBA; color: white; }
+.btn-back { background-color: #555; color: white; }
+
+/* モーダルスタイル */
+dialog {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+dialog::backdrop {
+    background: rgba(0,0,0,0.5);
+}
