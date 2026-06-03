@@ -6,10 +6,10 @@
 </head>
 <body>
 	
-	<div th:fragment="text(label, fieldName)">
+	<div th:fragment="text(label, fieldName, elementId)">
 	        <div>
 	            <label th:text="${label} + '：'"></label>
-	            <input type="text" th:field="*{__${fieldName}__}" />
+	            <input type="text" th:field="*{__${fieldName}__}" th:id="${elementId}" />
 	            <div class="error" th:if="${#fields.hasErrors('__${fieldName}__')}" th:errors="*{__${fieldName}__}"></div>
 	        </div>
 	    </div>
@@ -28,7 +28,7 @@
 	        <h3>登録情報の確認</h3>
 	        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
 	        <button type="button" onclick="submitForm('registerForm')">確定</button>
-	        <button type="button" onclick="closeModal('confirmModal')">キャンセル</button>
+	        <button type="button" onclick="closeModal('confirmModal'('confirmModal'))">キャンセル</button>
 	    </dialog>
 	
 </body>
