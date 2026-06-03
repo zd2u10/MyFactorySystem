@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>削除済み原料一覧表示</title>
-<link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
 	<header th:replace="~{fragments/common :: headerNav('/material', '削除済み原料一覧', 'deleted')}"></header>
 
+	<div th:replace="~{fragments/message :: flash-message}"></div>
+	
 	<table class="content-table">
 	    <thead><tr><th>ID</th><th>原料名</th><th>単位</th><th>操作</th></tr></thead>
 	    <tbody>
@@ -16,12 +19,18 @@
 	            <td th:text="${m.name}"></td>
 	            <td th:text="${m.unit}"></td>
 	            <td>
-	                <form th:action="@{/material/deleted/{id}(id=${m.id})}" method="post">
-	                    <button type="submit" class="btn btn-restore">復旧</button>
+	                <form th:id="'restoreForm' + ${m.id}" th:action="@{/material/deleted/{id}(id=${m.id})}" method="post">
+						
+						<input type="hidden" th:id="'restoreName' + ${m.id}" th:value="${m.name}" style="display:none;"></input>
+						<button type="button" class="btn btn-restore"
+							   th:onclick="|openConfirmModal('restoreForm${m.id}','confirmModal', 'confirmContent', 
+							   ['restoreName${m.id}'], ['復旧対象'], '復旧')|">復旧
+						</button>
 	                </form>
 	            </td>
 	        </tr>
 	    </tbody>
 	</table>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

@@ -53,7 +53,8 @@ public class ItemController {
 		// 入力項目をformに一任
 		itemService.registerItemFromForm(form);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "商品を登録しました");
+		redirectAttributes.addFlashAttribute("message", "製品情報を登録しました");
+		redirectAttributes.addFlashAttribute("msgType", "register");
 		return "redirect:/items/list";
 	}
 
@@ -90,7 +91,8 @@ public class ItemController {
 		// Service経由で更新を実行
 		itemService.updateItem(item);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "更新しました");
+		redirectAttributes.addFlashAttribute("message", "製品情報を更新しました");
+		redirectAttributes.addFlashAttribute("msgType", "update");
 		return "redirect:/items/list";
 	}
 
@@ -99,7 +101,8 @@ public class ItemController {
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
 		itemService.logicalDelete(id);
-		redirectAttributes.addFlashAttribute("message", "削除しました");
+		redirectAttributes.addFlashAttribute("message", "製品情報を削除しました");
+		redirectAttributes.addFlashAttribute("msgType", "delete");
 		return "redirect:/items/list";
 	}
 
@@ -117,7 +120,8 @@ public class ItemController {
 			RedirectAttributes redirectAttributes) {
 		itemService.restoreItem(id);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "復旧しました");
+		redirectAttributes.addFlashAttribute("message", "製品情報を復旧しました");
+		redirectAttributes.addFlashAttribute("msgType", "restore");
 		return "redirect:/items/deleted";
 	}
 

@@ -9,7 +9,7 @@
 <body>
     <header th:replace="~{fragments/common :: headerNav('/additive', '添加物一覧', 'list')}"></header>
 
-    <div th:if="${message}" th:text="${message}" class="error" style="color: green;"></div>
+	<div th:replace="~{fragments/message :: flash-message}"></div>
 
     <table class="content-table">
         <thead>

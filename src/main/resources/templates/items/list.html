@@ -9,7 +9,7 @@
 <body>
     <header th:replace="~{fragments/common :: headerNav('/items', '製品一覧', 'list')}"></header>
     
-	<div th:if="${message}" th:text="${message}" class="error" style="color: green;"></div>
+	<div th:replace="~{fragments/message :: flash-message}"></div>
     <table class="content-table">
         <thead>
 			<tr><th>製品名</th><th>販売単位</th><th>製造数</th><th>標準原価</th><th>販売価格</th><th>操作</th></tr>

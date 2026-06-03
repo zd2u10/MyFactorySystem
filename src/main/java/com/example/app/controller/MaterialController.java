@@ -53,7 +53,8 @@ public class MaterialController {
 		// 変換処理をServiceに任せる
 		materialService.registerMaterialFromForm(form);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "原料を登録しました");
+		redirectAttributes.addFlashAttribute("message", "原料情報を登録しました");
+		redirectAttributes.addFlashAttribute("msgType", "register");
 		return "redirect:/material/list";
 	}
 
@@ -88,7 +89,8 @@ public class MaterialController {
 		// Service経由で更新を実行
 		materialService.updateMaterial(material);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "更新しました");
+		redirectAttributes.addFlashAttribute("message", "原料情報を更新しました");
+		redirectAttributes.addFlashAttribute("msgType", "update");
 		return "redirect:/material/list";
 	}
 
@@ -97,7 +99,8 @@ public class MaterialController {
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
 		materialService.logicalDelete(id);
-		redirectAttributes.addFlashAttribute("message", "削除しました");
+		redirectAttributes.addFlashAttribute("message", "原料情報を削除しました");
+		redirectAttributes.addFlashAttribute("msgType", "delete");
 		return "redirect:/material/list";
 	}
 
@@ -115,7 +118,8 @@ public class MaterialController {
 			RedirectAttributes redirectAttributes) {
 		materialService.restore(id);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "復旧しました");
+		redirectAttributes.addFlashAttribute("message", "原料情報を復旧しました");
+		redirectAttributes.addFlashAttribute("msgType", "restore");
 		return "redirect:/material/deleted";
 	}
 }
