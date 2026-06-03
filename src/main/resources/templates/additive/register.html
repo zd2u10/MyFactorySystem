@@ -7,18 +7,17 @@
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/additive', '添加物の登録')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/additive', '添加物の登録', 'register')}"></header>
     
     <form id="registerForm" th:action="@{/additive/register}" method="post" th:object="${additiveForm}">
-        <div th:replace="~{fragmentsinput :: field('添加物名', 'name', 'name')}"></div>
-		<div＞ th:replace="~{fragmentsinput :: field('単位', 'unit', 'unit')}"></div>        
-		<div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder')}"></div>
+        <div th:replace="~{fragments/input :: text('添加物名', 'name', 'regName')}"></div>
+		<div th:replace="~{fragments/input :: text('単位', 'unit', 'regUnit')}"></div>        
+		<div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'regIsPowder')}"></div>
 			
 		<button type="button" class="btn btn-action"
-		        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', 
-				['regName'], ['添加物名'])">登録する</button>
+		    	onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', 
+				['regName','regUnit','regIsPowderTrue'], ['添加物名','単位','種類'],'登録')">登録</button>
     </form>
-    
 	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

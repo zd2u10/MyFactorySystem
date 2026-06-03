@@ -10,15 +10,17 @@
 	<header th:replace="~{fragments/common :: headerNav('/items', '製品の新規登録', 'register')}"></header>
 
 	<form id="registerForm" th:action="@{/items/register}" method="post" th:object="${itemForm}">
-	    <div th:replace="~{input :: text('製品名', 'name')}"></div>
-	    <div th:replace="~{input :: text('販売単位', 'salesUnit')}"></div>
-	    <div th:replace="~{input :: text('バッチ製造数', 'batchSize')}"></div>
-	    <div th:replace="~{input :: text('標準原価', 'standardCost')}"></div>
-	    <div th:replace="~{input :: text('販売価格', 'salesPrice')}"></div>
+	    <div th:replace="~{fragments/input :: text('製品名', 'name', 'regName')}"></div>
+	    <div th:replace="~{fragments/input :: text('販売単位', 'salesUnit', 'regSalesUnit')}"></div>
+	    <div th:replace="~{fragments/input :: text('バッチ製造数', 'batchSize', 'regBatchSize')}"></div>
+	    <div th:replace="~{fragments/input :: text('標準原価', 'standardCost', 'regStandardCost')}"></div>
+	    <div th:replace="~{fragments/input :: text('販売価格', 'salesPrice', 'regSalesPrice')}"></div>
 
 	    <button type="button" class="btn btn-action"
-	        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', ['regName'], ['製品名'])">登録する</button>
+	        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent',
+			 ['regName', 'regSalesUnit', 'regBatchSize','regStandardCost', 'regSalesPrice'], 
+			['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格'],'登録')">登録</button>
 	</form>
-	<dialog th:replace="~{input :: confirm-modal}"></dialog>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

@@ -2,33 +2,33 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>インプットフラグメント</title>
 </head>
 <body>
 	
-	<div th:fragment="text(label, fieldName)">
+	<div th:fragment="text(label, fieldName, elementId)">
 	        <div>
 	            <label th:text="${label} + '：'"></label>
-	            <input type="text" th:field="*{__${fieldName}__}" />
+	            <input type="text" th:field="*{__${fieldName}__}" th:id="${elementId}" />
 	            <div class="error" th:if="${#fields.hasErrors('__${fieldName}__')}" th:errors="*{__${fieldName}__}"></div>
 	        </div>
 	    </div>
 
-	    <div th:fragment="radio-powder(label, fieldName)">
+	    <div th:fragment="radio-powder(label, fieldName, elementId)">
 	        <div>
 	            <label th:text="${label} + '：'"></label>
-	            <input type="radio" th:id="${fieldName} + 'True'" th:field="*{__${fieldName}__}" value="true" />
-	            <label th:for="${fieldName} + 'True'">粉体</label>
-	            <input type="radio" th:id="${fieldName} + 'False'" th:field="*{__${fieldName}__}" value="false" />
-	            <label th:for="${fieldName} + 'False'">液体</label>
+	            <input type="radio" th:id="${elementId} + 'True'" th:field="*{__${fieldName}__}" value="true" />
+	            <label th:for="${elementId} + 'True'">粉体</label>
+	            <input type="radio" th:id="${elementId} + 'False'" th:field="*{__${fieldName}__}" value="false" />
+	            <label th:for="${elementId} + 'False'">液体</label>
 	        </div>
 	    </div>
 
 	    <dialog th:fragment="confirm-modal" id="confirmModal">
 	        <h3>登録情報の確認</h3>
 	        <div id="confirmContent" style="font-weight: bold; margin: 10px 0;"></div>
-	        <button type="button" onclick="submitForm('registerForm')">確定</button>
-	        <button type="button" onclick="closeModal('confirmModal')">キャンセル</button>
+	        <button type="button" id="confirmBtn">確定</button>
+	        <button type="button" onclick="closeConfirmModal('confirmModal')">キャンセル</button>
 	    </dialog>
 	
 </body>

@@ -5,26 +5,40 @@
  * @param {string} contentId - 内容を表示する要素のID
  * @param {string[]} nameIds - フォーム内の名前入力欄のID配列（表示用）
  * @param {string[]} labels - 確認画面に表示する項目のラベル
+ * @param {string} actionName - アクション名（'登録', '削除', '更新'など）
  */
-function openConfirmModal(formId, modalId, contentId, nameIds, labels) {
+function openConfirmModal(formId, modalId, contentId, nameIds, labels, actionName) {
     const modal = document.getElementById(modalId);
     const content = document.getElementById(contentId);
     
     // 内容をクリア
     content.innerHTML = "";
     
-    // 削除対象の名前を取得して表示
+    // 入力内容を表示
     let displayInfo = "";
     for (let i = 0; i < nameIds.length; i++) {
-        const val = document.getElementById(nameIds[i]).value;
+        const inputElement = document.getElementById(nameIds[i]);
+		let val = "";
+		
+		// ラジオボタンの特殊処理
+		if (inputElement && inputElement.type === 'radio'){
+			const checked = document.querySelector(`input[name="${inputElement.name}"]:checked`);
+			val = checked ? (checked.value === 'true' ? '粉体' : '液体') : '未選択';
+		} else {
+		// 値を取得(inputタグの場合は.value、そうでない場合は .innerText などを考慮)
+		val = inputElement ? inputElement.value : "(未選択)";
+		}
         displayInfo += `<p><strong>${labels[i]}:</strong> ${val}</p>`;
     }
     
-    content.innerHTML = displayInfo + "<p>本当に削除しますか？</p>";
+	// 動的なメッセージを表示
+    content.innerHTML = displayInfo + `<p>本当に<strong>${actionName}</strong>しますか？</p>`;
     
-    // フォーム送信用のイベントを設定
+    // 確定ボタンのイベント設定
     const confirmBtn = document.getElementById('confirmBtn');
     if (confirmBtn) {
+		// ボタンのテキストも動的に変える
+		confirmBtn.innerText = actionName + "する";
         confirmBtn.onclick = function() {
             document.getElementById(formId).submit();
         };
