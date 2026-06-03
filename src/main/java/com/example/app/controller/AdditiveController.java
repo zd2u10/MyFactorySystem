@@ -50,6 +50,7 @@ public class AdditiveController {
 		additiveService.registerAdditiveFromForm(form);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "添加物を登録しました");
+		redirectAttributes.addFlashAttribute("msgType", "register");
 		return "redirect:/additive/list";
 	}
 
@@ -81,7 +82,8 @@ public class AdditiveController {
 		// Service経由で更新を実行
 		additiveService.updateAdditive(additive);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "更新しました");
+		redirectAttributes.addFlashAttribute("message", "添加物情報を更新しました");
+		redirectAttributes.addFlashAttribute("msgType", "update");
 		return "redirect:/additive/list";
 	}
 
@@ -90,7 +92,8 @@ public class AdditiveController {
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
 		additiveService.logicalDelete(id);
-		redirectAttributes.addFlashAttribute("message", "削除しました");
+		redirectAttributes.addFlashAttribute("message", "添加物情報を削除しました");
+		redirectAttributes.addFlashAttribute("msgType", "delete");
 		return "redirect:/additive/list";
 	}
 
@@ -108,7 +111,8 @@ public class AdditiveController {
 			RedirectAttributes redirectAttributes) {
 		additiveService.restore(id);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "復旧しました");
+		redirectAttributes.addFlashAttribute("message", "添加物情報を復旧しました");
+		redirectAttributes.addFlashAttribute("msgType", "restore");
 		return "redirect:/additive/deleted";
 	}
 

@@ -11,15 +11,17 @@
 	<header th:replace="~{fragments/common :: headerNav('/items', '製品情報の編集', 'edit')}"></header>
 
 	<form id="editForm" th:action="@{/items/edit/{id}(id=${id})}" method="post" th:object="${itemForm}">
-	    <div th:replace="~{fragmentsinput :: text('製品名', 'name')}"></div>
-	    <div th:replace="~{fratmentsinput :: text('販売単位', 'salesUnit')}"></div>
-	    <div th:replace="~{fragmentsinput :: text('バッチ製造数', 'batchSize')}"></div>
-	    <div th:replace="~{fragmentsinput :: text('標準原価', 'standardCost')}"></div>
-	    <div th:replace="~{fragmentsinput :: text('販売価格', 'salesPrice')}"></div>
+	    <div th:replace="~{fragments/input :: text('製品名', 'name', 'editName')}"></div>
+	    <div th:replace="~{fragments/input :: text('販売単位', 'salesUnit', 'editSalesUnit')}"></div>
+	    <div th:replace="~{fragments/input :: text('バッチ製造数', 'batchSize', 'editBatchSize')}"></div>
+	    <div th:replace="~{fragments/input :: text('標準原価', 'standardCost', 'editStandardCost')}"></div>
+	    <div th:replace="~{fragments/input :: text('販売価格', 'salesPrice', 'editSalesPrice')}"></div>
 	    
 	    <button type="button" class="btn btn-action"
-	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', ['name'], ['製品名'])">更新する</button>
+	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
+			['editName', 'editSalesUnit', 'editBatchSize', 'editStandardCost', 'editSalesPrice'], 
+			['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格'],'更新')">更新</button>
 	</form>
-	<dialog th:replace="~{fragmentsinput :: confirm-modal}"></dialog>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

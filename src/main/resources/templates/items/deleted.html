@@ -4,23 +4,31 @@
         <meta charset="UTF-8">
         <title>削除済み製品一覧</title>
         <link rel="stylesheet" th:href="@{/css/common.css}" />
+		<script th:src="@{/js/common.js}"></script>
     </head>
     <body>
 		<header th:replace="~{fragments/common :: headerNav('/items', '削除済み製品一覧', 'deleted')}"></header>
 
+		<div th:replace="~{fragments/message :: flash-message}"></div>
+		
 		<table class="content-table">
 		    <thead><tr><th>製品名</th><th>操作</th></tr></thead>
 		    <tbody>
-		        <tr th:each="item : ${itemList}">
-		            <td th:text="${item.name}"></td>
+		        <tr th:each="i : ${itemList}">
+		            <td th:text="${i.name}"></td>
 		            <td>
-		                <form th:action="@{/items/deleted/{id}(id=${item.id})}" method="post">
-		                    <button type="submit" class="btn btn-restore">復旧</button>
+		                <form th:id="'restoreForm' + ${i.id}" th:action="@{/items/deleted/{id}(id=${i.id})}" method="post">
+							<input type="hidden" th:id="'restoreName' + ${i.id}" th:value="${i.name}" style="display:none;"></input>
+							
+							<button type="button" class="btn btn-restore" 
+									th:onclick="|openConfirmModal('restoreForm${i.id}','confirmModal', 'confirmContent',
+									['restoreName${i.id}'], ['復旧対象'], '復旧')|">復旧
+							</button>
 		                </form>
 		            </td>
 		        </tr>
 		    </tbody>
 		</table>
-
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

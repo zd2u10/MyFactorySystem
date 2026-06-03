@@ -9,7 +9,7 @@
 <body>
     <header th:replace="~{fragments/common :: headerNav('/additive', '添加物一覧', 'list')}"></header>
 
-    <div th:if="${message}" th:text="${message}" class="error" style="color: green;"></div>
+	<div th:replace="~{fragments/message :: flash-message}"></div>
 
     <table class="content-table">
         <thead>
@@ -24,7 +24,7 @@
                 <td>
 					<a th:href="@{/additive/edit/{id}(id=${a.id})}" class="btn btn-edit">編集</a>
 					<button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${a.id}]]', 
-					        'confirmModal', 'confirmContent', ['deleteName[[${a.id}]]'], ['添加物'])">
+					        'confirmModal', 'confirmContent', ['deleteName[[${a.id}]]'], ['添加物'],'削除')">
 					削除
 					</button>
 					<form th:id="'deleteForm' + ${a.id}" th:action="@{/additive/delete/{id}(id=${a.id})}" method="post" style="display:none;">

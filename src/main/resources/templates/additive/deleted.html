@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <title>削除済み添加物一覧</title>
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+	<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('/additive', '削除済み添加物一覧', 'deleted')}"></header>
-
+	
+	<div th:replace="~{fragments/message :: flash-message}"></div>
+	
     <table class="content-table">
         <thead>
             <tr><th>ID</th><th>名前</th><th>単位</th><th>操作</th></tr>
@@ -18,12 +21,18 @@
                 <td th:text="${a.name}"></td>
                 <td th:text="${a.unit}"></td>
                 <td>
-                    <form th:action="@{/additive/deleted/{id}(id=${a.id})}" method="post">
-                        <button type="submit" class="btn btn-restore">復旧</button>
+                    <form th:id="'restoreForm' + ${a.id}" th:action="@{/additive/deleted/{id}(id=${a.id})}" method="post">
+					<input type="hidden" th:id="'restoreName' + ${a.id}" th:value="${a.name}" style="display:none;"></input>
+					
+                    <button type="button" class="btn btn-restore" 
+						    th:onclick="|openConfirmModal('restoreForm${a.id}','confirmModal', 'confirmContent',
+							['restoreName${a.id}'], ['復旧対象'], '復旧')|">復旧
+					</button>
                     </form>
                 </td>
             </tr>
         </tbody>
     </table>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>
