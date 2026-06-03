@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.app.domain.Item;
 import com.example.app.dto.ItemForm;
 import com.example.app.service.ItemService;
 
@@ -28,6 +29,7 @@ public class ItemController {
 	@GetMapping("/list")
 	public String list(Model model) {
 		model.addAttribute("itemList", itemService.getAllItems());
+		model.addAttribute("currentPage", "list");
 		return "items/list";
 	}
 
@@ -35,55 +37,61 @@ public class ItemController {
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
 		model.addAttribute("itemForm", new ItemForm());
+		model.addAttribute("currentPage", "register");
 		return "items/register";
 	}
 
 	// 3. 登録処理
 	@PostMapping("/register")
 	public String register(@Valid @ModelAttribute("itemForm") ItemForm form,
-			BindingResult result,
-			RedirectAttributes redirectAttributes) {
-		// バリデーションエラーがあれば登録画面に返す
+			BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
+			// エラー時はフォームを保持して画面へ戻す
+			model.addAttribute("currentPage", "register");
 			return "items/register";
 		}
-
-		itemService.registerItem(form);
+		// 入力項目をformに一任
+		itemService.registerItemFromForm(form);
 		// 成功メッセージ
-		redirectAttributes.addFlashAttribute("message", "更新しました");
+		redirectAttributes.addFlashAttribute("message", "商品を登録しました");
 		return "redirect:/items/list";
 	}
 
 	// 4.編集画面表示
 	@GetMapping("/edit/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) {
-		itemService.getItemById(id).ifPresentOrElse(
-				item -> {
-					// EntityをFormに詰め替える
-					ItemForm form = new ItemForm();
-					form.copyFrom(item); // 詰め替えのロジックはItemFormが持つ
-					model.addAttribute("itemForm", form);
-					model.addAttribute("id", id);
-				},
-				() -> {
-					throw new IllegalArgumentException("Invalid item Id:" + id);
-				});
+		// 1. データ取得（フラットに記述）
+		Item item = itemService.getItemById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid item Id:" + id));
+
+		// 2. 詰め替え
+		ItemForm form = new ItemForm();
+		form.copyFrom(item);
+
+		// 3. モデルへのセット
+		model.addAttribute("itemForm", form);
+		model.addAttribute("id", id);
+		model.addAttribute("currentPage", "list");
 		return "items/edit";
 	}
 
 	// 5.更新処理
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
-			RedirectAttributes redirectAttributes,
 			@Valid @ModelAttribute("itemForm") ItemForm form,
-			BindingResult result) {
+			BindingResult result, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			return "items/edit";
 		}
-		itemService.updateItem(id, form);
+
+		// FormをEntityに変換
+		Item item = form.toEntity();
+
+		// Service経由で更新を実行
+		itemService.updateItem(item);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "更新しました");
-		return "redirect:/items/list";
+		return "redirect:/item/list";
 	}
 
 	// 6.論理削除処理
@@ -99,6 +107,7 @@ public class ItemController {
 	@GetMapping("/deleted")
 	public String showDeletedItem(Model model) {
 		model.addAttribute("itemList", itemService.findDeletedItem());
+		model.addAttribute("currentPage", "deleted");
 		return "items/deleted";
 	}
 

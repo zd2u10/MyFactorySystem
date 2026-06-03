@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>添加物一覧</title>
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+	<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('/additive', '添加物一覧', 'list')}"></header>
@@ -21,10 +22,18 @@
                 <td th:text="${a.unit}"></td>
                 <td th:text="${a.isPowder} ? '粉体' : '液体'"></td>
                 <td>
-                    <a th:href="@{/additive/edit/{id}(id=${a.id})}" class="btn btn-edit">編集</a>
+					<a th:href="@{/additive/edit/{id}(id=${a.id})}" class="btn btn-edit">編集</a>
+					<button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${a.id}]]', 
+					        'confirmModal', 'confirmContent', ['deleteName[[${a.id}]]'], ['添加物'])">
+					削除
+					</button>
+					<form th:id="'deleteForm' + ${a.id}" th:action="@{/additive/delete/{id}(id=${a.id})}" method="post" style="display:none;">
+						<input type="hidden" th:id="'deleteName' + ${a.id}" th:value="${a.name}" />
+					</form>
                 </td>
             </tr>
         </tbody>
     </table>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

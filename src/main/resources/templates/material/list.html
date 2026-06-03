@@ -4,20 +4,36 @@
     <meta charset="UTF-8">
     <title>原料一覧</title>
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common :: headerNav('/material', '原料一覧', 'list')}"></header>
+	
     <div th:if="${message}" th:text="${message}" class="error" style="color: green;"></div>
 
     <table class="content-table">
-        <thead><tr><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr></thead>
+        <thead>
+			<tr><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
+		</thead>
         <tbody>
             <tr th:each="m : ${materialList}">
-                <td th:text="${m.id}"></td><td th:text="${m.name}"></td><td th:text="${m.unit}"></td>
+                <td th:text="${m.id}"></td>
+                <td th:text="${m.name}"></td>
+                <td th:text="${m.unit}"></td>
                 <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
-                <td><a th:href="@{/material/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a></td>
+                <td>
+                    <a th:href="@{/material/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+                    <button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${m.id}]]', 
+							'confirmModal', 'confirmContent', ['deleteName[[${m.id}]]'], ['削除する原料'])">
+                        削除
+                    </button>
+                    <form th:id="'deleteForm' + ${m.id}" th:action="@{/material/delete/{id}(id=${m.id})}" method="post" style="display:none;">
+                        <input type="hidden" th:id="'deleteName' + ${m.id}" th:value="${m.name}" />
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
+    <dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

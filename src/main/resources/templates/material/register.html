@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>添加物の登録</title>
+<title>原料の登録</title>
 <link rel="stylesheet" th:href="@{/css/common.css}" />
 <link rel="stylesheet" th:href="@{/css/material/material-common.css}" />
 <script th:src="@{/js/common.js}"></script>
@@ -16,7 +16,8 @@
 	    <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder')}"></div>
 	    
 	    <button type="button" class="btn btn-action"
-	        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', ['regName'], ['原料名'])">登録する</button>
+	        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', 
+			['regName'], ['原料名'])">登録する</button>
 	</form>
 	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>

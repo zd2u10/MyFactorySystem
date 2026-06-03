@@ -10,22 +10,15 @@
     <header th:replace="~{fragments/common :: headerNav('/additive', '添加物の登録')}"></header>
     
     <form id="registerForm" th:action="@{/additive/register}" method="post" th:object="${additiveForm}">
-        <div th:replace="~{input :: field('添加物名', 'name', 'name')}"></div>
-		<div＞ th:replace="~{input :: field('単位', 'unit', 'unit')}"></div>        
-		
-		<div>
-		    <label>種類：</label>
-		    <input type="radio" id="regPowder" th:field="*{isPowder}" th:value="true" />粉体
-		    <input type="radio" id="regLiquid" th:field="*{isPowder}" th:value="false" />液体
-		    
-		</div>	
+        <div th:replace="~{fragmentsinput :: field('添加物名', 'name', 'name')}"></div>
+		<div＞ th:replace="~{fragmentsinput :: field('単位', 'unit', 'unit')}"></div>        
+		<div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder')}"></div>
 			
-        <button type="button" 
-			onclick="openConfirmModal(
-				'regForm', 'confirmModal', 'confirmContent', 
-				['regName'], ['添加物'])">登録する</button>
+		<button type="button" class="btn btn-action"
+		        onclick="openConfirmModal('registerForm', 'confirmModal', 'confirmContent', 
+				['regName'], ['添加物名'])">登録する</button>
     </form>
     
-    <dialog id="confirmModal" th:replace="~{input :: confirm-modal}"></dialog>
+	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>
 </html>

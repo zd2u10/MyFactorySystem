@@ -50,13 +50,14 @@ public class AdditiveController {
 		additiveService.registerAdditiveFromForm(form);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "添加物を登録しました");
-		return "redirect:/material/list";
+		return "redirect:/additive/list";
 	}
 
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable Long id, Model model) {
 		Additive additive = additiveService.getAdditiveById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid additive Id:" + id));
+
 		AdditiveForm form = new AdditiveForm();
 		form.copyFrom(additive);
 
@@ -67,10 +68,12 @@ public class AdditiveController {
 	}
 
 	@PostMapping("/edit/{id}")
-	public String update(@PathVariable Long id, @Valid @ModelAttribute("additiveForm") AdditiveForm form,
+	public String update(@PathVariable Long id,
+			@Valid @ModelAttribute("additiveForm") AdditiveForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors())
+		if (result.hasErrors()) {
 			return "additive/edit";
+		}
 
 		// FormをEntityに変換
 		Additive additive = form.toEntity();

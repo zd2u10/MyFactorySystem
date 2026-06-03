@@ -14,10 +14,10 @@ public interface ItemService {
 	Optional<Item> getItemById(Long id);
 
 	// 登録（DTOから変換して登録）
-	void registerItem(ItemForm form);
+	void registerItem(Item item);
 
 	// 更新（DTOから変換して更新）
-	void updateItem(Long id, ItemForm form);
+	void updateItem(Item item);
 
 	// 論理削除
 	void logicalDelete(Long id);
@@ -27,4 +27,6 @@ public interface ItemService {
 
 	//復元処理
 	void restoreItem(Long id);
+
+	void registerItemFromForm(ItemForm form);
 }

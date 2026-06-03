@@ -1,36 +1,42 @@
 /**
- * 共通のモーダル表示処理
- * @param {string} formId - 送信フォームのID
+ * 削除確認モーダルを開く関数
+ * @param {string} formId - 送信するフォームのID
  * @param {string} modalId - モーダルのID
- * @param {string} contentId - メッセージ表示先のID
- * @param {Array} fieldIds - 入力値を取得するIDの配列
- * @param {Array} labels - 表示する項目名の配列
+ * @param {string} contentId - 内容を表示する要素のID
+ * @param {string[]} nameIds - フォーム内の名前入力欄のID配列（表示用）
+ * @param {string[]} labels - 確認画面に表示する項目のラベル
  */
-function openConfirmModal(formId, modalId, contentId, fieldIds, labels) {
-    const form = document.getElementById(formId);
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+function openConfirmModal(formId, modalId, contentId, nameIds, labels) {
+    const modal = document.getElementById(modalId);
+    const content = document.getElementById(contentId);
+    
+    // 内容をクリア
+    content.innerHTML = "";
+    
+    // 削除対象の名前を取得して表示
+    let displayInfo = "";
+    for (let i = 0; i < nameIds.length; i++) {
+        const val = document.getElementById(nameIds[i]).value;
+        displayInfo += `<p><strong>${labels[i]}:</strong> ${val}</p>`;
     }
     
-    // 入力値の取得
-    const values = fieldIds.map(id => document.getElementById(id).value);
+    content.innerHTML = displayInfo + "<p>本当に削除しますか？</p>";
     
-    // ラベルと値を組み合わせてメッセージを作成
-    let message = "";
-    for (let i = 0; i < fieldIds.length; i++) {
-        // 各項目を改行やスペースで区切ると見やすくなります
-        message += `${labels[i]} : ${values[i]}　`;
+    // フォーム送信用のイベントを設定
+    const confirmBtn = document.getElementById('confirmBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = function() {
+            document.getElementById(formId).submit();
+        };
     }
     
-    document.getElementById(contentId).textContent = message;
-    document.getElementById(modalId).showModal();
+    modal.showModal();
 }
 
-function closeModal(modalId) {
-    document.getElementById(modalId).close(); 
-}
- 
-function submitForm(formId) {
-    document.getElementById(formId).submit(); 
+/**
+ * モーダルを閉じる関数
+ */
+function closeConfirmModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.close();
 }

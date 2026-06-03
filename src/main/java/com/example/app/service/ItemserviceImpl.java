@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ItemserviceImpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
 	private final ItemMapper itemMapper;
 
 	// 一覧取得
@@ -32,15 +32,13 @@ public class ItemserviceImpl implements ItemService {
 
 	// 登録
 	@Override
-	public void registerItem(ItemForm form) {
-		itemMapper.insert(form.toEntity());
+	public void registerItem(Item item) {
+		itemMapper.insert(item);
 	}
 
 	// 更新
 	@Override
-	public void updateItem(Long id, ItemForm form) {
-		Item item = form.toEntity();
-		item.setId(id);
+	public void updateItem(Item item) {
 		itemMapper.update(item);
 	}
 
@@ -60,6 +58,11 @@ public class ItemserviceImpl implements ItemService {
 	@Override
 	public void restoreItem(Long id) {
 		itemMapper.restore(id);
+	}
+
+	@Override
+	public void registerItemFromForm(ItemForm form) {
+		itemMapper.insert(form.toEntity());
 	}
 
 }
