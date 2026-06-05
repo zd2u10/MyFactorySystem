@@ -15,4 +15,8 @@ public class Item {
 	private BigDecimal standardCost; // 標準原価
 	private BigDecimal salesPrice; // 販売価格
 	private boolean isActive; // 有効フラグ
+
+	// 加水率計算用
+	private BigDecimal minHydrationRate; // 最低加水率
+	private BigDecimal maxHydrationRate; // 最大加水率
 }

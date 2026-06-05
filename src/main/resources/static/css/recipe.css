@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+/* recipe.css */
+.water-info {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #e7f1ff;
+    border: 1px solid #b3d7ff;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* 今後、加水率が範囲外のときに使うクラスなどもここに書けます */
+.water-info.is-alert {
+    background-color: #ffe6e6;
+    border-color: #ffcccc;
+    color: #cc0000;
+}

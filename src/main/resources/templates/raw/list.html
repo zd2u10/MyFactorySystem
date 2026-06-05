@@ -22,12 +22,12 @@
                 <td th:text="${m.unit}"></td>
                 <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
                 <td>
-                    <a th:href="@{/material/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+                    <a th:href="@{/raw/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
                     <button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${m.id}]]', 
 							'confirmModal', 'confirmContent', ['deleteName[[${m.id}]]'], ['原料'], '削除')">
                         削除
                     </button>
-                    <form th:id="'deleteForm' + ${m.id}" th:action="@{/material/delete/{id}(id=${m.id})}" method="post" style="display:none;">
+                    <form th:id="'deleteForm' + ${m.id}" th:action="@{/raw/delete/{id}(id=${m.id})}" method="post" style="display:none;">
                         <input type="hidden" th:id="'deleteName' + ${m.id}" th:value="${m.name}" />
                     </form>
                 </td>

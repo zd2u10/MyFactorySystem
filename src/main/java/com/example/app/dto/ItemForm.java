@@ -33,6 +33,14 @@ public class ItemForm {
 
 	private boolean isActive = true;
 
+	@NotNull(message = "最低加水率は必須です")
+	@PositiveOrZero(message = "0以上の値を入力してください")
+	private BigDecimal minHydrationRate;
+
+	@NotNull(message = "最大加水率は必須です")
+	@PositiveOrZero(message = "0以上の値を入力してください")
+	private BigDecimal maxHydrationRate;
+
 	// Entityへ変換するメソッド
 	public Item toEntity() {
 		Item item = new Item();
@@ -42,6 +50,8 @@ public class ItemForm {
 		item.setStandardCost(this.standardCost);
 		item.setSalesPrice(this.salesPrice);
 		item.setActive(this.isActive);
+		item.setMinHydrationRate(this.minHydrationRate);
+		item.setMaxHydrationRate(this.maxHydrationRate);
 		return item;
 	}
 
@@ -53,6 +63,8 @@ public class ItemForm {
 		this.standardCost = item.getStandardCost();
 		this.salesPrice = item.getSalesPrice();
 		this.isActive = item.isActive();
+		this.minHydrationRate = item.getMinHydrationRate();
+		this.maxHydrationRate = item.getMaxHydrationRate();
 	}
 
 }

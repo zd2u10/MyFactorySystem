@@ -24,6 +24,17 @@
 			   class="nav-btn">削除済み一覧</a>
 			      
 		</div>
+		
+<!--	レシピ専用nav	-->
+		<nav th:fragment="recipeNav(title)" class="header-nav">
+		    <div>
+		        <a th:href="@{/home}">← ホームに戻る</a>
+		    </div>
+		    
+		    <h1>管理システム</h1>
+		    <h2 th:text="${title}"></h2>
+		    <hr>
+		</nav>
         
         <hr th:if="${currentPage != 'home'}">
     </nav>

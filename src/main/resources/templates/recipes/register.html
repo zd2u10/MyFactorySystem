@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>レシピ登録</title>
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/recipe.css}">
+<script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/recipes', 'レシピ登録', 'register')}"></header>
+
+    <div class="content-form" style="max-width: 800px;">
+        <h3>商品名： <span th:text="${recipeRegisterData.itemId}"></span>のレシピ登録</h3>
+        
+        <form id="recipeForm" th:action="@{/recipes/register}" method="post" th:object="${recipeRegisterData}">
+            <input type="hidden" th:field="*{itemId}" />
+            
+            <table class="content-table" id="recipeTable">
+                <thead>
+                    <tr>
+                        <th>原料・添加物</th>
+                        <th>産地</th>
+                        <th>数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="recipeTableBody">
+                    <tr class="recipes-row">
+                        <td>
+                            <select name="recipeList[0].materialId" required>
+                                <option value="">選択してください</option>
+								<optgroup label="原料" th:each="r : ${rawList}">
+									<option th:value="${m.id}" th:text="${m.name}"></option>
+								</optgroup>
+								<optgroup label="添加物" th:each="a : ${additiveList}">
+									<option th:value="${a.id}" th:text="${a.name}"></option>
+								</optgroup>
+                            </select>
+                        </td>
+                        <td><input type="text" name="recipeList[0].origin" value="未設定" /></td>
+                        <td><input type="number" step="0.001" name="recipeList[0].quantity" required /></td>
+                        <td><button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+                <button type="button" class="btn btn-back" onclick="addRow()">+ 材料を追加</button>
+                <button type="submit" class="btn btn-action">登録する</button>
+          </form>
+    </div>
+
+	<script th:src="@{/js/recipe-register.js}"></script>
+</body>
+</html>

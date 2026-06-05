@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe.css}">
+	<title>レシピ詳細</title>
+</head>
+<body>
+	<header th:replace="~{fragments/common :: recipeNav('レシピ詳細')}"></header>
+    
+    <div th:replace="~{fragments/message :: flash-message}"></div>
+
+	<div class="recipe-action-panel">
+    	<h3>「<span th:text="${itemName}"></span>」のレシピ</h3>
+		
+		<div th:if="${#lists.isEmpty(recipes)}">
+			<a th:href="@{/recipes/register/{itemId}(itemId=${itemId})}" class="btn btn-edit">新規登録する</a>
+		</div>
+		<div th:unless="${#lists.isEmpty(recipes)}">
+		    <a th:href="@{/recipes/edit/{itemId}(itemId=${itemId})}" class="btn btn-back">レシピを編集する</a>
+	    </div>
+		
+		    <a th:href="@{/items/list}" class="btn btn-back">商品一覧に戻る</a>
+	</div>
+		
+		
+
+    <div th:unless="${#lists.isEmpty(recipes)}">
+		<div class="water-info">
+		        <strong>現在の加水率計算: </strong>
+		        <span th:text="${waterRange}"></span>
+		</div>
+		
+		
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>原料名</th>
+                    <th>種類</th>
+                    <th>産地</th>
+                    <th>使用量</th>
+                    <th>単位</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="recipe : ${recipes}">
+                    <td th:text="${recipe.materialName}"></td>
+                    <td th:text="${recipe.isPowder ? '粉体' : '液体'}"></td>
+                    <td th:text="${recipe.origin}"></td>
+                    <td th:text="${recipe.quantity}"></td>
+                    <td th:text="${recipe.unit}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/recipes/register/{itemId}(itemId=${itemId})}" class="btn btn-edit">レシピを編集/追加</a>
+    </div>
+
+    <br><br>
+</body>
+</html>
