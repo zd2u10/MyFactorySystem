@@ -10,4 +10,9 @@ public class Material {
 	private String name;
 	private String unit; // 単位
 	private Boolean isPowder;
+	private String materialType;
+
+	public Boolean getIsPowder() {
+		return this.isPowder;
+	}
 }

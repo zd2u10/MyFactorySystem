@@ -37,12 +37,22 @@ body {
 
 /* ボタン共通 */
 .btn {
-    padding: 8px 12px;
+    padding: 8px 16px;
     text-decoration: none;
+	border: 1px solid transparent;
     border: none;
     cursor: pointer;
     border-radius: 4px;
+	display: inline-block;
+	text-align: center;
+	min-width: 80px;
+	box-sizing: border-box;
+	line-height: normal;    /* 行の高さを強制的に標準に */
+	font-size: 14px;        /* フォントサイズを統一 */
+	vertical-align: middle; /* 横並び時の位置調整 */
+	
 }
+
 .btn-edit { background-color: #4CAF50; color: white; }
 .btn-delete { background-color: #f44336; color: white; }
 .btn-save { background-color: #008CBA; color: white; }

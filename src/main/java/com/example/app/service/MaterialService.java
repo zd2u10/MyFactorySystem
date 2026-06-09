@@ -8,8 +8,11 @@ import com.example.app.dto.MaterialForm;
 
 public interface MaterialService {
 
-	// 原料・添加物の一覧
-	List<Material> getAllMaterials();
+	// 有効な原料・添加物の一覧
+	List<Material> getMaterialsByType(String materialType);
+
+	// 理論削除された一覧取得
+	List<Material> findDeletedMaterialsByType(String materialType);
 
 	// IDで1件取得
 	Optional<Material> getMaterialById(Long id);
@@ -22,9 +25,6 @@ public interface MaterialService {
 
 	// 理論削除
 	void logicalDelete(Long id);
-
-	// 理論削除された一覧取得
-	List<Material> findDeletedMaterials();
 
 	// 復旧用
 	void restore(Long id);

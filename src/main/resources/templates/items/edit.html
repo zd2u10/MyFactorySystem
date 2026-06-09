@@ -11,12 +11,20 @@
 	<header th:replace="~{fragments/common :: headerNav('/items', '製品情報の編集', 'edit')}"></header>
 
 	<form id="editForm" th:action="@{/items/edit/{id}(id=${id})}" method="post" th:object="${itemForm}">
-	    <div th:replace="~{fragments/input :: text('製品名', 'name', 'editName')}"></div>
+	    
+		
+		<div th:replace="~{fragments/input :: text('製品名', 'name', 'editName')}"></div>
 	    <div th:replace="~{fragments/input :: text('販売単位', 'salesUnit', 'editSalesUnit')}"></div>
 	    <div th:replace="~{fragments/input :: text('バッチ製造数', 'batchSize', 'editBatchSize')}"></div>
 	    <div th:replace="~{fragments/input :: text('標準原価', 'standardCost', 'editStandardCost')}"></div>
 	    <div th:replace="~{fragments/input :: text('販売価格', 'salesPrice', 'editSalesPrice')}"></div>
-	    
+		
+		<input type="hidden" th:field="*{id}" />
+		<input type="hidden" th:field="*{active}" />
+		<input type="hidden" th:field="*{maxHydrationRate}" />
+		<input type="hidden" th:field="*{minHydrationRate}" />
+		
+		
 	    <button type="button" class="btn btn-action"
 	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
 			['editName', 'editSalesUnit', 'editBatchSize', 'editStandardCost', 'editSalesPrice'], 

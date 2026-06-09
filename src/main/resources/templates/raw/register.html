@@ -7,9 +7,9 @@
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/material', '原料の登録', 'register')}"></header>
+	<header th:replace="~{fragments/common :: headerNav('/raw', '原料の登録', 'register')}"></header>
 
-	<form id="registerForm" th:action="@{/material/register}" method="post" th:object="${materialForm}">
+	<form id="registerForm" th:action="@{/raw/register}" method="post" th:object="${rawForm}">
 	    <div th:replace="~{fragments/input :: text('原料名', 'name', 'regName')}"></div>
 	    <div th:replace="~{fragments/input :: text('単位', 'unit', 'regUnit')}"></div>
 	    <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'regIsPwoder')}"></div>

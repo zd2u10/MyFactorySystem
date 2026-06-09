@@ -13,6 +13,9 @@ import lombok.Data;
 
 @Data
 public class ItemForm {
+
+	private Long id;
+
 	@NotBlank(message = "製品名は必須です")
 	private String name;
 
@@ -33,26 +36,36 @@ public class ItemForm {
 
 	private boolean isActive = true;
 
+	private BigDecimal minHydrationRate;
+
+	private BigDecimal maxHydrationRate;
+
 	// Entityへ変換するメソッド
 	public Item toEntity() {
 		Item item = new Item();
+		item.setId(this.id);
 		item.setName(this.name);
 		item.setSalesUnit(this.salesUnit);
 		item.setBatchSize(this.batchSize);
 		item.setStandardCost(this.standardCost);
 		item.setSalesPrice(this.salesPrice);
 		item.setActive(this.isActive);
+		item.setMinHydrationRate(this.minHydrationRate);
+		item.setMaxHydrationRate(this.maxHydrationRate);
 		return item;
 	}
 
 	// Entityから値をコピーするメソッド
 	public void copyFrom(Item item) {
+		this.id = item.getId();
 		this.name = item.getName();
 		this.salesUnit = item.getSalesUnit();
 		this.batchSize = item.getBatchSize();
 		this.standardCost = item.getStandardCost();
 		this.salesPrice = item.getSalesPrice();
 		this.isActive = item.isActive();
+		this.minHydrationRate = item.getMinHydrationRate();
+		this.maxHydrationRate = item.getMaxHydrationRate();
 	}
 
 }

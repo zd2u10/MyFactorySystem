@@ -80,8 +80,15 @@ public class ItemController {
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
 			@Valid @ModelAttribute("itemForm") ItemForm form,
-			BindingResult result, RedirectAttributes redirectAttributes) {
+			BindingResult result, RedirectAttributes redirectAttributes,
+			Model model) {
 		if (result.hasErrors()) {
+			// ★ エラーの原因をコンソールに出力して確認する
+			System.out.println("バリデーションエラー詳細: " + result.getAllErrors());
+
+			// 画面再表示用に不足しているデータを追加
+			model.addAttribute("id", id);
+			model.addAttribute("currentPage", "list");
 			return "items/edit";
 		}
 

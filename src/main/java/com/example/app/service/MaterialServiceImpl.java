@@ -19,10 +19,15 @@ public class MaterialServiceImpl implements MaterialService {
 
 	private final MaterialMapper materialMapper;
 
-	// 一覧
+	// 有効な一覧
+	public List<Material> getMaterialsByType(String materialType) {
+		return materialMapper.findActiveMaterialsByType(materialType);
+	}
+
+	// 理論削除された一覧取得
 	@Override
-	public List<Material> getAllMaterials() {
-		return materialMapper.findAll();
+	public List<Material> findDeletedMaterialsByType(String materialType) {
+		return materialMapper.findDeletedMaterialsByType(materialType);
 	}
 
 	// 登録
@@ -48,12 +53,6 @@ public class MaterialServiceImpl implements MaterialService {
 	@Override
 	public void logicalDelete(Long id) {
 		materialMapper.logicalDelete(id);
-	}
-
-	// 理論削除された一覧取得
-	@Override
-	public List<Material> findDeletedMaterials() {
-		return materialMapper.findDeletedMaterials();
 	}
 
 	// 削除されたものを復元

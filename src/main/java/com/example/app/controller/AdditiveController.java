@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.app.domain.Additive;
-import com.example.app.dto.AdditiveForm;
-import com.example.app.service.AdditiveService;
+import com.example.app.domain.Material;
+import com.example.app.dto.MaterialForm;
+import com.example.app.service.MaterialService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,24 +22,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/additive")
 public class AdditiveController {
-	private final AdditiveService additiveService;
+	private final MaterialService materialService;
 
 	@GetMapping("/list")
 	public String list(Model model) {
-		model.addAttribute("additiveList", additiveService.getAllAdditives());
+		model.addAttribute("additiveList", materialService.getMaterialsByType("ADDITIVE"));
 		model.addAttribute("currentPage", "list");
 		return "additive/list";
 	}
 
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
-		model.addAttribute("additiveForm", new AdditiveForm());
+		MaterialForm form = new MaterialForm();
+		form.setMaterialType("ADDITIVE");
+		model.addAttribute("additiveForm", form);
 		model.addAttribute("currentPage", "register");
 		return "additive/register";
 	}
 
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("additiveForm") AdditiveForm form,
+	public String register(@Valid @ModelAttribute("additiveForm") MaterialForm form,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			// エラー時はフォームを保持して画面へ戻す
@@ -47,7 +49,7 @@ public class AdditiveController {
 			return "additive/register";
 		}
 		//変換処理をServiceに任せる
-		additiveService.registerAdditiveFromForm(form);
+		materialService.registerMaterialFromForm(form);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "添加物を登録しました");
 		redirectAttributes.addFlashAttribute("msgType", "register");
@@ -56,11 +58,11 @@ public class AdditiveController {
 
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable Long id, Model model) {
-		Additive additive = additiveService.getAdditiveById(id)
+		Material material = materialService.getMaterialById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid additive Id:" + id));
 
-		AdditiveForm form = new AdditiveForm();
-		form.copyFrom(additive);
+		MaterialForm form = new MaterialForm();
+		form.copyFrom(material);
 
 		model.addAttribute("additiveForm", form);
 		model.addAttribute("id", id);
@@ -70,17 +72,19 @@ public class AdditiveController {
 
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id,
-			@Valid @ModelAttribute("additiveForm") AdditiveForm form,
+			@Valid @ModelAttribute("additiveForm") MaterialForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
+		System.out.println("★受信したID: " + id);
+		System.out.println("★デバッグ: materialType = " + form.getMaterialType());
 		if (result.hasErrors()) {
 			return "additive/edit";
 		}
 
 		// FormをEntityに変換
-		Additive additive = form.toEntity();
-
+		Material material = form.toEntity();
 		// Service経由で更新を実行
-		additiveService.updateAdditive(additive);
+		materialService.updateMaterial(material);
+
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "添加物情報を更新しました");
 		redirectAttributes.addFlashAttribute("msgType", "update");
@@ -91,7 +95,7 @@ public class AdditiveController {
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		additiveService.logicalDelete(id);
+		materialService.logicalDelete(id);
 		redirectAttributes.addFlashAttribute("message", "添加物情報を削除しました");
 		redirectAttributes.addFlashAttribute("msgType", "delete");
 		return "redirect:/additive/list";
@@ -100,7 +104,7 @@ public class AdditiveController {
 	//削除済み一覧表示用
 	@GetMapping("/deleted")
 	public String showDeletedList(Model model) {
-		model.addAttribute("additiveList", additiveService.findDeletedAdditives());
+		model.addAttribute("additiveList", materialService.findDeletedMaterialsByType("ADDITIVE"));
 		model.addAttribute("currentPage", "deleted");
 		return "additive/deleted";
 	}
@@ -109,7 +113,7 @@ public class AdditiveController {
 	@PostMapping("/deleted/{id}")
 	public String restore(@PathVariable Long id,
 			RedirectAttributes redirectAttributes) {
-		additiveService.restore(id);
+		materialService.restore(id);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "添加物情報を復旧しました");
 		redirectAttributes.addFlashAttribute("msgType", "restore");

@@ -21,6 +21,8 @@ public class MaterialForm {
 
 	private Boolean isPowder = false;
 
+	private String materialType;
+
 	// Entityへの変換
 	public Material toEntity() {
 		Material material = new Material();
@@ -28,6 +30,7 @@ public class MaterialForm {
 		material.setName(this.name);
 		material.setUnit(this.unit);
 		material.setIsPowder(this.isPowder);
+		material.setMaterialType(this.materialType);
 		return material;
 	}
 
@@ -37,6 +40,7 @@ public class MaterialForm {
 		this.name = material.getName();
 		this.unit = material.getUnit();
 		this.isPowder = material.getIsPowder();
+		this.materialType = material.getMaterialType();
 	}
 
 }
