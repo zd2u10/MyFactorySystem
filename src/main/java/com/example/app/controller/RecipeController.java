@@ -2,8 +2,11 @@ package com.example.app.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +52,12 @@ public class RecipeController {
 	public String showRegister(@PathVariable Long itemId, Model model) {
 		RecipeRegisterData data = new RecipeRegisterData();
 		data.setItemId(itemId);
+
+		// ① Item情報を取得してモデルに渡す(加水率と商品名を表示・計算するため)
+		Item item = itemService.getItemById(itemId)
+				.orElseThrow(() -> new RuntimeException("該当する商品が見つかりません"));
+		model.addAttribute("item", item);
+
 		model.addAttribute("recipeRegisterData", data);
 		model.addAttribute("rawList", materialService.getMaterialsByType("RAW"));
 		model.addAttribute("additiveList", materialService.getMaterialsByType("ADDITIVE"));
@@ -57,7 +66,16 @@ public class RecipeController {
 	}
 
 	@PostMapping("/register")
-	public String registerRecipe(@ModelAttribute RecipeRegisterData data) {
+	public String registerRecipe(@Valid @ModelAttribute RecipeRegisterData data,
+			BindingResult bindingResult, Model model) {
+
+		if (bindingResult.hasErrors()) {
+			// エラーがある場合はフォーム画面へ戻す処理
+			// (必要に応じて　rawList, additiveList を再取得)
+			return "recipes/register";
+		}
+
+		// 登録画面へ進む
 		// Serviceを呼んでDBにまとめて保存
 		recipeService.registerRecipe(data);
 

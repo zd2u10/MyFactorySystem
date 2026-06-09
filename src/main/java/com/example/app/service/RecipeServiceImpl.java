@@ -1,6 +1,7 @@
 package com.example.app.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public void registerRecipe(RecipeRegisterData data) {
-		data.getRecipeList().forEach(detail -> recipeMapper.insert(data.getItemId(), detail));
+		data.getRecipeList().forEach(form -> recipeMapper.insert(data.getItemId(), form));
 	}
 
 	@Override
@@ -46,8 +47,8 @@ public class RecipeServiceImpl implements RecipeService {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		// 3. 計算処理
-		BigDecimal minRate = item.getMinHydrationRate().divide(new BigDecimal("100"));
-		BigDecimal maxRate = item.getMaxHydrationRate().divide(new BigDecimal("100"));
+		BigDecimal minRate = item.getMinHydrationRate().divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+		BigDecimal maxRate = item.getMaxHydrationRate().divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
 		BigDecimal minWater = totalPowder.multiply(minRate);
 		BigDecimal maxWater = totalPowder.multiply(maxRate);

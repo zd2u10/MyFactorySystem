@@ -12,7 +12,7 @@
 
     <div class="content-form" style="max-width: 800px;">
         <h3>商品名： <span th:text="${recipeRegisterData.itemId}"></span>のレシピ登録</h3>
-        
+       
         <form id="recipeForm" th:action="@{/recipes/register}" method="post" th:object="${recipeRegisterData}">
             <input type="hidden" th:field="*{itemId}" />
             
@@ -28,24 +28,36 @@
                 <tbody id="recipeTableBody">
                     <tr class="recipes-row">
                         <td>
-                            <select name="recipeList[0].materialId" required>
+                            <select name="recipeList[0].materialId" class="material-select" onchange="updateUnit(this)">
                                 <option value="">選択してください</option>
 								
 								<optgroup label="原料">
-									<option th:each="r : ${rawList}" th:value="${r.id}" th:text="${r.name}"></option>
+									<option th:each="r : ${rawList}" th:value="${r.id}" th:text="${r.name}" th:data-unit="${r.unit}"></option>
 								</optgroup>
 								
 								<optgroup label="添加物">
-									<option th:each="a : ${additiveList}" th:value="${a.id}" th:text="${a.name}"></option>
+									<option th:each="a : ${additiveList}" th:value="${a.id}" th:text="${a.name}" th:data-unit="${a.unit}"></option>
 								</optgroup>
                             </select>
+							<span class="unit-display"></span>
                         </td>
-                        <td><input type="text" name="recipeList[0].origin" value="未設定" /></td>
+                        <td>
+							<select name="recipeList[0].origin" class="origin-select" required>
+								<option value="">未設定"</option>
+								<option th:each="origin : ${originList}" th:value="${origin}" th:text="${origin}"></option>
+							</select>
+						</td>
                         <td><input type="number" step="1" name="recipeList[0].quantity" required /></td>
                         <td><button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button></td>
                     </tr>
                 </tbody>
             </table>
+			
+			<h3>加水量設定</h3>
+			    <div style="margin-bottom: 20px;">
+			        <label>加水量 (g):</label>
+			        <input type="number" step="0.1" name="waterAmount" th:field="*{waterAmount}" required />
+				</div>
             
                 <button type="button" class="btn btn-back" onclick="addRow()">+ 材料を追加</button>
                 <button type="submit" class="btn btn-action">登録する</button>
