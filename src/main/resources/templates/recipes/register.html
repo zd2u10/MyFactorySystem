@@ -21,7 +21,7 @@
                     <tr>
                         <th>原料・添加物</th>
                         <th>産地</th>
-                        <th>数量</th>
+                        <th>使用量</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -30,16 +30,18 @@
                         <td>
                             <select name="recipeList[0].materialId" required>
                                 <option value="">選択してください</option>
-								<optgroup label="原料" th:each="r : ${rawList}">
-									<option th:value="${m.id}" th:text="${m.name}"></option>
+								
+								<optgroup label="原料">
+									<option th:each="r : ${rawList}" th:value="${r.id}" th:text="${r.name}"></option>
 								</optgroup>
-								<optgroup label="添加物" th:each="a : ${additiveList}">
-									<option th:value="${a.id}" th:text="${a.name}"></option>
+								
+								<optgroup label="添加物">
+									<option th:each="a : ${additiveList}" th:value="${a.id}" th:text="${a.name}"></option>
 								</optgroup>
                             </select>
                         </td>
                         <td><input type="text" name="recipeList[0].origin" value="未設定" /></td>
-                        <td><input type="number" step="0.001" name="recipeList[0].quantity" required /></td>
+                        <td><input type="number" step="1" name="recipeList[0].quantity" required /></td>
                         <td><button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button></td>
                     </tr>
                 </tbody>

@@ -74,6 +74,8 @@ public class AdditiveController {
 	public String update(@PathVariable Long id,
 			@Valid @ModelAttribute("additiveForm") MaterialForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
+		System.out.println("★受信したID: " + id);
+		System.out.println("★デバッグ: materialType = " + form.getMaterialType());
 		if (result.hasErrors()) {
 			return "additive/edit";
 		}

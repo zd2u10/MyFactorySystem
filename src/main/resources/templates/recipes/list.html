@@ -14,14 +14,17 @@
 	<div class="recipe-action-panel">
     	<h3>「<span th:text="${itemName}"></span>」のレシピ</h3>
 		
-		<div th:if="${#lists.isEmpty(recipes)}">
-			<a th:href="@{/recipes/register/{itemId}(itemId=${itemId})}" class="btn btn-edit">新規登録する</a>
-		</div>
-		<div th:unless="${#lists.isEmpty(recipes)}">
-		    <a th:href="@{/recipes/edit/{itemId}(itemId=${itemId})}" class="btn btn-back">レシピを編集する</a>
-	    </div>
+		<div class="button-container">
+			<div th:if="${#lists.isEmpty(recipes)}">
+				<a th:href="@{/recipes/register/{itemId}(itemId=${itemId})}" class="btn btn-edit">新規登録する</a>
+			</div>
+			<div th:unless="${#lists.isEmpty(recipes)}">
+		    	<a th:href="@{/recipes/edit/{itemId}(itemId=${itemId})}" class="btn btn-edit">レシピを編集する</a>
+	    	</div>
 		
+				
 		    <a th:href="@{/items/list}" class="btn btn-back">商品一覧に戻る</a>
+	</div>
 	</div>
 		
 		

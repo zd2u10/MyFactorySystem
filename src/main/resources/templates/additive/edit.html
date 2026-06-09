@@ -11,6 +11,8 @@
 
     <form id="editForm" th:action="@{/additive/edit/{id}(id=${id})}" method="post" th:object="${additiveForm}">
         <input type="hidden" th:field="*{id}"/>
+		<input type="hidden" th:field="*{materialType}"/>
+		
         <div th:replace="~{fragments/input :: text('添加物名', 'name', 'editName')}"></div>
         <div th:replace="~{fragments/input :: text('単位', 'unit', 'editUnit')}"></div>
         <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'editIsPowder')}"></div>

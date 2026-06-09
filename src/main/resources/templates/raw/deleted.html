@@ -14,17 +14,17 @@
 	<table class="content-table">
 	    <thead><tr><th>ID</th><th>原料名</th><th>単位</th><th>操作</th></tr></thead>
 	    <tbody>
-	        <tr th:each="m : ${materialList}">
-	            <td th:text="${m.id}"></td>
-	            <td th:text="${m.name}"></td>
-	            <td th:text="${m.unit}"></td>
+	        <tr th:each="r : ${rawList}">
+	            <td th:text="${r.id}"></td>
+	            <td th:text="${r.name}"></td>
+	            <td th:text="${r.unit}"></td>
 	            <td>
-	                <form th:id="'restoreForm' + ${m.id}" th:action="@{/raw/deleted/{id}(id=${m.id})}" method="post">
+	                <form th:id="'restoreForm' + ${r.id}" th:action="@{/raw/deleted/{id}(id=${r.id})}" method="post">
 						
-						<input type="hidden" th:id="'restoreName' + ${m.id}" th:value="${m.name}" style="display:none;"></input>
+						<input type="hidden" th:id="'restoreName' + ${r.id}" th:value="${r.name}" style="display:none;"></input>
 						<button type="button" class="btn btn-restore"
-							   th:onclick="|openConfirmModal('restoreForm${m.id}','confirmModal', 'confirmContent', 
-							   ['restoreName${m.id}'], ['復旧対象'], '復旧')|">復旧
+							   th:onclick="|openConfirmModal('restoreForm${r.id}','confirmModal', 'confirmContent', 
+							   ['restoreName${r.id}'], ['復旧対象'], '復旧')|">復旧
 						</button>
 	                </form>
 	            </td>

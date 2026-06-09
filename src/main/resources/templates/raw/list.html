@@ -7,7 +7,7 @@
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/material', '原料一覧', 'list')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/raw', '原料一覧', 'list')}"></header>
 	
 	<div th:replace="~{fragments/message :: flash-message}"></div>
 
@@ -16,19 +16,19 @@
 			<tr><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
 		</thead>
         <tbody>
-            <tr th:each="m : ${materialList}">
-                <td th:text="${m.id}"></td>
-                <td th:text="${m.name}"></td>
-                <td th:text="${m.unit}"></td>
-                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
+            <tr th:each="r : ${rawList}">
+                <td th:text="${r.id}"></td>
+                <td th:text="${r.name}"></td>
+                <td th:text="${r.unit}"></td>
+                <td th:text="${r.isPowder} ? '粉体' : '液体'"></td>
                 <td>
-                    <a th:href="@{/raw/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
-                    <button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${m.id}]]', 
-							'confirmModal', 'confirmContent', ['deleteName[[${m.id}]]'], ['原料'], '削除')">
+                    <a th:href="@{/raw/edit/{id}(id=${r.id})}" class="btn btn-edit">編集</a>
+                    <button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${r.id}]]', 
+							'confirmModal', 'confirmContent', ['deleteName[[${r.id}]]'], ['原料'], '削除')">
                         削除
                     </button>
-                    <form th:id="'deleteForm' + ${m.id}" th:action="@{/raw/delete/{id}(id=${m.id})}" method="post" style="display:none;">
-                        <input type="hidden" th:id="'deleteName' + ${m.id}" th:value="${m.name}" />
+                    <form th:id="'deleteForm' + ${r.id}" th:action="@{/raw/delete/{id}(id=${r.id})}" method="post" style="display:none;">
+                        <input type="hidden" th:id="'deleteName' + ${r.id}" th:value="${r.name}" />
                     </form>
                 </td>
             </tr>

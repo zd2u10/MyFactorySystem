@@ -13,6 +13,9 @@ import lombok.Data;
 
 @Data
 public class ItemForm {
+
+	private Long id;
+
 	@NotBlank(message = "製品名は必須です")
 	private String name;
 
@@ -33,17 +36,14 @@ public class ItemForm {
 
 	private boolean isActive = true;
 
-	@NotNull(message = "最低加水率は必須です")
-	@PositiveOrZero(message = "0以上の値を入力してください")
 	private BigDecimal minHydrationRate;
 
-	@NotNull(message = "最大加水率は必須です")
-	@PositiveOrZero(message = "0以上の値を入力してください")
 	private BigDecimal maxHydrationRate;
 
 	// Entityへ変換するメソッド
 	public Item toEntity() {
 		Item item = new Item();
+		item.setId(this.id);
 		item.setName(this.name);
 		item.setSalesUnit(this.salesUnit);
 		item.setBatchSize(this.batchSize);
@@ -57,6 +57,7 @@ public class ItemForm {
 
 	// Entityから値をコピーするメソッド
 	public void copyFrom(Item item) {
+		this.id = item.getId();
 		this.name = item.getName();
 		this.salesUnit = item.getSalesUnit();
 		this.batchSize = item.getBatchSize();

@@ -28,7 +28,7 @@ public class RawController {
 	@GetMapping("/list")
 	public String list(Model model) {
 		// 原料("RAW")のみを取得するように修正
-		model.addAttribute("materialList", materialService.getMaterialsByType("RAW"));
+		model.addAttribute("rawList", materialService.getMaterialsByType("RAW"));
 		model.addAttribute("currentPage", "list");
 		return "raw/list";
 	}
@@ -65,7 +65,7 @@ public class RawController {
 	@GetMapping("/edit/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) {
 		Material material = materialService.getMaterialById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid material Id:" + id));
+				.orElseThrow(() -> new IllegalArgumentException("Invalid raw Id:" + id));
 
 		// DTOを作成し、Entityからコピー
 		MaterialForm form = new MaterialForm();
@@ -82,6 +82,8 @@ public class RawController {
 	public String update(@PathVariable Long id,
 			@Valid @ModelAttribute("rawForm") MaterialForm form,
 			BindingResult result, RedirectAttributes redirectAttributes) {
+		System.out.println("★受信したID: " + id);
+		System.out.println("★デバッグ: materialType = " + form.getMaterialType());
 		if (result.hasErrors()) {
 			return "raw/edit";
 		}
@@ -110,7 +112,7 @@ public class RawController {
 	//削除済み一覧表示用
 	@GetMapping("/deleted")
 	public String showDeletedList(Model model) {
-		model.addAttribute("materialList", materialService.findDeletedMaterialsByType("RAW"));
+		model.addAttribute("rawList", materialService.findDeletedMaterialsByType("RAW"));
 		model.addAttribute("currentPage", "deleted");
 		return "raw/deleted";
 	}

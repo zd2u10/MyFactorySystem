@@ -10,6 +10,14 @@
     font-weight: bold;
 }
 
+/* ボタンコンテナ用の新しいクラス */
+.recipe-action-panel .button-container {
+    display: flex;       /* 横並びにする */
+    gap: 10px;           /* ボタン同士の間隔 */
+    align-items: center; /* 縦方向の中央揃え */
+    margin-bottom: 20px; /* 下のテーブルとの余白 */
+}
+
 /* 今後、加水率が範囲外のときに使うクラスなどもここに書けます */
 .water-info.is-alert {
     background-color: #ffe6e6;

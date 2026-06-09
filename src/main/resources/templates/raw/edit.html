@@ -15,9 +15,12 @@
     
 	<form id="editForm" th:action="@{/raw/edit/{id}(id=${id})}" method="post" th:object="${rawForm}">
 	    <input type="hidden" th:field="*{id}"/>
+		<input type="hidden" th:field="*{materialType}" />
+		
 	    <div th:replace="~{fragments/input :: text('原料名', 'name', 'editName')}"></div>
 	    <div th:replace="~{fragments/input :: text('単位', 'unit', 'editUnit')}"></div>
 	    <div th:replace="~{fragments/input :: radio-powder('種類', 'isPowder', 'editIsPowder')}"></div>
+		
 	    <button type="button" class="btn btn-action" 
 	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
 			['editName', 'editUnit', 'editIsPowderTrue'], 
