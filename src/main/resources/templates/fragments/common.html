@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <body>
-    <nav th:fragment="headerNav(basePath, title, currentPage)" class="header-nav">
+    <nav th:fragment="pageHeader(title, currentPage)" class="header-nav">
 		<div th:if="${currentPage != 'home'}">
 		        <a th:href="@{/home}" style="margin-bottom: 10px;">← ホームに戻る</a>
 		    </div>
@@ -9,8 +9,10 @@
         <h1>管理システム</h1>
 		
         <h2 th:text="${title}">画面タイトル</h2>
+        <hr />
+	</nav>
         
-        <div class="nav-container" th:if="${currentPage != 'home'}">
+	<nav th:fragment="navMenu(basePath, currentPage)" class="nav-container">
 			<a th:href="@{${basePath + '/list'}}"
 			   th:classappend="${currentPage == 'list'} ? 'active' : ''"
 			   class="nav-btn">一覧</a>
@@ -24,7 +26,15 @@
 			   class="nav-btn">削除済み一覧</a>
 		</div>
 		<hr>
-    </nav>
+	</nav>
+	
+	<nav th:fragment="headerNav(basePath, title, currentPage)" class="header-nav-wrapper">
+	        <div th:replace="~{fragments/common :: pageHeader(${title}, ${currentPage})}"></div>
+	        <div th:if="${currentPage != 'home'}">
+	            <div th:replace="~{fragments/common :: navMenu(${basePath}, ${currentPage})}"></div>
+	            <hr>
+	        </div>
+	</nav>
 		
 <!--	レシピ専用nav	-->
 		<nav th:fragment="recipeNav(title)" class="header-nav">

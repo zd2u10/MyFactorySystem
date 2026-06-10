@@ -1,27 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.RecipeMapper">
 
-	<select id="findByItemId" resultType="Recipe">
-		SELECT
-			r.id, r.item_id, r.material_id, r.origin, r.quantity,
-			m.name AS materialName, m.unit AS unit, m.is_powder AS isPowder
-		FROM 
-			recipes r	
-		INNER JOIN	
-			materials m
-			ON r.material_id = m.id
-		WHERE
-			r.item_id = #{itemId}	 	
-		ORDER BY
-			r.id ASC
-	</select>
+    <!-- レシピ一覧取得（材料情報をJOIN） -->
+    <select id="findByItemId" resultType="Recipe">
+        SELECT
+            r.id,
+            r.item_id,
+            r.material_id,
+            r.quantity,
+            r.min_water_amount,
+            r.max_water_amount,
+            r.min_hydration_rate,
+            r.max_hydration_rate,
+            m.name      AS materialName,
+            m.unit      AS unit,
+            m.is_powder AS isPowder
+        FROM
+            recipes r
+        INNER JOIN
+            materials m ON r.material_id = m.id
+        WHERE
+            r.item_id = #{itemId}
+        ORDER BY
+            r.id ASC
+    </select>
 
-	<insert id="insert">
-		INSERT INTO recipes(
-			item_id, material_id, origin, quantity)
-		VALUES	
-			(#{itemId}, #{detail.materialId}, #{detail.origin}, #{detail.quantity})
-	</insert>
+    <!-- 特定レシピ行の使用可能産地リスト取得
+         0件 = 産地不問 -->
+    <select id="findAllowedOriginsByRecipeId" resultType="String">
+        SELECT origin
+        FROM   recipe_origins
+        WHERE  recipe_id = #{recipeId}
+        ORDER BY id ASC
+    </select>
+
+    <!-- レシピ行の登録（useGeneratedKeys でIDを返す） -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="detail.id">
+        INSERT INTO recipes (
+            item_id,
+            material_id,
+            quantity,
+            min_water_amount,
+            max_water_amount,
+            min_hydration_rate,
+            max_hydration_rate
+        ) VALUES (
+            #{itemId},
+            #{detail.materialId},
+            #{detail.quantity},
+            #{minWater},
+            #{maxWater},
+            #{minRate},
+            #{maxRate}
+        )
+    </insert>
+
+    <!-- recipe_origins への1件登録 -->
+    <insert id="insertOrigin">
+        INSERT INTO recipe_origins (recipe_id, origin)
+        VALUES (#{recipeId}, #{origin})
+    </insert>
 
 </mapper>

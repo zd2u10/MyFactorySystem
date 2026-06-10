@@ -1,5 +1,6 @@
 package com.example.app.data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,16 +10,19 @@ import com.example.app.dto.RecipeForm;
 
 import lombok.Data;
 
-// レシピ登録画面全体を受け取るクラス
 @Data
 public class RecipeRegisterData {
 
-	// どの商品のレシピか
 	private Long itemId;
 
-	// 画面から送られてくる複数行の素材リスト
 	@Valid
 	private List<RecipeForm> recipeList = new ArrayList<>();
 
-	private java.math.BigDecimal waterAmount;
+	// 加水量（レシピ全体で1つ）
+	private BigDecimal minWaterAmount;
+	private BigDecimal maxWaterAmount;
+
+	// 加水率の上下限（レシピ登録時に設定）
+	private BigDecimal minHydrationRate;
+	private BigDecimal maxHydrationRate;
 }

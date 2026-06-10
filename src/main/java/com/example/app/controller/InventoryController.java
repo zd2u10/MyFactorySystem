@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.app.dto.InventoryForm;
+import com.example.app.mapper.InventoryStockMapper;
 import com.example.app.service.InventoryService;
+import com.example.app.service.MaterialService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,15 +22,26 @@ import lombok.RequiredArgsConstructor;
 public class InventoryController {
 
 	private final InventoryService inventoryService;
+	private final MaterialService materialService;
+	private final InventoryStockMapper inventoryStockMapper;
+
+	// 在庫確認ページを表示
+	@GetMapping("/list")
+	public String list(@RequestParam(name = "type", defaultValue = "RAW") String type, Model model) {
+		// それぞれのタイプに応じてデータを取得
+		model.addAttribute("stock", inventoryStockMapper.findAllStocksWithMaterialType("type"));
+		model.addAttribute("currentType", type); // 画面でボタンを光らせるため
+		return "inventory/list";
+	}
 
 	// 在庫操作ページ表示用
 	@GetMapping("/operation")
 	public String showOperationPage(Model model) {
 		model.addAttribute("inventoryForm", new InventoryForm());
-
-		// 将来的にDBから原料リストを取得して画面に渡す
-		// list = inventoryService.getAllMaterials();
-		// model.addAttribute("materialList", list);
+		// 原料"RAW"の一覧を取得して画面に渡す
+		model.addAttribute("rawStock", materialService.getMaterialsByType("RAW"));
+		// 添加物"ADDITIVE"の一覧を取得して画面に渡す
+		model.addAttribute("additiveStock", materialService.getMaterialsByType("ADDITIVE"));
 
 		return "inventory/operation";
 	}
