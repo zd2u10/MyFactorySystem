@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/common.css}" />
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/', 'ホーム', 'home')}"></header>
+	<header th:replace="~{fragments/common :: pageHeader('ホーム', 'home')}"></header>
 
     <div class="menu-container">
 		<div class="menu-card">
@@ -16,15 +16,10 @@
 		</div>
         
 		<div class="menu-card">
-            <h3>原料管理</h3>
-            <p>原料の在庫確認や登録を行います。</p>
-            <a th:href="@{/raw/list}" class="btn btn-action">原料一覧へ</a>
-        </div>
-        
-        <div class="menu-card">
-            <h3>添加物管理</h2>
-            <p>添加物の種類や管理を行います。</p>
-            <a th:href="@{/additive/list}" class="btn btn-action">添加物一覧へ</a>
+            <h3>材料管理</h3>
+			<p>材料の / 登録 / 在庫の確認 / 入荷 /などを行います。</p>
+            <a th:href="@{/raw/list}" class="btn btn-action">登録されている原料一覧</a>       		<a th:href="@{/additive/list}" class="btn btn-action">登録されている添加物一覧</a>			<a th:href="@{/inventory/list}" class="btn btn-action">材料の在庫確認</a>
+			<a th:href="@{/inventory/operation}" class="btn btn-action">入荷記録</a>
         </div>
     </div>
 	

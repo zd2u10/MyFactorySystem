@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在庫確認ページ</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+		.page-actions { margin-bottom: 20px; }
+        .toggle-nav { margin: 20px 0; }
+        .toggle-btn { padding: 10px 20px; border: 1px solid #ddd; background: #fff; text-decoration: none; color: #333; }
+        .toggle-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+    </style>
+</head>
+<body>
+
+	<div th:replace="~{fragments/common :: pageHeader('在庫確認ページ', 'inventory')}"></div>
+
+	
+    <div class="toggle-nav">
+        <a th:href="@{/inventory/list(type='RAW')}" 
+           th:classappend="${currentType == 'RAW'} ? 'active' : ''" 
+           class="toggle-btn">原料<!--RAW--></a>
+           
+        <a th:href="@{/inventory/list(type='ADDITIVE')}" 
+           th:classappend="${currentType == 'ADDITIVE'} ? 'active' : ''" 
+           class="toggle-btn">添加物<!--ADDITIVE--></a>
+    </div>
+
+	<div class="page-actions">
+		<a th:href="@{/inventory/operation}" class="btn btn-save">+ 入荷記録を行う</a>
+	</div>
+	
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>材料名</th>
+                <th>産地</th>
+                <th>賞味期限</th>
+                <th>ロット番号</th>
+                <th>在庫数</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="stock : ${stocks}">
+                <td th:text="${stock.materialName}">材料名</td>
+                <td th:text="${stock.origin}">産地</td>
+                <td th:text="${stock.expiryDate}">期限</td>
+                <td th:text="${stock.lotNumber}">ロット</td>
+                <td th:text="${stock.quantity}">数量</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(stocks)}">
+                <td colspan="5">在庫データはありません</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

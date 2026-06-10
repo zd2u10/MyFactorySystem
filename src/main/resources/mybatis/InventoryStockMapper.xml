@@ -1,28 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.InventoryStockMapper">
-	
-	<insert id="upsertStock" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO inventory_stocks
-		(material_id, lot_number, origin, qantity, expiry_date, arrival_date, is_inspected)
-		VALUES
-		(#{materialId}, #{lotNumber}, #{origin}, #{qantity}, #{expiryDate}, #{arrivalDate})
-		ON DUPLICATE KEY UPDATE
-		quantity = quantity + VALUES(quantity),
-		is_inspected = VALUES(is_inspected)
-	</insert>
-	
-	<select id="findByMaterialIdOrderByCreatedAtAsc" resultType="InventoryStock">
-		SELECT * FROM inventory_stocks
-		WHERE material_id = #{materialId}
-		AND quantity > 0
-		ORDER BY expiry_date ASC, created_at ASC
-	</select>
-	
-	<update id="updateQuantity">
-		UPDATE inventory_stocks
-		SET quantity = #{quantity}
-		WHERE id = #{id}
-	</update>
-	
+
+    <!-- 入荷登録（typo修正: qantity → quantity） -->
+    <insert id="upsertStock" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inventory_stocks
+            (material_id, lot_number, origin, quantity, expiry_date, arrival_date, inspected)
+        VALUES
+            (#{materialId}, #{lotNumber}, #{origin}, #{quantity}, #{expiryDate}, #{arrivalDate}, #{inspected})
+        ON DUPLICATE KEY UPDATE
+            quantity          = quantity + VALUES(quantity),
+            inspected         = VALUES(inspected)
+    </insert>
+
+    <!--
+        製造時の在庫自動選択クエリ
+        - allowedOrigins が空/null → 産地不問（全在庫対象）
+        - allowedOrigins に値あり → 指定産地のみ対象
+        - available(= quantity - reserved_quantity) > 0 のものだけ
+        - 賞味期限昇順、入荷日昇順でFIFO
+    -->
+    <select id="findAvailableStocksForProduction" resultType="InventoryStock">
+        SELECT
+            id,
+            material_id,
+            lot_number,
+            origin,
+            quantity,
+            reserved_quantity,
+            expiry_date,
+            arrival_date,
+            inspected,
+            created_at
+        FROM
+            inventory_stocks
+        WHERE
+            material_id = #{materialId}
+            AND (quantity - reserved_quantity) > 0
+            <choose>
+                <when test="allowedOrigins != null and allowedOrigins.size() > 0">
+                    AND origin IN
+                    <foreach item="o" collection="allowedOrigins" open="(" separator="," close=")">
+                        #{o}
+                    </foreach>
+                </when>
+                <!-- 産地不問: 条件なし（origin が null のものも含む） -->
+            </choose>
+        ORDER BY
+            expiry_date  ASC,
+            arrival_date ASC,
+            created_at   ASC
+    </select>
+
+    <!-- レシピ登録画面用：材料の在庫産地一覧（重複なし、originがnullのものは除外） -->
+    <select id="findDistinctOriginsByMaterialId" resultType="String">
+        SELECT DISTINCT origin
+        FROM   inventory_stocks
+        WHERE  material_id = #{materialId}
+        AND    origin IS NOT NULL
+        AND    origin != ''
+        AND    (quantity - reserved_quantity) > 0
+        ORDER BY origin ASC
+    </select>
+
+    <!-- 既存互換 -->
+    <select id="findByMaterialIdOrderByCreatedAtAsc" resultType="InventoryStock">
+        SELECT *
+        FROM   inventory_stocks
+        WHERE  material_id = #{materialId}
+        AND    (quantity - reserved_quantity) > 0
+        ORDER BY expiry_date ASC, created_at ASC
+    </select>
+
+    <!-- 実在庫の更新（本消費・廃棄） -->
+    <update id="updateQuantity">
+        UPDATE inventory_stocks
+        SET    quantity = #{quantity}
+        WHERE  id       = #{id}
+    </update>
+
+    <!-- 仮消費ロックの増減
+         製造開始: delta = +使用量
+         製造完了/廃棄: delta = -使用量 -->
+    <update id="updateReservedQuantity">
+        UPDATE inventory_stocks
+        SET    reserved_quantity = reserved_quantity + #{delta}
+        WHERE  id = #{id}
+    </update>
+    
+    
+<!-- 原料と添加物をそれぞれ分けて一覧取得 -->
+    <select id="findAllStocksWithMaterialType" resultType="InventoryStock">
+    SELECT 
+        s.*, 
+        m.name AS materialName 
+    FROM 
+        inventory_stocks s
+    INNER JOIN 
+        materials m ON s.material_id = m.id
+    WHERE 
+        m.material_type = #{materialType}
+    ORDER BY 
+        s.expiry_date ASC, 
+        s.arrival_date ASC
+</select>
+
 </mapper>

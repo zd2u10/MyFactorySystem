@@ -1,15 +1,13 @@
 package com.example.app.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.app.data.RecipeRegisterData;
-import com.example.app.domain.Item;
 import com.example.app.domain.Recipe;
-import com.example.app.mapper.ItemMapper;
+import com.example.app.dto.RecipeForm;
 import com.example.app.mapper.RecipeMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -20,43 +18,56 @@ import lombok.RequiredArgsConstructor;
 public class RecipeServiceImpl implements RecipeService {
 
 	private final RecipeMapper recipeMapper;
-	private final ItemMapper itemMapper;
 
 	@Override
 	public List<Recipe> findByItemId(Long itemId) {
-		return recipeMapper.findByItemId(itemId);
+		List<Recipe> recipes = recipeMapper.findByItemId(itemId);
+		// 各レシピ行の使用可能産地リストをロード
+		recipes.forEach(r -> r.setAllowedOrigins(recipeMapper.findAllowedOriginsByRecipeId(r.getId())));
+		return recipes;
 	}
 
 	@Override
 	public void registerRecipe(RecipeRegisterData data) {
-		data.getRecipeList().forEach(detail -> recipeMapper.insert(data.getItemId(), detail));
+		for (RecipeForm detail : data.getRecipeList()) {
+			// 1. レシピ行を登録（useGeneratedKeys でdetail.idに採番値が入る）
+			recipeMapper.insert(
+					data.getItemId(),
+					data.getMinWaterAmount(),
+					data.getMaxWaterAmount(),
+					data.getMinHydrationRate(),
+					data.getMaxHydrationRate(),
+					detail);
+
+			// 2. 産地指定がある場合のみrecipe_originsに登録
+			if (detail.getAllowedOrigins() != null) {
+				for (String origin : detail.getAllowedOrigins()) {
+					if (origin != null && !origin.isBlank()) {
+						recipeMapper.insertOrigin(detail.getId(), origin);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public String calculateWaterRange(Long itemId, List<Recipe> recipes) {
-		// 1. Optionalの処理を修正
-		Item item = itemMapper.findById(itemId)
-				.orElseThrow(() -> new RuntimeException("該当する商品が見つかりません: " + itemId));
+		// 加水率はrecipesから取得（全行で同じ値のはずなので先頭行を使用）
+		Recipe first = recipes.stream()
+				.filter(r -> r.getMinHydrationRate() != null && r.getMaxHydrationRate() != null)
+				.findFirst()
+				.orElse(null);
 
-		// 2. 粉体(is_powder = true) の合計重量を算出
-		// ※ Recipeクラスに boolean isPoder フィールドと getter が必要
-		BigDecimal totalPowder = recipes.stream()
-				.filter(r -> Boolean.TRUE.equals(r.getIsPowder()))
-				.map(Recipe::getQuantity)
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		if (first == null) {
+			return "加水率未設定";
+		}
 
-		// 3. 計算処理
-		BigDecimal minRate = item.getMinHydrationRate().divide(new BigDecimal("100"));
-		BigDecimal maxRate = item.getMaxHydrationRate().divide(new BigDecimal("100"));
-
-		BigDecimal minWater = totalPowder.multiply(minRate);
-		BigDecimal maxWater = totalPowder.multiply(maxRate);
-
+		// DBに保存されている率と量をそのまま文字列にして返す
 		return String.format("%d%%～%d%%： %dml～%dml",
-				item.getMinHydrationRate().intValue(),
-				item.getMaxHydrationRate().intValue(),
-				minWater.intValue(),
-				maxWater.intValue());
+				first.getMinHydrationRate().intValue(),
+				first.getMaxHydrationRate().intValue(),
+				first.getMinWaterAmount() != null ? first.getMinWaterAmount().intValue() : 0,
+				first.getMaxWaterAmount() != null ? first.getMaxWaterAmount().intValue() : 0);
 	}
 
 }

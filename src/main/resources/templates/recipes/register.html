@@ -8,50 +8,139 @@
 <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/recipes', 'レシピ登録', 'register')}"></header>
+    <header th:replace="~{fragments/common :: recipeNav('レシピ登録')}"></header>
 
-    <div class="content-form" style="max-width: 800px;">
-        <h3>商品名： <span th:text="${recipeRegisterData.itemId}"></span>のレシピ登録</h3>
-        
-        <form id="recipeForm" th:action="@{/recipes/register}" method="post" th:object="${recipeRegisterData}">
-            <input type="hidden" th:field="*{itemId}" />
-            
+    <div class="content-form" style="max-width: 860px;">
+        <h3>「<span th:text="${item.name}"></span>」のレシピ登録</h3>
+
+		<!-- リアルタイム加水率表示 -->
+    <div id="hydrationDisplay" class="water-info" style="margin-bottom: 20px; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+        粉末原料と加水量を入力すると、現在の加水率が計算されます。
+    </div>
+
+    <form id="recipeForm" th:action="@{/recipes/register}" method="post" th:object="${recipeRegisterData}">
+      <input type="hidden" th:field="*{itemId}" />
+
+		
+        <!-- 加水率・加水量の設定エリア -->
+      <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 6px;">
+          <strong>加水設定</strong>
+		  
+		  <div style="display: flex; gap: 15px; margin-top: 10px; align-items: center;">
+		          <span style="width: 60px; font-weight: bold; color: #555;">最低：</span>
+		          <div>
+		              <label>加水率 (%)</label><br>
+		              <input type="number" step="0.1" id="minHydrationInput"
+		                     th:field="*{minHydrationRate}"
+		                     oninput="onHydrationRateChange('min')"
+		                     style="width: 90px; padding: 4px;" />
+		          </div>
+		          <span style="margin-top: 20px;">⇄</span>
+		          <div>
+		              <label>加水量 (ml)</label><br>
+		              <input type="number" step="0.1" id="minWaterInput"
+		                     th:field="*{minWaterAmount}"
+		                     oninput="onWaterAmountChange('min')"
+		                     style="width: 100px; padding: 4px;" />
+		          </div>
+		      </div>
+
+		      <div style="display: flex; gap: 15px; margin-top: 15px; align-items: center;">
+		          <span style="width: 60px; font-weight: bold; color: #555;">最大：</span>
+		          <div>
+		              <label>加水率 (%)</label><br>
+		              <input type="number" step="0.1" id="maxHydrationInput"
+		                     th:field="*{maxHydrationRate}"
+		                     oninput="onHydrationRateChange('max')"
+		                     style="width: 90px; padding: 4px;" />
+		          </div>
+		          <span style="margin-top: 20px;">⇄</span>
+		          <div>
+		              <label>加水量 (ml)</label><br>
+		              <input type="number" step="0.1" id="maxWaterInput"
+		                     th:field="*{maxWaterAmount}"
+		                     oninput="onWaterAmountChange('max')"
+		                     style="width: 100px; padding: 4px;" />
+		          </div>
+		      </div>
+		  </div>
+
             <table class="content-table" id="recipeTable">
                 <thead>
                     <tr>
                         <th>原料・添加物</th>
-                        <th>産地</th>
+                        <th>単位</th>
                         <th>使用量</th>
+                        <th>使用可能産地</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody id="recipeTableBody">
-                    <tr class="recipes-row">
+                    <tr class="recipe-row" th:each="recipe, stat : *{recipeList}">
                         <td>
-                            <select name="recipeList[0].materialId" required>
+                            <select th:name="'recipeList[' + ${stat.index} + '].materialId'"
+                                    class="material-select"
+                                    onchange="updateUnitAndOrigins(this)">
                                 <option value="">選択してください</option>
-								
-								<optgroup label="原料">
-									<option th:each="r : ${rawList}" th:value="${r.id}" th:text="${r.name}"></option>
-								</optgroup>
-								
-								<optgroup label="添加物">
-									<option th:each="a : ${additiveList}" th:value="${a.id}" th:text="${a.name}"></option>
-								</optgroup>
+                                <optgroup label="原料">
+                                    <option th:each="r : ${rawList}"
+                                            th:value="${r.id}"
+                                            th:text="${r.name}"
+                                            th:attr="data-unit=${r.unit}, data-is-powder=${r.isPowder}">
+                                    </option>
+                                </optgroup>
+                                <optgroup label="添加物">
+                                    <option th:each="a : ${additiveList}"
+                                            th:value="${a.id}"
+                                            th:text="${a.name}"
+                                            th:attr="data-unit=${a.unit}, data-is-powder=${a.isPowder}">
+                                    </option>
+                                </optgroup>
                             </select>
                         </td>
-                        <td><input type="text" name="recipeList[0].origin" value="未設定" /></td>
-                        <td><input type="number" step="1" name="recipeList[0].quantity" required /></td>
-                        <td><button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button></td>
+                        <td>
+                            <span class="unit-display" style="min-width: 30px; display: inline-block;"></span>
+                        </td>
+                        <td>
+                            <input type="number" step="1" min="1"
+                                   th:name="'recipeList[' + ${stat.index} + '].quantity'"
+                                   oninput="recalculateAllHydration()"
+                                   style="width: 90px;"
+                                   required />
+                        </td>
+                        <td class="origins-cell">
+                            <!--
+                                産地チェックボックスエリア
+                                材料選択後にJSで動的生成される
+                                未選択 = 産地不問（recipe_originsに登録しない）
+                            -->
+                            <span class="origins-placeholder" style="color: #999; font-size: 0.9em;">材料を選択してください</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            
-                <button type="button" class="btn btn-back" onclick="addRow()">+ 材料を追加</button>
+
+            <div style="margin-top: 12px; display: flex; gap: 10px;">
+                <button type="button" class="btn btn-back" onclick="addRow()">＋ 材料を追加</button>
                 <button type="submit" class="btn btn-action">登録する</button>
-          </form>
+            </div>
+        </form>
     </div>
 
-	<script th:src="@{/js/recipe-register.js}"></script>
+    <!--
+        産地データをJSに渡す（Thymeleafでページ生成時に埋め込み）
+        originsMap: { materialId -> ["産地A", "産地B", ...] }
+        空配列 = その材料は在庫産地なし（産地不問）
+    -->
+    <script th:inline="javascript">
+        const ORIGINS_MAP = /*[[${originsMap}]]*/ {};
+        const HYDRATION_MIN = /*[[${recipeRegisterData.minHydrationRate}]]*/ null;
+        const HYDRATION_MAX = /*[[${recipeRegisterData.maxHydrationRate}]]*/ null;
+    </script>
+
+    <script th:src="@{/js/recipe-register.js}"></script>
 </body>
 </html>
