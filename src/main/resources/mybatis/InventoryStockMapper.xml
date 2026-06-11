@@ -6,9 +6,9 @@
     <!-- 入荷登録（typo修正: qantity → quantity） -->
     <insert id="upsertStock" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO inventory_stocks
-            (material_id, lot_number, origin, quantity, expiry_date, arrival_date, inspected)
+            (material_id, lot_number, origin, net_weight, quantity, expiry_date, arrival_date, inspected)
         VALUES
-            (#{materialId}, #{lotNumber}, #{origin}, #{quantity}, #{expiryDate}, #{arrivalDate}, #{inspected})
+            (#{materialId}, #{lotNumber}, #{origin}, #{netWeight}, #{quantity}, #{expiryDate}, #{arrivalDate}, #{inspected})
         ON DUPLICATE KEY UPDATE
             quantity          = quantity + VALUES(quantity),
             inspected         = VALUES(inspected)

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>入荷登録</title>
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/arrival-calc.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: pageHeader('入荷登録', 'register')}"></header>
+
+	<a th:href="@{/inventory/list}" class="btn btn-back">一覧に戻る</a>
+	
+	<hr />
+		
+    <div th:replace="~{fragments/message :: flash-message}"></div>
+
+    <div class="content-form" style="max-width: 600px;">
+
+        <form id="receiveForm" th:action="@{/inventory/operation}" method="post" th:object="${arrivalForm}">
+
+            <!-- 材料選択 -->
+            <div class="form-group">
+                <label>原料・添加物 <span class="required">*</span></label>
+                <select th:field="*{materialId}" required>
+                    <option value="">選択してください</option>
+                    <optgroup label="原料">
+                        <option th:each="r : ${rawList}"
+                                th:value="${r.id}"
+                                th:text="${r.name}">
+                        </option>
+                    </optgroup>
+                    <optgroup label="添加物">
+                        <option th:each="a : ${additiveList}"
+                                th:value="${a.id}"
+                                th:text="${a.name}">
+                        </option>
+                    </optgroup>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('materialId')}"
+                     th:errors="*{materialId}"></div>
+            </div>
+
+            <!-- ロット番号 -->
+            <div class="form-group">
+                <label>ロット番号 <span class="required">*</span></label>
+                <input type="text" th:field="*{lotNumber}"
+                       placeholder="例: LOT-20260608-001" required />
+                <div class="error" th:if="${#fields.hasErrors('lotNumber')}"
+                     th:errors="*{lotNumber}"></div>
+            </div>
+
+            <!-- 産地（任意） -->
+            <div class="form-group">
+                <label>産地 <span style="color:#888; font-size:0.85em;">（任意）</span></label>
+                <input type="text" th:field="*{origin}"
+                       placeholder="例: 北海道、国産、オーストラリア産" />
+            </div>
+			
+            <!-- 数量 -->
+            <div class="form-group">
+                <label>1パッケージ当たりの内容量(g / ml) <span class="required">*</span></label>
+                <input type="number" th:field="*{netWeight}" id="netWeight"
+                       step="0.001" min="0.001"
+                       placeholder="例: 15000" required />
+                <div class="error" th:if="${#fields.hasErrors('netWeight')}"
+                     th:errors="*{netWeight}"></div>
+            </div>
+			
+			<div class="form-group">
+				<label>入荷パッケージ数(袋 / ケース)<span class="required">*</span></label>
+				<inpu type="number" th:field="*{packageCount}" id="packageCount"
+					  step="1" min="1"
+					  placeholder="例: 2" required/>
+				<div class="error" th:if="${#fields.hasErrors('packageCount')}"
+					 th:errors="*{packageCount}"></div>
+			</div>
+
+            <!-- 賞味期限（任意） -->
+            <div class="form-group">
+                <label>賞味期限 <span style="color:#888; font-size:0.85em;">（任意）</span></label>
+                <input type="date" th:field="*{expiryDate}" />
+            </div>
+
+            <!-- 入荷日 -->
+            <div class="form-group">
+                <label>入荷日 <span class="required">*</span></label>
+                <input type="date" th:field="*{arrivalDate}" required />
+                <div class="error" th:if="${#fields.hasErrors('arrivalDate')}"
+                     th:errors="*{arrivalDate}"></div>
+            </div>
+
+            <!-- 検品済みフラグ -->
+            <div class="form-group" style="display:flex; align-items:center; gap:10px;">
+                <label>検品済み</label>
+                <input type="checkbox" th:field="*{inspected}"
+                       style="width:auto; transform:scale(1.3);" />
+            </div>
+
+            <!-- 備考 -->
+            <div class="form-group">
+                <label>備考</label>
+                <input type="text" th:field="*{note}"
+                       placeholder="例: ○○社より入荷" />
+            </div>
+
+            <div style="margin-top: 20px; display:flex; gap:10px;">
+                <button type="button" class="btn btn-action"
+                        onclick="openConfirmModal(
+                            'receiveForm', 'confirmModal', 'confirmContent',
+                            ['lotNumber', 'origin', 'quantity', 'arrivalDate'],
+                            ['ロット番号', '産地', '数量', '入荷日'],
+                            '入荷登録')">
+                    登録する
+                </button>
+                <a th:href="@{/inventory/list}" class="btn btn-back">キャンセルして一覧に戻る</a>
+            </div>
+
+        </form>
+    </div>
+
+    <dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
+</body>
+</html>

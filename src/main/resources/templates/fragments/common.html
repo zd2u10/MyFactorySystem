@@ -9,7 +9,6 @@
         <h1>管理システム</h1>
 		
         <h2 th:text="${title}">画面タイトル</h2>
-        <hr />
 	</nav>
         
 	<nav th:fragment="navMenu(basePath, currentPage)" class="nav-container">
@@ -32,7 +31,7 @@
 	        <div th:replace="~{fragments/common :: pageHeader(${title}, ${currentPage})}"></div>
 	        <div th:if="${currentPage != 'home'}">
 	            <div th:replace="~{fragments/common :: navMenu(${basePath}, ${currentPage})}"></div>
-	            <hr>
+				<hr />
 	        </div>
 	</nav>
 		

@@ -27,7 +27,7 @@
     </div>
 
 	<div class="page-actions">
-		<a th:href="@{/inventory/operation}" class="btn btn-save">+ 入荷記録を行う</a>
+		<a th:href="@{/inventory/arrival}" class="btn btn-save">+ 入荷記録を行う</a>
 	</div>
 	
     <table class="content-table">
@@ -37,7 +37,8 @@
                 <th>産地</th>
                 <th>賞味期限</th>
                 <th>ロット番号</th>
-                <th>在庫数</th>
+                <th>荷姿(1袋/箱)</th>
+				<th>在庫数</th>
             </tr>
         </thead>
         <tbody>
@@ -46,10 +47,11 @@
                 <td th:text="${stock.origin}">産地</td>
                 <td th:text="${stock.expiryDate}">期限</td>
                 <td th:text="${stock.lotNumber}">ロット</td>
-                <td th:text="${stock.quantity}">数量</td>
+				<td th:text="${stock.netWeight != null ? stock.netWeight + ' g/ml' : '-'}">荷姿</td>
+                <td th:text="${stock.quantity + 'g/ml'}">数量</td>
             </tr>
             <tr th:if="${#lists.isEmpty(stocks)}">
-                <td colspan="5">在庫データはありません</td>
+                <td colspan="6">在庫データはありません</td>
             </tr>
         </tbody>
     </table>
