@@ -10,7 +10,7 @@
 <body>
     <header th:replace="~{fragments/common :: pageHeader('入荷登録', 'register')}"></header>
 
-	<a th:href="@{/inventory/list}" class="btn btn-back">一覧に戻る</a>
+	<a th:href="@{/inventory/transaction/list}" class="btn btn-back">一覧に戻る</a>
 	
 	<hr />
 		
@@ -18,7 +18,7 @@
 
     <div class="content-form" style="max-width: 600px;">
 
-        <form id="receiveForm" th:action="@{/inventory/operation}" method="post" th:object="${arrivalForm}">
+        <form id="receiveForm" th:action="@{/inventory/transaction/arrival}" method="post" th:object="${arrivalForm}">
 
             <!-- 材料選択 -->
             <div class="form-group">
@@ -69,17 +69,17 @@
             </div>
 			
 			<div class="form-group">
-				<label>入荷パッケージ数(袋 / ケース)<span class="required">*</span></label>
-				<inpu type="number" th:field="*{packageCount}" id="packageCount"
-					  step="1" min="1"
-					  placeholder="例: 2" required/>
-				<div class="error" th:if="${#fields.hasErrors('packageCount')}"
-					 th:errors="*{packageCount}"></div>
+			    <label>入荷パッケージ数 (袋 / ケース) <span class="required">*</span></label>
+			    <input type="number" th:field="*{packageCount}" id="packageCount"
+			           step="1" min="1"
+			           placeholder="例: 2" required />
+			    <div class="error" th:if="${#fields.hasErrors('packageCount')}"
+			         th:errors="*{packageCount}"></div>
 			</div>
-
+			
             <!-- 賞味期限（任意） -->
             <div class="form-group">
-                <label>賞味期限 <span style="color:#888; font-size:0.85em;">（任意）</span></label>
+                <label>賞味期限 <span style="color:#888; font-size:0.85em;">*</span></label>
                 <input type="date" th:field="*{expiryDate}" />
             </div>
 
@@ -109,12 +109,12 @@
                 <button type="button" class="btn btn-action"
                         onclick="openConfirmModal(
                             'receiveForm', 'confirmModal', 'confirmContent',
-                            ['lotNumber', 'origin', 'quantity', 'arrivalDate'],
-                            ['ロット番号', '産地', '数量', '入荷日'],
+                            ['lotNumber', 'origin', 'netWeight', 'packageCount', 'arrivalDate'],
+                            ['ロット番号', '産地', '内容量(g / ml)','入荷数', '入荷日'],
                             '入荷登録')">
                     登録する
                 </button>
-                <a th:href="@{/inventory/list}" class="btn btn-back">キャンセルして一覧に戻る</a>
+                <a th:href="@{/inventory/material/list}" class="btn btn-back">キャンセルして一覧に戻る</a>
             </div>
 
         </form>

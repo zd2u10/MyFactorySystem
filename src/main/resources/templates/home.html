@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <title>管理システム ホーム</title>
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+	<link rel="stylesheet" th:href="@{/css/home.css}" />
 </head>
 <body>
-	<header th:replace="~{fragments/common :: pageHeader('ホーム', 'home')}"></header>
+    <header th:replace="~{fragments/common :: pageHeader('ホーム', 'home')}"></header>
 
-    <div class="menu-container">
-		<div class="menu-card">
-	    	<h3>製品管理</h3>
-	    	<p>製品の構成や価格の管理を行います。</p>
-	    	<a th:href="@{/items/list}" class="btn btn-action">製品一覧へ</a>
-		</div>
-        
-		<div class="menu-card">
-            <h3>材料管理</h3>
-			<p>材料の / 登録 / 在庫の確認 / 入荷 /などを行います。</p>
-            <a th:href="@{/raw/list}" class="btn btn-action">登録されている原料一覧</a>       		<a th:href="@{/additive/list}" class="btn btn-action">登録されている添加物一覧</a>			<a th:href="@{/inventory/list}" class="btn btn-action">材料の在庫確認</a>
-			<a th:href="@{/inventory/arrival}" class="btn btn-action">入荷記録</a>
-        </div>
-    </div>
-	
+	 <div class="denmoku-container">
+	     <div class="menu-card">
+	         <h3><span class="icon">📊</span> 情報管理</h3>
+	         <a th:href="@{/masters/items/list}" class="btn-action"><span class="icon">🥫</span> 製品情報</a>
+	         <a th:href="@{/masters/materials/list}" class="btn-action"><span class="icon">🌾</span> 材料情報</a>
+	     </div>
+	     
+	     <div class="menu-card">
+	         <h3><span class="icon">📦</span> 在庫管理</h3>
+	         <a th:href="@{/inventory/item/list}" class="btn-action"><span class="icon">🥫</span> 製品在庫</a>
+	         <a th:href="@{/inventory/material/list}" class="btn-action"><span class="icon">🌾</span> 材料在庫</a>
+	     </div>
 
-</body>
+	     <div class="menu-card">
+	         <h3><span class="icon">⚙️</span> 製造管理</h3>
+	         <a th:href="@{/production/list}" class="btn-action"><span class="icon">🏭</span> 製造アプリ</a>
+	     </div>
+	 </div>	 
+ </body>
 </html>

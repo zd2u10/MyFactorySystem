@@ -92,4 +92,67 @@ public class RecipeController {
 				inventoryStockMapper.findDistinctOriginsByMaterialId(m.getId())));
 		return map;
 	}
+
+	// 編集ページ表示
+	@GetMapping("/edit/{itemId}")
+	public String showEdit(@PathVariable Long itemId, Model model) {
+		// 1.全体の「器」を作成
+		RecipeRegisterData data = new RecipeRegisterData();
+		data.setItemId(itemId);
+
+		// 2.データベースから既存のレシピ情報を取得
+		List<Recipe> existingRecipes = recipeService.findByItemId(itemId);
+
+		if (!existingRecipes.isEmpty()) {
+			// 3.既存のデータがあれば、１行ずつ「RecipeForm(１項目分の器)に変換してリストに詰める
+			for (Recipe recipe : existingRecipes) {
+				RecipeForm rowForm = new RecipeForm();
+				rowForm.copyFrom(recipe); // メソッドを使ってデータをコピー
+				data.getRecipeList().add(rowForm);
+			}
+
+			// 4.全体の加水設定などは、既存レシピの１行目から取得して器にセット
+			Recipe firstRow = existingRecipes.get(0);
+			data.setMinWaterAmount(firstRow.getMinWaterAmount());
+			data.setMaxWaterAmount(firstRow.getMaxWaterAmount());
+			data.setMinHydrationRate(firstRow.getMinHydrationRate());
+			data.setMaxHydrationRate(firstRow.getMaxHydrationRate());
+		} else {
+			// 万が一データがない状態で編集画面に来た場合の対策
+			data.getRecipeList().add(new RecipeForm());
+		}
+
+		// 5.画面に渡す
+		model.addAttribute("recipeRegisterData", data);
+
+		// 6.材料リストや産地マップの取得は、既存のヘルパーメソッドを使いまわす
+		buildRegisterModel(itemId, model);
+
+		return "recipes/edit";
+	}
+
+	// 編集内容の保存
+	@PostMapping("/edit/{itemId}")
+	public String updateRecipe(
+			@PathVariable Long itemId,
+			// 画面から「複数行のリスト」が丸ごと詰まった状態の RecipeRegisterData を受け取る
+			@Valid @ModelAttribute("recipeRegisterData") RecipeRegisterData data,
+			BindingResult bindingResult,
+			Model model) {
+
+		if (bindingResult.hasErrors()) {
+			// エラー時は材料リストなどを再取得して元の画面へ
+			buildRegisterModel(itemId, model);
+			return "recipes/edit";
+		}
+
+		// 念のため商品IDを再セット
+		data.setItemId(itemId);
+
+		// Service層に保存処理を投げる
+		recipeService.updateRecipe(data);
+
+		return "redirect:/recipes/list/" + itemId;
+
+	}
 }

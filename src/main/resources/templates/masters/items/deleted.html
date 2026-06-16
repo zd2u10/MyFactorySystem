@@ -7,7 +7,7 @@
 		<script th:src="@{/js/common.js}"></script>
     </head>
     <body>
-		<header th:replace="~{fragments/common :: headerNav('/items', '削除済み製品一覧', 'deleted')}"></header>
+		<header th:replace="~{fragments/common :: headerNav('/masters/items', '削除済み製品一覧', 'deleted')}"></header>
 
 		<div th:replace="~{fragments/message :: flash-message}"></div>
 		
@@ -17,7 +17,7 @@
 		        <tr th:each="i : ${itemList}">
 		            <td th:text="${i.name}"></td>
 		            <td>
-		                <form th:id="'restoreForm' + ${i.id}" th:action="@{/items/deleted/{id}(id=${i.id})}" method="post">
+		                <form th:id="'restoreForm' + ${i.id}" th:action="@{/masters/items/deleted/{id}(id=${i.id})}" method="post">
 							<input type="hidden" th:id="'restoreName' + ${i.id}" th:value="${i.name}" style="display:none;"></input>
 							
 							<button type="button" class="btn btn-restore" 

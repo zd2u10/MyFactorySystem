@@ -5,10 +5,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.app.domain.InventoryStock;
+import com.example.app.dto.TransactionListDto;
 
 public interface InventoryService {
 
-	// 在庫の一覧表示
+	// --- 在庫確認 ---
 	List<InventoryStock> getStocksByType(String materialType);
 
 	/**
@@ -24,6 +25,8 @@ public interface InventoryService {
 	 * @param isInspected 検品済みフラグ
 	 * @param note        備考（inventory_transactionsに記録）
 	 */
+
+	// --- 入庫係 ---
 	void receiveMaterial(
 			Long materialId,
 			String lotNumber,
@@ -40,18 +43,25 @@ public interface InventoryService {
 	 *
 	 * @param materialId      材料ID
 	 * @param quantity        消費量
-	 * @param productionDate  製造日
+	 * @param transactionDate  消費(製造)日
 	 * @param transactionType PRODUCTION / DISPOSAL
 	 * @param productCode     製品コード
 	 * @param productNumber   製造ロット番号
 	 * @param note            備考
 	 */
+
+	// --- 出庫・消費 ---
+	// 消費
 	void consumeMaterial(
 			Long materialId,
 			BigDecimal quantity,
-			LocalDate productionDate,
+			LocalDate transactionDate,
 			String transactionType,
 			String productCode,
 			String productNumber,
 			String note);
+
+	// 履歴一覧を取得するメソッド
+	List<TransactionListDto> getAllTransactions();
+
 }

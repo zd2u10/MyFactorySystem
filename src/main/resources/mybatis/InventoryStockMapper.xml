@@ -94,7 +94,8 @@
     <select id="findAllStocksWithMaterialType" resultType="InventoryStock">
     SELECT 
         s.*, 
-        m.name AS materialName 
+        m.name AS materialName,
+        m.unit AS unit
     FROM 
         inventory_stocks s
     INNER JOIN 

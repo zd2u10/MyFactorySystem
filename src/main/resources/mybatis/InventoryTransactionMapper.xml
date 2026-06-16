@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.InventoryTransactionMapper">
 	
+	<!-- 入荷?処理 -->
 	<insert id="insert">
 		INSERT INTO inventory_transactions
 		(stock_id, transaction_type, quantity_change, product_code,
@@ -10,5 +11,30 @@
         (#{stockId}, #{transactionType}, #{quantityChange}, #{productCode}, 
         #{productNumber}, #{note}, #{transactionDate}, #{createdAt})
 	</insert>
+	
+	
+	<select id="findAll" resultType="com.example.app.dto.TransactionListDto">
+		SELECT
+			t.transaction_date,
+			t.transaction_type,
+			m.name AS material_name,
+			s.lot_number,
+			t.quantity_change,
+			t.product_code,
+			i.name AS product_name,
+			t.product_number,
+			t.note
+		FROM
+			inventory_transactions t
+		JOIN
+			inventory_stocks s ON t.stock_id = s.id
+		JOIN
+			materials m ON s.material_id = m.id
+		LEFT JOIN
+			items i ON t.product_code = CAST(i.id AS CHAR)
+		ORDER BY
+			t.transaction_date DESC, t.id DESC
+	</select>
+	
 	
 </mapper>

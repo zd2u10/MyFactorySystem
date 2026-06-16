@@ -62,5 +62,25 @@
         INSERT INTO recipe_origins (recipe_id, origin)
         VALUES (#{recipeId}, #{origin})
     </insert>
+    
+    <update id="update">
+        UPDATE recipes 
+        SET 
+            material_id = #{detail.materialId},
+            quantity = #{detail.quantity},
+            min_water_amount = #{minWater},
+            max_water_amount = #{maxWater},
+            min_hydration_rate = #{minRate},
+            max_hydration_rate = #{maxRate}
+        WHERE id = #{detail.id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM recipes WHERE id = #{recipeId}
+    </delete>
+
+    <delete id="deleteOriginsByRecipeId">
+        DELETE FROM recipe_origins WHERE recipe_id = #{recipeId}
+    </delete>
 
 </mapper>

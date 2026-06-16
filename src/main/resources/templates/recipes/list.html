@@ -23,7 +23,7 @@
 	    	</div>
 		
 				
-		    <a th:href="@{/items/list}" class="btn btn-back">商品一覧に戻る</a>
+		    <a th:href="@{/masters/items/list}" class="btn btn-back">商品一覧に戻る</a>
 	</div>
 	</div>
 		
@@ -50,13 +50,12 @@
                 <tr th:each="recipe : ${recipes}">
                     <td th:text="${recipe.materialName}"></td>
                     <td th:text="${recipe.isPowder ? '粉体' : '液体'}"></td>
-                    <td th:text="${recipe.origin}"></td>
+					<td th:text="${#lists.isEmpty(recipe.allowedOrigins) ? '産地不問' : #strings.listJoin(recipe.allowedOrigins, ', ')}"></td>
                     <td th:text="${recipe.quantity}"></td>
                     <td th:text="${recipe.unit}"></td>
                 </tr>
             </tbody>
         </table>
-        <a th:href="@{/recipes/register/{itemId}(itemId=${itemId})}" class="btn btn-edit">レシピを編集/追加</a>
     </div>
 
     <br><br>

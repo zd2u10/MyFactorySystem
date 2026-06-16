@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.app.domain.InventoryStock;
 import com.example.app.domain.InventoryTransaction;
+import com.example.app.dto.TransactionListDto;
 import com.example.app.mapper.InventoryStockMapper;
 import com.example.app.mapper.InventoryTransactionMapper;
 
@@ -77,7 +78,7 @@ public class InventoryServiceImpl implements InventoryService {
 	public void consumeMaterial(
 			Long materialId,
 			BigDecimal quantity,
-			LocalDate productionDate,
+			LocalDate transactionDate,
 			String transactionType,
 			String productCode,
 			String productNumber,
@@ -98,16 +99,16 @@ public class InventoryServiceImpl implements InventoryService {
 
 			BigDecimal consume = remaining.min(available);
 
-			// 実在庫を減算
+			// 1. 実在庫を減算
 			stock.setQuantity(stock.getQuantity().subtract(consume));
 			inventoryStockMapper.updateQuantity(stock);
 
-			// 履歴を記録
+			// 2. 履歴を記録
 			InventoryTransaction tx = new InventoryTransaction();
 			tx.setStockId(stock.getId());
-			tx.setTransactionType(transactionType);
+			tx.setTransactionType(transactionType); // PRODUCTION or DISPOSAL
 			tx.setQuantityChange(consume.negate()); // 消費はマイナス
-			tx.setTransactionDate(productionDate);
+			tx.setTransactionDate(transactionDate);
 			tx.setProductCode(productCode);
 			tx.setProductNumber(productNumber);
 			tx.setNote(note);
@@ -120,5 +121,11 @@ public class InventoryServiceImpl implements InventoryService {
 		if (remaining.compareTo(BigDecimal.ZERO) > 0) {
 			throw new RuntimeException("在庫が不足しています。不足分: " + remaining);
 		}
+	}
+
+	// 履歴一覧メソッド
+	@Override
+	public List<TransactionListDto> getAllTransactions() {
+		return inventoryTransactionMapper.findAll();
 	}
 }

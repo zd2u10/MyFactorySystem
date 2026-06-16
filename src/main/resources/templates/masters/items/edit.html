@@ -8,9 +8,9 @@
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/items', '製品情報の編集', 'edit')}"></header>
+	<header th:replace="~{fragments/common :: headerNav('/masters/items', '製品情報の編集', 'edit')}"></header>
 
-	<form id="editForm" th:action="@{/items/edit/{id}(id=${id})}" method="post" th:object="${itemForm}">
+	<form id="editForm" th:action="@{/masters/items/edit/{id}(id=${id})}" method="post" th:object="${itemForm}">
 	    
 		
 		<div th:replace="~{fragments/input :: text('製品名', 'name', 'editName')}"></div>

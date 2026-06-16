@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>削除済み材料一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/material.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/materials', '削除済み材料一覧', 'deleted')}"></header>
+    <div th:replace="~{fragments/message :: flash-message}"></div>
+
+    <div class="filter-btns" style="margin-bottom: 10px;">
+        <button class="btn" onclick="filterMaterials('ALL')">すべて</button>
+        <button class="btn" onclick="filterMaterials('RAW')">原料のみ</button>
+        <button class="btn" onclick="filterMaterials('ADDITIVE')">添加物のみ</button>
+    </div>
+
+    <table class="content-table">
+        <thead>
+            <tr data-type="RAW"><th colspan="4" style="background-color: #e0e0e0;">削除済み原料</th></tr>
+            <tr data-type="RAW"><th>ID</th><th>名前</th><th>単位</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${rawList}" data-type="RAW">
+                <td th:text="${m.id}"></td>
+                <td th:id="'name_' + ${m.id}" th:text="${m.name}"></td>
+                <td th:text="${m.unit}"></td>
+                <td>
+                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="type" value="RAW" /> 
+                        <button type="button" class="btn btn-restore" 
+                                th:onclick="openConfirmModal('restoreForm_[[${m.id}]]', 'confirmModal', 'confirmContent', ['name_[[${m.id}]]'], ['原料'], '復旧')">
+                            復旧
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+
+        <thead>
+            <tr data-type="ADDITIVE"><th colspan="4" style="background-color: #e0e0e0;">削除済み添加物</th></tr>
+            <tr data-type="ADDITIVE"><th>ID</th><th>名前</th><th>単位</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${additiveList}" data-type="ADDITIVE">
+                <td th:text="${m.id}"></td>
+                <td th:id="'name_' + ${m.id}" th:text="${m.name}"></td>
+                <td th:text="${m.unit}"></td>
+                <td>
+                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="type" value="ADDITIVE" />
+                        <button type="button" class="btn btn-restore" 
+                                th:onclick="openConfirmModal('restoreForm_[[${m.id}]]', 'confirmModal', 'confirmContent', ['name_[[${m.id}]]'], ['添加物'], '復旧')">
+                            復旧
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
+</body>
+</html>

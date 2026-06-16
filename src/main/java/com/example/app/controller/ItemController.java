@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/items")
+@RequestMapping("/masters/items")
 public class ItemController {
 
 	private final ItemService itemService;
@@ -30,7 +30,7 @@ public class ItemController {
 	public String list(Model model) {
 		model.addAttribute("itemList", itemService.getAllItems());
 		model.addAttribute("currentPage", "list");
-		return "items/list";
+		return "masters/items/list";
 	}
 
 	// 2.登録画面の表示
@@ -38,7 +38,7 @@ public class ItemController {
 	public String showRegisterForm(Model model) {
 		model.addAttribute("itemForm", new ItemForm());
 		model.addAttribute("currentPage", "register");
-		return "items/register";
+		return "masters/items/register";
 	}
 
 	// 3. 登録処理
@@ -48,14 +48,14 @@ public class ItemController {
 		if (result.hasErrors()) {
 			// エラー時はフォームを保持して画面へ戻す
 			model.addAttribute("currentPage", "register");
-			return "items/register";
+			return "masters/items/register";
 		}
 		// 入力項目をformに一任
 		itemService.registerItemFromForm(form);
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "製品情報を登録しました");
 		redirectAttributes.addFlashAttribute("msgType", "register");
-		return "redirect:/items/list";
+		return "redirect:/masters/items/list";
 	}
 
 	// 4.編集画面表示
@@ -73,7 +73,7 @@ public class ItemController {
 		model.addAttribute("itemForm", form);
 		model.addAttribute("id", id);
 		model.addAttribute("currentPage", "list");
-		return "items/edit";
+		return "masters/items/edit";
 	}
 
 	// 5.更新処理
@@ -89,7 +89,7 @@ public class ItemController {
 			// 画面再表示用に不足しているデータを追加
 			model.addAttribute("id", id);
 			model.addAttribute("currentPage", "list");
-			return "items/edit";
+			return "masters/items/edit";
 		}
 
 		// FormをEntityに変換
@@ -100,7 +100,7 @@ public class ItemController {
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "製品情報を更新しました");
 		redirectAttributes.addFlashAttribute("msgType", "update");
-		return "redirect:/items/list";
+		return "redirect:/masters/items/list";
 	}
 
 	// 6.論理削除処理
@@ -110,7 +110,7 @@ public class ItemController {
 		itemService.logicalDelete(id);
 		redirectAttributes.addFlashAttribute("message", "製品情報を削除しました");
 		redirectAttributes.addFlashAttribute("msgType", "delete");
-		return "redirect:/items/list";
+		return "redirect:/masters/items/list";
 	}
 
 	// 7.削除一覧表示
@@ -118,7 +118,7 @@ public class ItemController {
 	public String showDeletedItem(Model model) {
 		model.addAttribute("itemList", itemService.findDeletedItem());
 		model.addAttribute("currentPage", "deleted");
-		return "items/deleted";
+		return "masters/items/deleted";
 	}
 
 	//8. 復元処理
@@ -129,7 +129,7 @@ public class ItemController {
 		// 成功メッセージ
 		redirectAttributes.addFlashAttribute("message", "製品情報を復旧しました");
 		redirectAttributes.addFlashAttribute("msgType", "restore");
-		return "redirect:/items/deleted";
+		return "redirect:/masters/items/deleted";
 	}
 
 }

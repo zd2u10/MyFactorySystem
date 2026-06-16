@@ -7,7 +7,7 @@
 	<script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/items', '製品一覧', 'list')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/masters/items', '製品一覧', 'list')}"></header>
     
 	<div th:replace="~{fragments/message :: flash-message}"></div>
     <table class="content-table">
@@ -28,12 +28,12 @@
 				
 				
                 <td>
-					<a th:href="@{/items/edit/{id}(id=${i.id})}" class="btn btn-edit">編集</a>
+					<a th:href="@{/masters/items/edit/{id}(id=${i.id})}" class="btn btn-edit">編集</a>
 					<button type="button" class="btn btn-delete" th:onclick="openConfirmModal('deleteForm[[${i.id}]]',
 						    'confirmModal', 'confirmContent', ['deleteName[[${i.id}]]'], ['削除する製品'], '削除')">
 					        削除
 					</button>
-					<form th:id="'deleteForm' + ${i.id}" th:action="@{/items/delete/{id}(id=${i.id})}" method="post" style="display:none;">
+					<form th:id="'deleteForm' + ${i.id}" th:action="@{/masters/items/delete/{id}(id=${i.id})}" method="post" style="display:none;">
 						<input type="hidden" th:id="'deleteName' + ${i.id}" th:value="${i.name}" />
 					</form>
 				</td>

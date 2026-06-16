@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>材料一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/material.js}"></script>
+</head>
+<body>
+    <header th:replace="~{fragments/common :: headerNav('/materials', '材料一覧', 'list')}"></header>
+    <div th:replace="~{fragments/message :: flash-message}"></div>
+
+    <div class="filter-btns" style="margin-bottom: 10px;">
+        <button class="btn" onclick="filterMaterials('ALL')">すべて</button>
+        <button class="btn" onclick="filterMaterials('RAW')">原料のみ</button>
+        <button class="btn" onclick="filterMaterials('ADDITIVE')">添加物のみ</button>
+    </div>
+
+    <table class="content-table">
+        <thead>
+            <tr data-type="RAW"><th colspan="5" style="background-color: #e0e0e0;">原料</th></tr>
+            <tr data-type="RAW"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${rawList}" data-type="RAW">
+                <td th:text="${m.id}"></td>
+                <td>
+                    <span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span>
+                </td>
+                <td th:text="${m.unit}"></td>
+                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
+                <td>
+                    <a th:href="@{/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+                    <form th:id="'form_' + ${m.id}" th:action="@{/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
+                        <button type="button" class="btn btn-delete" 
+                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
+                            削除
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+
+        <thead>
+            <tr data-type="ADDITIVE"><th colspan="5" style="background-color: #e0e0e0;">添加物</th></tr>
+            <tr data-type="ADDITIVE"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${additiveList}" data-type="ADDITIVE">
+                <td th:text="${m.id}"></td>
+                <td>
+                    <span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span>
+                </td>
+                <td th:text="${m.unit}"></td>
+                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
+                <td>
+                    <a th:href="@{/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+                    <form th:id="'form_' + ${m.id}" th:action="@{/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
+                        <button type="button" class="btn btn-delete" 
+                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
+                            削除
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:replace="~{fragments/input :: confirm-modal}"></div>
+
+</body>
+</html>

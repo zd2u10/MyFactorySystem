@@ -7,9 +7,9 @@
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-	<header th:replace="~{fragments/common :: headerNav('/items', '製品の新規登録', 'register')}"></header>
+	<header th:replace="~{fragments/common :: headerNav('/masters/items', '製品の新規登録', 'register')}"></header>
 
-	<form id="registerForm" th:action="@{/items/register}" method="post" th:object="${itemForm}">
+	<form id="registerForm" th:action="@{/masters/items/register}" method="post" th:object="${itemForm}">
 	    <div th:replace="~{fragments/input :: text('製品名', 'name', 'regName')}"></div>
 	    <div th:replace="~{fragments/input :: text('販売単位', 'salesUnit', 'regSalesUnit')}"></div>
 	    <div th:replace="~{fragments/input :: text('バッチ製造数', 'batchSize', 'regBatchSize')}"></div>

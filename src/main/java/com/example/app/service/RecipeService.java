@@ -14,4 +14,7 @@ public interface RecipeService {
 
 	// 加水率計算用メソッド
 	String calculateWaterRange(Long itemId, List<Recipe> recipes);
+
+	// 編集処理
+	void updateRecipe(RecipeRegisterData data);
 }

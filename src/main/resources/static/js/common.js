@@ -25,9 +25,16 @@ function openConfirmModal(formId, modalId, contentId, nameIds, labels, actionNam
 			const checked = document.querySelector(`input[name="${inputElement.name}"]:checked`);
 			val = checked ? (checked.value === 'true' ? '粉体' : '液体') : '未選択';
 		} else {
-		// 値を取得(inputタグの場合は.value、そうでない場合は .innerText などを考慮)
-		val = inputElement ? inputElement.value : "(未選択)";
+			
+		  if(inputElement){
+			// 値を取得(inputタグの場合は.value、そうでない場合は .innerText などを考慮)
+			val = (inputElement.value !== undefined && inputElement.value !== "")
+				? inputElement.value
+				: (inputElement.innerText || "(未選択)");
+		} else {
+			val = "(未選択)";
 		}
+		
         displayInfo += `<p><strong>${labels[i]}:</strong> ${val}</p>`;
     }
     
@@ -58,5 +65,10 @@ function openConfirmModal(formId, modalId, contentId, nameIds, labels, actionNam
  */
 function closeConfirmModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.close();
+    if(modal){
+		modal.close();
+	}
+
+  }
+
 }
