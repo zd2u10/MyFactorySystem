@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.app.dto.ArrivalForm;
 import com.example.app.dto.TransactionListDto;
-import com.example.app.service.InventoryService;
 import com.example.app.service.MaterialService;
+import com.example.app.service.inventory.MaterialInventoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,14 +27,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionController {
 
-	private final InventoryService inventoryService;
+	private final MaterialInventoryService inventoryService;
 	private final MaterialService materialService;
 
 	// 増減履歴一覧表示
 	@GetMapping("/list")
-	public String list(Model model) {
-		List<TransactionListDto> transactionList = inventoryService.getAllTransactions();
+	public String list(
+			@RequestParam(required = false) String type, // RAW/ADDITIVE
+			@RequestParam(required = false) String txType, // IN/PRODUCTION/DISPOSAL
+			Model model) {
+
+		// 条件がnullなら全件、指定があればぼりこみできる
+		List<TransactionListDto> transactionList = inventoryService.getTransactions(type, txType);
+
+		// 全データに対して成型処理(0を取る)を適用
+		transactionList.forEach(TransactionListDto::setupDisplayFields);
+
 		model.addAttribute("transactionList", transactionList);
+		model.addAttribute("currentType", type);
+		model.addAttribute("currentTxType", txType);
+		model.addAttribute("currentPage", "transaction");
 		return "inventory/transaction/list";
 	}
 

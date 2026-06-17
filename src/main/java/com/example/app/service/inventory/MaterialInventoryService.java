@@ -1,4 +1,4 @@
-package com.example.app.service;
+package com.example.app.service.inventory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -7,7 +7,7 @@ import java.util.List;
 import com.example.app.domain.InventoryStock;
 import com.example.app.dto.TransactionListDto;
 
-public interface InventoryService {
+public interface MaterialInventoryService {
 
 	// --- 在庫確認 ---
 	List<InventoryStock> getStocksByType(String materialType);
@@ -62,6 +62,6 @@ public interface InventoryService {
 			String note);
 
 	// 履歴一覧を取得するメソッド
-	List<TransactionListDto> getAllTransactions();
+	List<TransactionListDto> getTransactions(String materialType, String transactionType);
 
 }

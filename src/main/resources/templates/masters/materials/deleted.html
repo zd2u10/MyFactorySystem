@@ -8,7 +8,7 @@
     <script th:src="@{/js/material.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/materials', '削除済み材料一覧', 'deleted')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/masters/materials', '削除済み材料一覧', 'deleted')}"></header>
     <div th:replace="~{fragments/message :: flash-message}"></div>
 
     <div class="filter-btns" style="margin-bottom: 10px;">
@@ -28,7 +28,7 @@
                 <td th:id="'name_' + ${m.id}" th:text="${m.name}"></td>
                 <td th:text="${m.unit}"></td>
                 <td>
-                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
+                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/masters/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
                         <input type="hidden" name="type" value="RAW" /> 
                         <button type="button" class="btn btn-restore" 
                                 th:onclick="openConfirmModal('restoreForm_[[${m.id}]]', 'confirmModal', 'confirmContent', ['name_[[${m.id}]]'], ['原料'], '復旧')">
@@ -49,7 +49,7 @@
                 <td th:id="'name_' + ${m.id}" th:text="${m.name}"></td>
                 <td th:text="${m.unit}"></td>
                 <td>
-                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
+                    <form th:id="'restoreForm_' + ${m.id}" th:action="@{/masters/materials/restore/{id}(id=${m.id})}" method="post" style="display:inline;">
                         <input type="hidden" name="type" value="ADDITIVE" />
                         <button type="button" class="btn btn-restore" 
                                 th:onclick="openConfirmModal('restoreForm_[[${m.id}]]', 'confirmModal', 'confirmContent', ['name_[[${m.id}]]'], ['添加物'], '復旧')">

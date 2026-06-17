@@ -27,6 +27,7 @@ CREATE TABLE `inventory_stocks` (
   `material_id` bigint NOT NULL,
   `lot_number` varchar(100) NOT NULL,
   `origin` varchar(255) DEFAULT NULL COMMENT '産地（未設定可）',
+  `net_weight` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '1パッケージあたりの内容量(g/ml)',
   `quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '実在庫量',
   `reserved_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '仮消費ロック量',
   `expiry_date` date DEFAULT NULL,
@@ -36,7 +37,7 @@ CREATE TABLE `inventory_stocks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_material_lot_origin` (`material_id`,`lot_number`,`origin`),
   CONSTRAINT `fk_stock_material` FOREIGN KEY (`material_id`) REFERENCES `materials` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +46,7 @@ CREATE TABLE `inventory_stocks` (
 
 LOCK TABLES `inventory_stocks` WRITE;
 /*!40000 ALTER TABLE `inventory_stocks` DISABLE KEYS */;
-INSERT INTO `inventory_stocks` VALUES (1,1,'Test-001','愛知県',20.000,0.000,'2027-06-11','2026-06-11',1,'2026-06-11 00:40:59'),(2,1,'Test-002','三重県',20.000,0.000,'2027-06-11','2026-06-11',1,'2026-06-11 00:41:43'),(3,2,'Test-003','愛知県',20.000,0.000,'2027-06-11','2026-06-11',0,'2026-06-11 00:43:07');
+INSERT INTO `inventory_stocks` VALUES (1,1,'Test-001','愛知県',15000.000,300000.000,0.000,'2027-06-11','2026-06-11',1,'2026-06-11 00:40:59'),(2,1,'Test-002','三重県',15000.000,300000.000,0.000,'2027-06-11','2026-06-11',1,'2026-06-11 00:41:43'),(3,2,'Test-003','愛知県',15000.000,300000.000,0.000,'2027-06-11','2026-06-11',0,'2026-06-11 00:43:07'),(4,3,'BBB',NULL,20000.000,200000.000,0.000,'2027-06-13','2026-06-12',1,'2026-06-12 00:08:34'),(5,3,'AAA',NULL,20000.000,200000.000,0.000,'2027-06-12','2026-06-12',1,'2026-06-12 00:09:23'),(6,5,'ALG-001',NULL,25000.000,100000.000,0.000,'2027-06-12','2026-06-12',1,'2026-06-12 00:16:06'),(7,6,'Gum-001',NULL,20000.000,160000.000,0.000,'2027-06-12','2026-06-12',1,'2026-06-12 00:17:30'),(8,9,'FK-001',NULL,180000.000,360000.000,0.000,'2026-12-12','2026-06-12',1,'2026-06-12 00:19:18'),(9,10,'VIN-001',NULL,10000.000,20000.000,0.000,'2026-12-12','2026-06-12',1,'2026-06-12 00:20:25'),(10,11,'ALC-001',NULL,18000.000,36000.000,0.000,'2026-12-11','2026-06-12',1,'2026-06-12 00:21:31');
 /*!40000 ALTER TABLE `inventory_stocks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +70,7 @@ CREATE TABLE `inventory_transactions` (
   PRIMARY KEY (`id`),
   KEY `fk_tx_stock` (`stock_id`),
   CONSTRAINT `fk_tx_stock` FOREIGN KEY (`stock_id`) REFERENCES `inventory_stocks` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +79,7 @@ CREATE TABLE `inventory_transactions` (
 
 LOCK TABLES `inventory_transactions` WRITE;
 /*!40000 ALTER TABLE `inventory_transactions` DISABLE KEYS */;
-INSERT INTO `inventory_transactions` VALUES (1,1,'IN',20.000,NULL,NULL,'入荷: lot=Test-001','2026-06-11','2026-06-11 00:41:00'),(2,2,'IN',20.000,NULL,NULL,'入荷: lot=Test-002','2026-06-11','2026-06-11 00:41:44'),(3,3,'IN',20.000,NULL,NULL,'入荷: lot=Test-003','2026-06-11','2026-06-11 00:43:07');
+INSERT INTO `inventory_transactions` VALUES (1,1,'IN',20000.000,NULL,NULL,'入荷: lot=Test-001','2026-06-11','2026-06-11 00:41:00'),(2,2,'IN',20000.000,NULL,NULL,'入荷: lot=Test-002','2026-06-11','2026-06-11 00:41:44'),(3,3,'IN',20000.000,NULL,NULL,'入荷: lot=Test-003','2026-06-11','2026-06-11 00:43:07'),(4,4,'IN',200000.000,NULL,NULL,'入荷: lot=BBB','2026-06-12','2026-06-12 00:08:34'),(5,5,'IN',200000.000,NULL,NULL,'入荷: lot=AAA','2026-06-12','2026-06-12 00:09:24'),(6,6,'IN',100000.000,NULL,NULL,'入荷: lot=ALG-001','2026-06-12','2026-06-12 00:16:06'),(7,7,'IN',160000.000,NULL,NULL,'入荷: lot=Gum-001','2026-06-12','2026-06-12 00:17:31'),(8,8,'IN',360000.000,NULL,NULL,'入荷: lot=FK-001','2026-06-12','2026-06-12 00:19:18'),(9,9,'IN',20000.000,NULL,NULL,'入荷: lot=VIN-001','2026-06-12','2026-06-12 00:20:26'),(10,10,'IN',36000.000,NULL,NULL,'入荷: lot=ALC-001','2026-06-12','2026-06-12 00:21:32');
 /*!40000 ALTER TABLE `inventory_transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,6 +98,7 @@ CREATE TABLE `item_stocks` (
   `min_stock` decimal(12,3) DEFAULT NULL COMMENT '適正在庫（手動設定）',
   `production_date` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `reserved_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '出荷引き当て量',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_item_lot` (`item_id`,`lot_number`),
   KEY `fk_istock_item` (`item_id`),
@@ -250,7 +252,7 @@ CREATE TABLE `recipe_origins` (
   PRIMARY KEY (`id`),
   KEY `fk_ro_recipe` (`recipe_id`),
   CONSTRAINT `fk_ro_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +261,7 @@ CREATE TABLE `recipe_origins` (
 
 LOCK TABLES `recipe_origins` WRITE;
 /*!40000 ALTER TABLE `recipe_origins` DISABLE KEYS */;
-INSERT INTO `recipe_origins` VALUES (1,1,'三重県'),(2,1,'愛知県');
+INSERT INTO `recipe_origins` VALUES (14,1,'三重県'),(15,1,'愛知県');
 /*!40000 ALTER TABLE `recipe_origins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-11 13:50:26
+-- Dump completed on 2026-06-17 15:23:59

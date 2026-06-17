@@ -1,4 +1,4 @@
-package com.example.app.service;
+package com.example.app.service.inventory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,17 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.app.domain.InventoryStock;
 import com.example.app.domain.InventoryTransaction;
 import com.example.app.dto.TransactionListDto;
-import com.example.app.mapper.InventoryStockMapper;
-import com.example.app.mapper.InventoryTransactionMapper;
+import com.example.app.mapper.inventory.MaterialInventoryStockMapper;
+import com.example.app.mapper.inventory.MaterialInventoryTransactionMapper;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class InventoryServiceImpl implements InventoryService {
+public class MaterialInventoryServiceImpl implements MaterialInventoryService {
 
-	private final InventoryStockMapper inventoryStockMapper;
-	private final InventoryTransactionMapper inventoryTransactionMapper;
+	private final MaterialInventoryStockMapper inventoryStockMapper;
+	private final MaterialInventoryTransactionMapper inventoryTransactionMapper;
 
 	// 在庫一覧表示
 	@Override
@@ -125,7 +125,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 	// 履歴一覧メソッド
 	@Override
-	public List<TransactionListDto> getAllTransactions() {
-		return inventoryTransactionMapper.findAll();
+	public List<TransactionListDto> getTransactions(String materialType, String transactionType) {
+		return inventoryTransactionMapper.findTransactions(materialType, transactionType);
 	}
 }

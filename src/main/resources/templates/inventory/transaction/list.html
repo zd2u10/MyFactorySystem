@@ -1,44 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>入出庫履歴一覧</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+	<style>
+		.page-actions { margin-bottom: 20px; }
+	    .toggle-nav { margin: 20px 0; }
+	    .toggle-btn { padding: 10px 20px; border: 1px solid #ddd; background: #fff; text-decoration: none; color: #333; }
+	    .toggle-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+	</style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>入出庫履歴一覧</h2>
+    <div th:replace="~{fragments/common :: pageHeader('入出庫履歴', 'transaction')}"></div>
 
-    <table class="table table-striped mt-3">
+    <div class="nav-container">
+        <a th:href="@{/inventory/material/list}" class="nav-btn">在庫確認</a>
+        <a th:href="@{/inventory/transaction/list}" class="nav-btn active">入出庫履歴</a>
+    </div>
+	
+	<div class="filter-container">
+	    <div class="toggle-nav">
+	        <a th:href="@{/inventory/transaction/list(type='RAW', txType=${currentTxType})}" 
+	           th:classappend="${currentType == 'RAW'} ? 'active' : ''" class="toggle-btn">原料</a>
+	        <a th:href="@{/inventory/transaction/list(type='ADDITIVE', txType=${currentTxType})}" 
+	           th:classappend="${currentType == 'ADDITIVE'} ? 'active' : ''" class="toggle-btn">添加物</a>
+	    </div>
+
+	    <div class="toggle-nav">
+	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='IN')}" 
+	           th:classappend="${currentTxType == 'IN'} ? 'active' : ''" class="toggle-btn">入荷のみ</a>
+	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='PRODUCTION')}" 
+	           th:classappend="${currentTxType == 'PRODUCTION'} ? 'active' : ''" class="toggle-btn">製造消費</a>
+	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='DISPOSAL')}" 
+	           th:classappend="${currentTxType == 'DISPOSAL'} ? 'active' : ''" class="toggle-btn">廃棄</a>
+	        <a th:href="@{/inventory/transaction/list(type=${currentType})}" 
+	           th:classappend="${currentTxType == null} ? 'active' : ''" class="toggle-btn">すべて</a>
+	    </div>
+	</div>
+	
+    <table class="content-table">
         <thead>
             <tr>
                 <th>操作日</th>
                 <th>区分</th>
                 <th>材料名</th>
                 <th>ロット</th>
-                <th>数量</th>
-                <th>製品名 (ロット)</th>
+                <th>数量</th> <th>製品名 (ロット)</th>
                 <th>備考</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="tx : ${transactionList}">
-                <td th:text="${tx.transactionDate}">2026-06-16</td>
-                <td th:text="${tx.transactionType}">IN</td>
-                <td th:text="${tx.materialName}">小麦粉</td>
-                <td th:text="${tx.lotNumber}">L-001</td>
-                <td th:text="${#numbers.formatDecimal(tx.quantityChange, 1, 'COMMA', 1, 'POINT')}">10.0</td>
-                
+                <td th:text="${tx.transactionDate}"></td>
+                <td th:text="${tx.transactionType}"></td>
+                <td th:text="${tx.materialName}"></td>
+                <td th:text="${tx.lotNumber}"></td>
+				<td th:text="${tx.quantityStr}"></td>
                 <td>
-                    <span th:if="${tx.productName != null}" 
-                          th:text="${tx.productName} + ' (' + ${tx.productNumber} + ')'"></span>
+                    <span th:if="${tx.productName != null}" th:text="${tx.productName} + ' (' + ${tx.productNumber} + ')'"></span>
                     <span th:if="${tx.productName == null}">-</span>
                 </td>
-                
-                <td th:text="${tx.note}">-</td>
+                <td th:text="${tx.note}"></td>
             </tr>
         </tbody>
     </table>
-</div>
 </body>
 </html>

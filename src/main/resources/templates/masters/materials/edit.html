@@ -7,9 +7,9 @@
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/materials', '登録情報の編集', 'edit')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/masters/materials', '登録情報の編集', 'edit')}"></header>
 
-    <form id="editForm" th:action="@{/materials/edit/{id}(id=${materialForm.id})}" method="post" th:object="${materialForm}">
+    <form id="editForm" th:action="@{/masters/materials/edit/{id}(id=${materialForm.id})}" method="post" th:object="${materialForm}">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{materialType}" />
         

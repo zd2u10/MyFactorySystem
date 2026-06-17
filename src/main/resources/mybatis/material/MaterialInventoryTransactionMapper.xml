@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.inventory.MaterialInventoryTransactionMapper">
+	
+	<!-- 入荷?処理 -->
+	<insert id="insert">
+		INSERT INTO inventory_transactions
+		(stock_id, transaction_type, quantity_change, product_code,
+		product_number, note, transaction_date, created_at)
+		VALUES 
+        (#{stockId}, #{transactionType}, #{quantityChange}, #{productCode}, 
+        #{productNumber}, #{note}, #{transactionDate}, #{createdAt})
+	</insert>
+	
+	
+<select id="findTransactions" resultType="com.example.app.dto.TransactionListDto">
+    SELECT 
+        t.*, 
+        m.name as materialName, 
+        m.material_type as materialType,
+        s.lot_number as lotNumber 
+    FROM inventory_transactions t
+    JOIN inventory_stocks s ON t.stock_id = s.id
+    JOIN materials m ON s.material_id = m.id
+    <where>
+        <if test="materialType != null and materialType != ''">
+            AND m.material_type = #{materialType}
+        </if>
+        <if test="transactionType != null and transactionType != ''">
+            AND t.transaction_type = #{transactionType}
+        </if>
+    </where>
+    ORDER BY t.transaction_date DESC
+</select>
+	
+</mapper>

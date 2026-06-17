@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>製品在庫一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+        /* 在庫が適正在庫を下回っている行の背景色を赤くする */
+        .low-stock-row td {
+            background-color: #ffcccc !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-nav">
+        <a th:href="@{/home}">← ホームに戻る</a>
+        <h1>管理システム</h1>
+        <h2>製品在庫一覧</h2>
+    </div>
+
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>製品名</th>
+                <th>販売単位</th>
+                <th>現在の在庫数</th>
+                <th>適正在庫数</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${list}" 
+                th:classappend="${item.totalQuantity < item.minStock} ? 'low-stock-row' : ''">
+                
+                <td th:text="${item.itemName}">製品名</td>
+                <td th:text="${item.salesUnit}">個</td>
+                <td th:text="${item.totalQuantity}">0</td>
+                <td th:text="${item.minStock}">0</td>
+                <td>
+                    <a th:href="@{/inventory/item/edit/{id}(id=${item.itemId})}" class="btn btn-edit">在庫調整</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

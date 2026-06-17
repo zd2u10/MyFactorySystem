@@ -1,0 +1,45 @@
+<div class="stock-editor">
+    <h2>製品在庫編集: <span th:text="${item.name}">うどん</span></h2>
+    <div class="summary">
+        <p>有効在庫: <span th:text="${totalAvailable}">100</span> 個</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>製造日</th>
+                <th>ロット番号</th>
+                <th>実在庫</th>
+                <th>引当中</th>
+                <th>出荷可能</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="stock : ${stockList}">
+                <td th:text="${stock.productionDate}">2026-06-11</td>
+                <td th:text="${stock.lotNumber}">Test-001</td>
+                <td th:text="${stock.quantity}">20.000</td>
+                <td th:text="${stock.reservedQuantity}">0.000</td>
+                <td th:text="${stock.getAvailableQuantity()}">20.000</td>
+                <td>
+                    <form th:action="@{/inventory/item/reduce}" method="post">
+                        <input type="hidden" name="stockId" th:value="${stock.id}">
+						<input type="hidden" name="itemId" th:value="${item.id}">
+						
+                        <input type="number" name="reduceQuantity" step="0.001" placeholder="数量" required>
+                       
+						<select name="transactionType">
+						   <option value="SHIPMENT">出荷</option>
+						   <option value="DISPOSAL">廃棄</option>
+						</select>
+						
+						<button type="submit">出庫</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/inventory/item/add-form(itemId=${item.id})}">新規製造ロット登録</a>
+</div>

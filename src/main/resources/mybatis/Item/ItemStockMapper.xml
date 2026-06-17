@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.ItemStockMapper">
+    
+    <select id="findAllItemStock" resultType="com.example.app.dto.ItemStockDto">
+        <![CDATA[
+        SELECT
+            i.id AS itemId,
+            i.name AS itemName,
+            i.sales_unit AS salesUnit,
+            COALESCE(MAX(s.min_stock), 0) AS minStock,
+            COALESCE(SUM(s.quantity), 0) AS totalQuantity
+        FROM
+            items i
+        LEFT JOIN
+            item_stocks s ON i.id = s.item_id
+        WHERE
+            i.is_active = 1
+        GROUP BY
+            i.id, i.name, i.sales_unit
+        ORDER BY 
+            (COALESCE(SUM(s.quantity), 0) < COALESCE(MAX(s.min_stock), 0)) DESC, 
+            i.name ASC
+        ]]>
+    </select>
+    
+    <select id="findStockByItemIdAndLotNumber" resultType="com.example.app.domain.ItemStock">
+        SELECT * FROM item_stocks 
+        WHERE item_id = #{itemId} AND lot_number = #{lotNumber}
+    </select>
+
+    <select id="findById" resultType="com.example.app.domain.ItemStock">
+        SELECT * FROM item_stocks WHERE id = #{id}
+    </select>
+
+    <insert id="insertStock" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO item_stocks (item_id, lot_number, quantity, production_date)
+        VALUES (#{itemId}, #{lotNumber}, #{quantity}, #{productionDate})
+    </insert>
+
+    <update id="addQuantity">
+        UPDATE item_stocks 
+        SET quantity = quantity + #{addAmount} 
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateQuantity">
+        UPDATE item_stocks 
+        SET quantity = #{newQuantity} 
+        WHERE id = #{id}
+    </update>
+</mapper>

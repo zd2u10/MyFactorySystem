@@ -1,4 +1,4 @@
-package com.example.app.controller;
+package com.example.app.controller.master;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class MaterialController {
 	public String register(@Valid @ModelAttribute MaterialForm form, BindingResult result,
 			RedirectAttributes redirectAttributes) {
 		if (result.hasErrors())
-			return "materials/register";
+			return "masters/materials/register";
 		materialService.registerMaterial(form.toEntity());
 		redirectAttributes.addFlashAttribute("message", "登録しました");
 		return "redirect:/masters/materials/list";
@@ -111,7 +111,7 @@ public class MaterialController {
 		// 3.現在のページ情報のセット
 		model.addAttribute("currentPage", "deleted");
 
-		return "materials/deleted";
+		return "/masters/materials/deleted";
 	}
 
 	// 復旧処理
@@ -120,7 +120,7 @@ public class MaterialController {
 		materialService.restore(id);
 		ra.addFlashAttribute("message", "復旧しました");
 		// 復旧後、該当タイプの削除済み一覧へ戻る
-		return "redirect:/materials/deleted?type=" + type;
+		return "redirect:/masters/materials/deleted?type=" + type;
 	}
 
 }

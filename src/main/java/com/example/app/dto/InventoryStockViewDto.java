@@ -1,5 +1,6 @@
 package com.example.app.dto;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 import com.example.app.domain.InventoryStock;
@@ -32,13 +33,16 @@ public class InventoryStockViewDto {
 		// 1. 単位が存在する場合は、数値の後ろに付ける用の文字列を用意する（例: " g"）
 		String unitStr = (this.unit != null) ? " " + this.unit : "";
 
-		// 2. すっきりさせた数値の後ろに単位(unitStr)をつける
+		// 2.. フォーマットの準備 (3桁カンマ区切り)
+		DecimalFormat df = new DecimalFormat("#,###");
+
+		// 3. df.fromat()を試用して成型
 		this.netWeightStr = stock.getNetWeight() != null
-				? stock.getNetWeight().stripTrailingZeros().toPlainString() + unitStr
+				? df.format(stock.getNetWeight()) + unitStr
 				: "-";
 
 		this.quantityStr = stock.getQuantity() != null
-				? stock.getQuantity().stripTrailingZeros().toPlainString() + unitStr
+				? df.format(stock.getQuantity()) + unitStr
 				: "-";
 	}
 }

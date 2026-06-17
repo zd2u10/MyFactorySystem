@@ -1,4 +1,4 @@
-package com.example.app.controller;
+package com.example.app.controller.master;
 
 import jakarta.validation.Valid;
 

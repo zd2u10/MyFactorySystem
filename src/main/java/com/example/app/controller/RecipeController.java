@@ -20,7 +20,7 @@ import com.example.app.domain.Item;
 import com.example.app.domain.Material;
 import com.example.app.domain.Recipe;
 import com.example.app.dto.RecipeForm;
-import com.example.app.mapper.InventoryStockMapper;
+import com.example.app.mapper.inventory.MaterialInventoryStockMapper;
 import com.example.app.service.ItemService;
 import com.example.app.service.MaterialService;
 import com.example.app.service.RecipeService;
@@ -35,7 +35,7 @@ public class RecipeController {
 	private final RecipeService recipeService;
 	private final MaterialService materialService;
 	private final ItemService itemService;
-	private final InventoryStockMapper inventoryStockMapper;
+	private final MaterialInventoryStockMapper inventoryStockMapper;
 
 	@GetMapping("/list/{itemId}")
 	public String list(@PathVariable Long itemId, Model model) {

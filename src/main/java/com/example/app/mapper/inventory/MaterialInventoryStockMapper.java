@@ -1,4 +1,4 @@
-package com.example.app.mapper;
+package com.example.app.mapper.inventory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.example.app.domain.InventoryStock;
 
 @Mapper
-public interface InventoryStockMapper {
+public interface MaterialInventoryStockMapper {
 
 	// 入荷登録（同一 material_id + lot_number + origin なら数量加算）
 	void upsertStock(InventoryStock stock);

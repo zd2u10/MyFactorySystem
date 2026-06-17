@@ -15,6 +15,17 @@
 
 	<div th:replace="~{fragments/common :: pageHeader('在庫確認ページ', 'inventory')}"></div>
 
+	<div class="nav-container">
+	    <a th:href="@{/inventory/material/list}" 
+	       th:classappend="${currentPage == 'material'} ? 'nav-btn active' : 'nav-btn'">
+	       在庫確認
+	    </a>
+	    
+	    <a th:href="@{/inventory/transaction/list}" 
+	       th:classappend="${currentPage == 'transaction'} ? 'nav-btn active' : 'nav-btn'">
+	       入出庫履歴
+	    </a>
+	</div>
 	
     <div class="toggle-nav">
         <a th:href="@{/inventory/material/list(type='RAW')}" 
@@ -25,7 +36,7 @@
            th:classappend="${currentType == 'ADDITIVE'} ? 'active' : ''" 
            class="toggle-btn">添加物<!--ADDITIVE--></a>
     </div>
-
+	
 	<div class="page-actions">
 		<a th:href="@{/inventory/transaction/arrival}" class="btn btn-save">+ 入荷記録を行う</a>
 	</div>

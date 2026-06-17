@@ -7,9 +7,9 @@
     <script th:src="@{/js/common.js}"></script>
 </head>
 <body>
-    <header th:replace="~{fragments/common :: headerNav('/materials', '材料登録', 'register')}"></header>
+    <header th:replace="~{fragments/common :: headerNav('/masters/materials', '材料登録', 'register')}"></header>
 
-	<form id="registerForm" th:action="@{/materials/register}" method="post" th:object="${materialForm}">
+	<form id="registerForm" th:action="@{/masters/materials/register}" method="post" th:object="${materialForm}">
 	    <div style="margin-bottom: 20px; padding: 10px; background: #eee;">
 	        <label>材料区分：</label>
 	        <input type="radio" id="typeRaw" th:field="*{materialType}" value="RAW" checked />
