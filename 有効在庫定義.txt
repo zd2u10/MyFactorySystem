@@ -1,0 +1,16 @@
+CREATE VIEW v_item_available_stock AS
+SELECT
+  i.id AS item_id,
+  COALESCE(s.stock_qty, 0) - COALESCE(o.open_qty, 0) AS available_stock
+FROM items i
+LEFT JOIN (
+  SELECT item_id, SUM(quantity) AS stock_qty
+  FROM item_stocks GROUP BY item_id
+) s ON s.item_id = i.id
+LEFT JOIN (
+  SELECT oi.item_id, SUM(oi.quantity - oi.shipped_quantity) AS open_qty
+  FROM order_items oi
+  JOIN orders o ON o.id = oi.order_id
+  WHERE o.status = 'OPEN'
+  GROUP BY oi.item_id
+) o ON o.item_id = i.id;

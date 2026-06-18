@@ -1,0 +1,12 @@
+SELECT
+  i.id AS item_id,
+  i.batch_size,
+  GREATEST(i.min_stock - v.available_stock - COALESCE(p.temp_qty, 0), 0) AS shortage
+FROM items i
+JOIN v_item_available_stock v ON v.item_id = i.id
+LEFT JOIN (
+  SELECT item_id, SUM(quantity) AS temp_qty
+  FROM production_orders WHERE status = 'TEMP'
+  GROUP BY item_id
+) p ON p.item_id = i.id
+HAVING shortage > 0;

@@ -95,7 +95,6 @@ CREATE TABLE `item_stocks` (
   `item_id` bigint NOT NULL,
   `lot_number` varchar(100) NOT NULL COMMENT '製造日ベースで採番',
   `quantity` decimal(12,3) NOT NULL DEFAULT '0.000',
-  `min_stock` decimal(12,3) DEFAULT NULL COMMENT '適正在庫（手動設定）',
   `production_date` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reserved_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '出荷引き当て量',
@@ -130,6 +129,7 @@ CREATE TABLE `items` (
   `standard_cost` decimal(12,3) DEFAULT NULL,
   `sales_price` decimal(12,3) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '論理削除フラグ',
+  `min_stock` decimal(12,3) DEFAULT '0.000' COMMENT '適正在庫数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_item_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -141,7 +141,7 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
-INSERT INTO `items` VALUES (1,'うどん','個',198.000,70.000,200.000,1),(2,'玄米うどん','個',198.000,70.000,200.000,1),(3,'ラーメンウェーブ','個',195.000,70.200,200.000,1);
+INSERT INTO `items` VALUES (1,'うどん','個',198.000,70.000,200.000,1,400.000),(2,'玄米うどん','個',198.000,70.000,200.000,1,400.000),(3,'ラーメンウェーブ','個',195.000,70.200,200.000,1,800.000);
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -172,6 +172,62 @@ LOCK TABLES `materials` WRITE;
 /*!40000 ALTER TABLE `materials` DISABLE KEYS */;
 INSERT INTO `materials` VALUES (1,'米粉','g','RAW',1,0),(2,'玄米粉','g','RAW',1,0),(3,'α米','g','ADDITIVE',1,0),(4,'F-800','g','ADDITIVE',1,0),(5,'アルギン酸エステル','g','ADDITIVE',1,0),(6,'キサンタンガム','g','ADDITIVE',1,0),(7,'クチナシ','g','ADDITIVE',1,0),(8,'V-B2','g','ADDITIVE',1,0),(9,'FKハイパー','ml','ADDITIVE',0,0),(10,'酢','ml','ADDITIVE',0,0),(11,'酒精','ml','ADDITIVE',0,0);
 /*!40000 ALTER TABLE `materials` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_items`
+--
+
+DROP TABLE IF EXISTS `order_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order_items` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_id` bigint NOT NULL,
+  `item_id` bigint NOT NULL,
+  `quantity` decimal(12,3) NOT NULL COMMENT '受注数量',
+  `shipped_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '出荷済数量',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_oi_item` (`item_id`),
+  KEY `fk_oi_order` (`order_id`),
+  CONSTRAINT `fk_oi_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
+  CONSTRAINT `fk_oi_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_items`
+--
+
+LOCK TABLES `order_items` WRITE;
+/*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_date` date NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'OPEN' COMMENT 'OPEN / SHIPPED / CANCELLED',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -219,7 +275,10 @@ DROP TABLE IF EXISTS `production_orders`;
 CREATE TABLE `production_orders` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `item_id` bigint NOT NULL,
+  `lot_number` varchar(100) DEFAULT NULL COMMENT '製造ロット番号',
+  `quantity` decimal(12,3) DEFAULT NULL COMMENT '製造予定数',
   `status` varchar(20) NOT NULL DEFAULT 'TEMP' COMMENT 'TEMP / DONE / DISPOSED',
+  `trigger_source` varchar(20) NOT NULL DEFAULT 'MANUAL' COMMENT 'MANUAL / AUTO_ORDER',
   `water_amount` decimal(12,3) DEFAULT NULL COMMENT '使用した加水量',
   `production_date` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -298,6 +357,37 @@ LOCK TABLES `recipes` WRITE;
 INSERT INTO `recipes` VALUES (1,3,1,15000.000,9199.900,10036.200,55.00,60.00),(2,3,3,1200.000,9199.900,10036.200,55.00,60.00),(3,3,5,60.000,9199.900,10036.200,55.00,60.00),(4,3,6,450.000,9199.900,10036.200,55.00,60.00),(5,3,7,17.000,9199.900,10036.200,55.00,60.00),(6,3,9,81.000,9199.900,10036.200,55.00,60.00),(7,3,10,45.000,9199.900,10036.200,55.00,60.00),(8,3,11,450.000,9199.900,10036.200,55.00,60.00);
 /*!40000 ALTER TABLE `recipes` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `v_item_available_stock`
+--
+
+DROP TABLE IF EXISTS `v_item_available_stock`;
+/*!50001 DROP VIEW IF EXISTS `v_item_available_stock`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `v_item_available_stock` AS SELECT 
+ 1 AS `item_id`,
+ 1 AS `available_stock`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `v_item_available_stock`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_item_available_stock`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_item_available_stock` AS select `i`.`id` AS `item_id`,(coalesce(`s`.`stock_qty`,0) - coalesce(`o`.`open_qty`,0)) AS `available_stock` from ((`items` `i` left join (select `item_stocks`.`item_id` AS `item_id`,sum(`item_stocks`.`quantity`) AS `stock_qty` from `item_stocks` group by `item_stocks`.`item_id`) `s` on((`s`.`item_id` = `i`.`id`))) left join (select `oi`.`item_id` AS `item_id`,sum((`oi`.`quantity` - `oi`.`shipped_quantity`)) AS `open_qty` from (`order_items` `oi` join `orders` `o` on((`o`.`id` = `oi`.`order_id`))) where (`o`.`status` = 'OPEN') group by `oi`.`item_id`) `o` on((`o`.`item_id` = `i`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -308,4 +398,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-17 15:23:59
+-- Dump completed on 2026-06-18 15:15:01
