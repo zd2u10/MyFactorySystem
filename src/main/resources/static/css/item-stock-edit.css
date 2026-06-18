@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+/* ===== 製品在庫編集画面用スタイル ===== */
+
+/* 画面全体の幅調整 */
+.stock-editor {
+    max-width: 900px; 
+    margin: 0 auto;
+}
+
+/* 有効在庫の強調 */
+.summary {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #e7f1ff;
+    border-left: 5px solid #007bff;
+}
+
+/* 1. 新規入庫エリアの囲み */
+.add-stock-section {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* フォームの行ごとの余白 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* 入力欄のデザイン */
+.form-control {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 2. テーブル内の操作フォーム（横に並べる） */
+.action-form {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* テーブル内の小さな入力欄 */
+.input-small {
+    width: 80px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+/* ===== 製品在庫一覧画面用スタイル ===== */
+
+/* 適正在庫を下回った行の警告スタイル */
+.low-stock-row td {
+    background-color: #f8d7da !important; /* 薄い赤（編集画面のエラーと同じ色合い） */
+    color: #721c24;
+    font-weight: bold;
+}
+
+/* 数値を見やすくするために右寄せにするクラス */
+.num-align {
+    text-align: right !important;
+    padding-right: 20px !important;
+}

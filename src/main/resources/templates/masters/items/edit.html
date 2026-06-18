@@ -18,6 +18,7 @@
 	    <div th:replace="~{fragments/input :: text('バッチ製造数', 'batchSize', 'editBatchSize')}"></div>
 	    <div th:replace="~{fragments/input :: text('標準原価', 'standardCost', 'editStandardCost')}"></div>
 	    <div th:replace="~{fragments/input :: text('販売価格', 'salesPrice', 'editSalesPrice')}"></div>
+		<div th:replace="~{fragments/input :: text('適正在庫数', 'minStock', 'editMinStock')}"></div>
 		
 		<input type="hidden" th:field="*{id}" />
 		<input type="hidden" th:field="*{active}" />
@@ -27,8 +28,8 @@
 		
 	    <button type="button" class="btn btn-action"
 	        onclick="openConfirmModal('editForm', 'confirmModal', 'confirmContent', 
-			['editName', 'editSalesUnit', 'editBatchSize', 'editStandardCost', 'editSalesPrice'], 
-			['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格'],'更新')">更新</button>
+			['editName', 'editSalesUnit', 'editBatchSize', 'editStandardCost', 'editSalesPrice', 'editMinStock'], 
+			['製品名', '販売単位', 'バッチ製造数', '標準原価', '販売価格', '適正在庫数'],'更新')">更新</button>
 	</form>
 	<dialog th:replace="~{fragments/input :: confirm-modal}"></dialog>
 </body>

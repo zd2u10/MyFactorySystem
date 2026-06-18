@@ -19,10 +19,30 @@ public class ItemStockServiceImpl implements ItemStockService {
 
 	private final ItemStockMapper itemStockMapper;
 
+	// 全てをリスト化
 	@Override
 	public List<ItemStockDto> getAllItemStock() {
 		// ここで複雑な加工が必要なら処理を追加
 		return itemStockMapper.findAllItemStock();
+	}
+
+	// ロット一覧
+	@Override
+	public List<ItemStock> findStocksByItemId(Long itemId) {
+		return itemStockMapper.findStocksByItemId(itemId);
+	}
+
+	@Override
+	public ItemStock getItemById(Long itemId) {
+		return itemStockMapper.findById(itemId);
+	}
+
+	@Override
+	public BigDecimal calculateTotalAvailable(Long itemId) {
+		List<ItemStock> stocks = itemStockMapper.findStocksByItemId(itemId);
+		return stocks.stream()
+				.map(s -> s.getQuantity().subtract(s.getReservedQuantity()))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	// 入庫処理（追加）
@@ -67,4 +87,5 @@ public class ItemStockServiceImpl implements ItemStockService {
 		// TODO: 将来、製品の履歴テーブル(item_transactions)を作成した際、
 		// ここで transactionType と reduceQuantity を用いて履歴INSERT処理を追加する
 	}
+
 }

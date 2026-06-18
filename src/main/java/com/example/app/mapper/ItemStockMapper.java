@@ -17,6 +17,9 @@ public interface ItemStockMapper {
 	//ロット番号と製品IDで既存の在庫を探す
 	ItemStock findStockByItemIdAndLotNumber(@Param("itemId") Long itemId, @Param("lotNumber") String lotNumber);
 
+	// ロット一覧取得用
+	List<ItemStock> findStocksByItemId(@Param("itemId") Long itemId);
+
 	// 在庫IDで単一の在庫を探す
 	ItemStock findById(@Param("id") Long id);
 
@@ -28,4 +31,5 @@ public interface ItemStockMapper {
 
 	// 既存ロットの数量を減算・上書きする
 	void updateQuantity(@Param("id") Long id, @Param("newQuantity") BigDecimal newQuantity);
+
 }

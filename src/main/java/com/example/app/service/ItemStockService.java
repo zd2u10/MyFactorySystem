@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.app.domain.ItemStock;
 import com.example.app.dto.ItemStockDto;
 
 public interface ItemStockService {
@@ -15,4 +16,14 @@ public interface ItemStockService {
 
 	// 出庫・調整処理（減少）
 	void reduceStock(Long stockId, BigDecimal reduceQuantity, String transactionType);
+
+	// 製品IDでロット一覧で取得するメソッド 
+	List<ItemStock> findStocksByItemId(Long itemId);
+
+	// 製品1件を取得するメソッド
+	ItemStock getItemById(Long itemId);
+
+	// 出荷可能数を計算するメソッド
+	BigDecimal calculateTotalAvailable(Long itemId);
+
 }

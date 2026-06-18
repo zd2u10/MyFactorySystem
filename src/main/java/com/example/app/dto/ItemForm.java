@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import org.springframework.format.annotation.NumberFormat;
+
 import com.example.app.domain.Item;
 
 import lombok.Data;
@@ -24,17 +26,25 @@ public class ItemForm {
 
 	@NotNull(message = "バッチ製造数は必須です")
 	@Positive(message = "0より大きい値を入力してください")
+	@NumberFormat(pattern = "0.###")
 	private BigDecimal batchSize;
 
 	@NotNull(message = "標準原価は必須です")
 	@PositiveOrZero(message = "0以上の値を入力してください")
+	@NumberFormat(pattern = "0.###")
 	private BigDecimal standardCost;
 
 	@NotNull(message = "販売価格は必須です")
 	@PositiveOrZero(message = "0以上の値を入力してください")
+	@NumberFormat(pattern = "0.###")
 	private BigDecimal salesPrice;
 
 	private boolean isActive = true;
+
+	@NotNull(message = "適正在庫数は必須です")
+	@PositiveOrZero(message = "0以上の値を入力してください")
+	@NumberFormat(pattern = "0.###")
+	private BigDecimal minStock;
 
 	private BigDecimal minHydrationRate;
 
@@ -50,6 +60,7 @@ public class ItemForm {
 		item.setStandardCost(this.standardCost);
 		item.setSalesPrice(this.salesPrice);
 		item.setActive(this.isActive);
+		item.setMinStock(minStock);
 		item.setMinHydrationRate(this.minHydrationRate);
 		item.setMaxHydrationRate(this.maxHydrationRate);
 		return item;
@@ -64,6 +75,7 @@ public class ItemForm {
 		this.standardCost = item.getStandardCost();
 		this.salesPrice = item.getSalesPrice();
 		this.isActive = item.isActive();
+		this.minStock = item.getMinStock();
 		this.minHydrationRate = item.getMinHydrationRate();
 		this.maxHydrationRate = item.getMaxHydrationRate();
 	}

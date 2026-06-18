@@ -8,8 +8,9 @@
             i.id AS itemId,
             i.name AS itemName,
             i.sales_unit AS salesUnit,
-            COALESCE(MAX(s.min_stock), 0) AS minStock,
-            COALESCE(SUM(s.quantity), 0) AS totalQuantity
+            i.min_stock AS minStock,
+            COALESCE(SUM(s.quantity), 0) AS totalQuantity,
+            COALESCE(SUM(s.reserved_quantity), 0) AS reservedQuantity
         FROM
             items i
         LEFT JOIN
@@ -17,19 +18,26 @@
         WHERE
             i.is_active = 1
         GROUP BY
-            i.id, i.name, i.sales_unit
+            i.id, i.name, i.sales_unit, i.min_stock
         ORDER BY 
-            (COALESCE(SUM(s.quantity), 0) < COALESCE(MAX(s.min_stock), 0)) DESC, 
+            /* 実在庫ではなく「有効在庫 (数量 - 引当数) < 適正在庫」になっているものを一番上に持ってくる */
+            ((COALESCE(SUM(s.quantity), 0) - COALESCE(SUM(s.reserved_quantity), 0)) < i.min_stock) DESC, 
             i.name ASC
         ]]>
     </select>
     
-    <select id="findStockByItemIdAndLotNumber" resultType="com.example.app.domain.ItemStock">
+    <select id="findStocksByItemId" resultType="ItemStock">
+        SELECT * FROM item_stocks 
+        WHERE item_id = #{itemId} 
+        ORDER BY production_date ASC, lot_number ASC
+    </select>
+
+    <select id="findStockByItemIdAndLotNumber" resultType="ItemStock">
         SELECT * FROM item_stocks 
         WHERE item_id = #{itemId} AND lot_number = #{lotNumber}
     </select>
 
-    <select id="findById" resultType="com.example.app.domain.ItemStock">
+    <select id="findById" resultType="ItemStock">
         SELECT * FROM item_stocks WHERE id = #{id}
     </select>
 
@@ -49,4 +57,5 @@
         SET quantity = #{newQuantity} 
         WHERE id = #{id}
     </update>
+    
 </mapper>

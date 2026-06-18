@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.ProductionOrderMapper">
+
+    <select id="findManufacturingOrdersByItemId" resultType="ProductionOrder">
+        SELECT 
+            id, 
+            item_id AS itemId, 
+            lot_number AS lotNumber, 
+            quantity, 
+            production_date AS productionDate, 
+            status
+        FROM production_orders
+        WHERE item_id = #{itemId} 
+          AND status = 'MANUFACTURING'
+    </select>
+
+    <select id="findByLotNumber" resultType="ProductionOrder">
+        SELECT 
+            id, 
+            item_id AS itemId, 
+            lot_number AS lotNumber, 
+            quantity, 
+            production_date AS productionDate, 
+            status
+        FROM production_orders
+        WHERE lot_number = #{lotNumber}
+    </select>
+
+</mapper>

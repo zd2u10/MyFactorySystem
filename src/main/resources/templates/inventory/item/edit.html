@@ -1,10 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>製品在庫編集</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/item-stock-edit.css}">
+</head>
+<body>
+
 <div class="stock-editor">
-    <h2>製品在庫編集: <span th:text="${item.name}">うどん</span></h2>
+    <h2>製品在庫編集: <span th:text="${item.name}">製品名</span></h2>
+    
+    <div th:if="${successMessage}" class="flash-message msg-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="flash-message msg-delete" th:text="${errorMessage}"></div>
+
     <div class="summary">
-        <p>有効在庫: <span th:text="${totalAvailable}">100</span> 個</p>
+        <p>有効在庫: <span th:text="${totalAvailable}">0</span> 個</p>
     </div>
 
-    <table>
+    <div class="add-stock-section">
+        <h3>製造完了による入庫</h3>
+        
+        <p th:if="${#lists.isEmpty(selectableLots)}" style="color: #721c24;">
+            現在、製造中のオーダー（ロット）がありません。先に製造指示を出してください。
+        </p>
+        
+        <form th:if="${!#lists.isEmpty(selectableLots)}" th:action="@{/inventory/item/add-stock}" method="post">
+            <input type="hidden" name="itemId" th:value="${item.id}">
+            
+            <div class="form-group">
+                <label>対象ロット (現在製造中):</label>
+                <select name="lotNumber" class="form-control" required>
+                    <option value="">選択してください</option>
+                    <option th:each="lot : ${selectableLots}" 
+                            th:value="${lot.lotNumber}" 
+                            th:text="${lot.lotNumber} + ' (予定数: ' + ${lot.quantity} + ')'"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>実入庫数:</label>
+                <input type="number" name="quantity" class="form-control" step="0.001" placeholder="実際の完成数" required>
+            </div>
+            
+            <button type="submit" class="btn btn-save">入庫する</button>
+        </form>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+
+    <h3>現在の在庫ロット一覧</h3>
+    
+    <table class="content-table">
         <thead>
             <tr>
                 <th>製造日</th>
@@ -16,6 +63,9 @@
             </tr>
         </thead>
         <tbody>
+            <tr th:if="${#lists.isEmpty(stockList)}">
+                <td colspan="6" style="text-align: center;">現在、在庫がありません。</td>
+            </tr>
             <tr th:each="stock : ${stockList}">
                 <td th:text="${stock.productionDate}">2026-06-11</td>
                 <td th:text="${stock.lotNumber}">Test-001</td>
@@ -23,23 +73,29 @@
                 <td th:text="${stock.reservedQuantity}">0.000</td>
                 <td th:text="${stock.getAvailableQuantity()}">20.000</td>
                 <td>
-                    <form th:action="@{/inventory/item/reduce}" method="post">
+                    <form th:action="@{/inventory/item/reduce}" method="post" class="action-form">
                         <input type="hidden" name="stockId" th:value="${stock.id}">
-						<input type="hidden" name="itemId" th:value="${item.id}">
-						
-                        <input type="number" name="reduceQuantity" step="0.001" placeholder="数量" required>
+                        <input type="hidden" name="itemId" th:value="${item.id}">
+                        
+                        <input type="number" name="reduceQuantity" class="input-small" step="0.001" placeholder="数量" required>
                        
-						<select name="transactionType">
-						   <option value="SHIPMENT">出荷</option>
-						   <option value="DISPOSAL">廃棄</option>
-						</select>
-						
-						<button type="submit">出庫</button>
+                        <select name="transactionType" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+                           <option value="SHIPMENT">出荷</option>
+                           <option value="DISPOSAL">廃棄</option>
+                           <option value="CORRECTION">棚卸調整</option>
+                        </select>
+                        
+                        <button type="submit" class="btn btn-delete">減らす</button>
                     </form>
                 </td>
             </tr>
         </tbody>
     </table>
-
-    <a th:href="@{/inventory/item/add-form(itemId=${item.id})}">新規製造ロット登録</a>
+    
+    <div style="margin-top: 20px;">
+        <a th:href="@{/inventory/item/list}" class="btn btn-back">一覧に戻る</a>
+    </div>
 </div>
+
+</body>
+</html>

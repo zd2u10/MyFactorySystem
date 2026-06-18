@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <title>製品在庫一覧</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <style>
-        /* 在庫が適正在庫を下回っている行の背景色を赤くする */
-        .low-stock-row td {
-            background-color: #ffcccc !important;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/item-stock-list.css}">
 </head>
 <body>
     <div class="header-nav">
-        <a th:href="@{/home}">← ホームに戻る</a>
+        <a th:href="@{/home}" class="btn btn-back">← ホームに戻る</a>
+    </div>
+    
+    <div class="nav-container">
         <h1>管理システム</h1>
         <h2>製品在庫一覧</h2>
     </div>
@@ -24,20 +21,26 @@
             <tr>
                 <th>製品名</th>
                 <th>販売単位</th>
-                <th>現在の在庫数</th>
+                <th>実在庫(合計)</th>
+                <th>引当済(合計)</th>
+                <th>有効在庫</th>
                 <th>適正在庫数</th>
                 <th>操作</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="item : ${list}" 
-                th:classappend="${item.totalQuantity < item.minStock} ? 'low-stock-row' : ''">
+            <tr th:each="item : ${stockList}" 
+                th:classappend="${item.getAvailableQuantity() != null && item.minStock != null && item.getAvailableQuantity() < item.minStock} ? 'low-stock-row' : ''">
                 
                 <td th:text="${item.itemName}">製品名</td>
-                <td th:text="${item.salesUnit}">個</td>
-                <td th:text="${item.totalQuantity}">0</td>
-                <td th:text="${item.minStock}">0</td>
-                <td>
+                <td th:text="${item.salesUnit}" style="text-align: center;">個</td>
+                
+                <td th:text="${item.totalQuantity}" class="num-align">0</td>
+                <td th:text="${item.reservedQuantity}" class="num-align">0</td>
+                <td th:text="${item.getAvailableQuantity()}" class="num-align">0</td>
+                <td th:text="${item.minStock}" class="num-align">0</td>
+                
+                <td style="text-align: center;">
                     <a th:href="@{/inventory/item/edit/{id}(id=${item.itemId})}" class="btn btn-edit">在庫調整</a>
                 </td>
             </tr>

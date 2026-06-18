@@ -12,7 +12,7 @@
 	<div th:replace="~{fragments/message :: flash-message}"></div>
     <table class="content-table">
         <thead>
-			<tr><th>製品名</th><th>レシピ</th><th>販売単位</th><th>製造数</th><th>標準原価</th><th>販売価格</th><th>操作</th></tr>
+			<tr><th>製品名</th><th>レシピ</th><th>販売単位</th><th>製造数</th><th>標準原価</th><th>販売価格</th><th>適正在庫数</th><th>操作</th></tr>
 		</thead>
         <tbody>
             <tr th:each="i : ${itemList}">
@@ -21,10 +21,10 @@
 					<a th:href="@{/recipes/list/{id}(id=${i.id})}" title="レシピを表示">📖</a>
 				</td>
 				<td th:text="${i.salesUnit}"></td>
-                <td th:text="${i.batchSize}"></td>
-				<td th:text="${i.standardCost}"></td>
-                <td th:text="${i.salesPrice}"></td>
-				
+				<td th:text="${i.batchSize?.stripTrailingZeros()?.toPlainString()}"></td>
+				<td th:text="${i.standardCost?.stripTrailingZeros()?.toPlainString()}"></td>
+				<td th:text="${i.salesPrice?.stripTrailingZeros()?.toPlainString()}"></td>
+				<td th:text="${i.minStock?.stripTrailingZeros()?.toPlainString()}"></td>
 				
 				
                 <td>

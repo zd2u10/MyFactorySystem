@@ -16,7 +16,7 @@
 
     <div class="nav-container">
         <a th:href="@{/inventory/material/list}" class="nav-btn">在庫確認</a>
-        <a th:href="@{/inventory/transaction/list}" class="nav-btn active">入出庫履歴</a>
+        <a th:href="@{/inventory/transaction/list}" class="nav-btn active">入荷/消費履歴</a>
     </div>
 	
 	<div class="filter-container">
@@ -29,7 +29,7 @@
 
 	    <div class="toggle-nav">
 	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='IN')}" 
-	           th:classappend="${currentTxType == 'IN'} ? 'active' : ''" class="toggle-btn">入荷のみ</a>
+	           th:classappend="${currentTxType == 'IN'} ? 'active' : ''" class="toggle-btn">入荷</a>
 	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='PRODUCTION')}" 
 	           th:classappend="${currentTxType == 'PRODUCTION'} ? 'active' : ''" class="toggle-btn">製造消費</a>
 	        <a th:href="@{/inventory/transaction/list(type=${currentType}, txType='DISPOSAL')}" 

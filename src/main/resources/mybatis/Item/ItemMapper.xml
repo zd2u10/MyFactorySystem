@@ -15,8 +15,8 @@
     </select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO items (name, sales_unit, batch_size, standard_cost, sales_price, is_active)
-		VALUES (#{name}, #{salesUnit}, #{batchSize}, #{standardCost}, #{salesPrice}, #{isActive})
+		INSERT INTO items (name, sales_unit, batch_size, standard_cost, sales_price, is_active, min_stock)
+		VALUES (#{name}, #{salesUnit}, #{batchSize}, #{standardCost}, #{salesPrice}, #{isActive}, #{minStock})
 	</insert>
 
 	<update id="update">
@@ -26,7 +26,8 @@
 			batch_size = #{batchSize},
 			standard_cost = #{standardCost},
 			sales_price = #{salesPrice},
-			is_active = #{isActive}
+			is_active = #{isActive},
+			min_stock = #{minStock}
 		WHERE id = #{id}
 	</update>
 
