@@ -1,5 +1,6 @@
 package com.example.app.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,4 +16,10 @@ public interface ProductionOrderMapper {
 
 	// ロット番号をキーに製造データ１件取得
 	ProductionOrder findByLotNumber(@Param("lotNumber") String lotNumber);
+
+	// 製造予定の新規登録（受注からの自動生成・手動追加の両方で使用）
+	void insertProductionOrder(ProductionOrder productionOrder);
+
+	// 指定itemの「製造中(MANUFACTURING)」の合計予定数量（二重生成防止用）
+	BigDecimal sumManufacturingQuantityByItemId(@Param("itemId") Long itemId);
 }

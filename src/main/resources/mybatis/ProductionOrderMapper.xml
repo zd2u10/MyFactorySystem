@@ -27,4 +27,16 @@
         WHERE lot_number = #{lotNumber}
     </select>
 
+    <insert id="insertProductionOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO production_orders (item_id, quantity, production_date, status, trigger_source)
+        VALUES (#{itemId}, #{quantity}, #{productionDate}, #{status}, #{triggerSource})
+    </insert>
+
+    <select id="sumManufacturingQuantityByItemId" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM production_orders
+        WHERE item_id = #{itemId}
+          AND status = 'MANUFACTURING'
+    </select>
+
 </mapper>

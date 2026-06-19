@@ -14,11 +14,11 @@
         <h1>管理システム</h1>
         <h2>受注履歴（全件）</h2>
     </div>
-
-    <div style="margin-bottom: 20px;">
-        <a th:href="@{/orders/list}" class="btn btn-edit">未出荷一覧へ戻る</a>
-    </div>
-
+	
+	<header th:replace="~{fragments/common :: orderMenu('/orders', 'history')}"></header>
+	
+	<hr />
+	
     <table class="content-table">
         <thead>
             <tr>
@@ -44,7 +44,7 @@
                 </td>
                 
                 <td>
-                    <a th:href="@{/orders/detail/{id}(id=${order.id})}" class="btn btn-back">詳細</a>
+                    <a th:href="@{/orders/detail/{id}(id=${order.id})}" class="btn btn-edit">詳細</a>
                 </td>
             </tr>
         </tbody>

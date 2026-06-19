@@ -10,24 +10,27 @@
         <a th:href="@{/home}" class="btn btn-back">←ホームに戻る</a>
     </div>
 
+	<div style="margin-bottom:16px;">
+		<a th:href="@{/orders/list}" class="btn btn-back">受注一覧に戻る</a>
+	</div>
+	
     <div class="nav-container">
         <h1>管理システム</h1>
         <h2>受注入力フォーム</h2>
     </div>
-	<div style="margin-bottom:16px;">
-		<a th:href="@{/orders/list}" class="btn btn-edit">受注一覧に戻る</a>
-	</div>
+	<hr />
+	
     <div th:if="${errorMessage}" class="flash-message msg-delete" th:text="${errorMessage}"></div>
 
+    <h3>注文内容</h3>
+	
     <form th:action="@{/orders}" method="post">
 
         <div class="form-group">
             <label>注文者名:</label>
             <input type="text" name="customerName" class="form-control" placeholder="お客様名" required>
         </div>
-
-        <h3>注文内容</h3>
-
+		
         <table class="content-table" id="itemRows">
             <thead>
                 <tr>

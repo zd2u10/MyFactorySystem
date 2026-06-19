@@ -13,4 +13,5 @@ public class ProductionOrder {
 	private BigDecimal quantity;
 	private LocalDate productionDate; // 仮製造中(計画時)になった日
 	private String status; // "MANUFACTURING"(製造中), "COMPLETED"(完了)
+	private String triggerSource; // "AUTO_ORDER" または "MANUAL"
 }

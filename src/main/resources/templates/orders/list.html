@@ -12,15 +12,18 @@
 
     <div class="nav-container">
         <h1>管理システム</h1>
-        <h2>受注一覧（未出荷）</h2>
+        <h2>未出荷一覧</h2>
     </div>
-
+	
+	<header th:replace="~{fragments/common :: orderMenu('/orders', 'list')}"></header>
+	
+	<hr />
+	
     <div th:if="${successMessage}" class="flash-message msg-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="flash-message msg-delete" th:text="${errorMessage}"></div>
 
     <div style="margin-bottom: 16px;">
         <a th:href="@{/orders/new}" class="btn btn-save">＋受注を入力する</a>
-        <a th:href="@{/orders/history}" class="btn btn-edit"style="margin-left: 10px;">履歴を見る</a>
     </div>
 
     <table class="content-table">

@@ -8,7 +8,7 @@ import com.example.app.dto.MaterialForm;
 
 public interface MaterialService {
 
-	// 有効な原料・添加物の一覧
+	// 登録されている原料・添加物別の一覧
 	List<Material> getMaterialsByType(String materialType);
 
 	// 理論削除された一覧取得
@@ -30,4 +30,6 @@ public interface MaterialService {
 	void restore(Long id);
 
 	void registerMaterialFromForm(MaterialForm form);
+
+	List<Material> getAllMaterials();
 }

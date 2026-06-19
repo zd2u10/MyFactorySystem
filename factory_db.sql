@@ -193,7 +193,7 @@ CREATE TABLE `order_items` (
   KEY `fk_oi_order` (`order_id`),
   CONSTRAINT `fk_oi_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
   CONSTRAINT `fk_oi_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,7 +202,7 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
-INSERT INTO `order_items` VALUES (1,3,1,200.000,0.000,'2026-06-19 02:12:56'),(2,4,3,200.000,0.000,'2026-06-19 02:13:12');
+INSERT INTO `order_items` VALUES (1,1,3,400.000,0.000,'2026-06-19 03:18:18'),(2,1,1,200.000,0.000,'2026-06-19 03:18:18'),(3,2,3,200.000,0.000,'2026-06-19 03:18:41');
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -220,7 +220,7 @@ CREATE TABLE `orders` (
   `status` varchar(20) NOT NULL DEFAULT 'OPEN' COMMENT 'OPEN / SHIPPED / CANCELLED',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,7 +229,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (3,'2026-06-19','Admin1','OPEN','2026-06-19 02:12:56'),(4,'2026-06-19','Admin1','OPEN','2026-06-19 02:13:12');
+INSERT INTO `orders` VALUES (1,'2026-06-19','Admin1','OPEN','2026-06-19 03:18:18'),(2,'2026-06-19','Admin1','OPEN','2026-06-19 03:18:41');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -400,4 +400,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-19 11:30:03
+-- Dump completed on 2026-06-19 14:23:44

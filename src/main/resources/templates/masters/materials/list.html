@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>材料一覧</title>
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+	<style>
+		.page-actions { margin-bottom: 20px; }
+	    .toggle-nav { margin: 20px 0; }
+	    .toggle-btn { padding: 10px 20px; border: 1px solid #ddd; background: #fff; text-decoration: none; color: #333; }
+	    .toggle-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+	</style>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/material.js}"></script>
 </head>
@@ -11,61 +17,70 @@
     <header th:replace="~{fragments/common :: headerNav('/masters/materials', '材料一覧', 'list')}"></header>
     <div th:replace="~{fragments/message :: flash-message}"></div>
 
-    <div class="filter-btns" style="margin-bottom: 10px;">
-        <button class="btn" onclick="filterMaterials('ALL')">すべて</button>
-        <button class="btn" onclick="filterMaterials('RAW')">原料のみ</button>
-        <button class="btn" onclick="filterMaterials('ADDITIVE')">添加物のみ</button>
-    </div>
+	<div class="toggle-nav">
+		    <a th:href="@{/masters/materials/list(type='ALL')}" 
+		       th:classappend="${currentType == 'ALL'} ? 'active' : ''" 
+		       class="toggle-btn">すべて</a>
 
-    <table class="content-table">
-        <thead>
-            <tr data-type="RAW"><th colspan="5" style="background-color: #e0e0e0;">原料</th></tr>
-            <tr data-type="RAW"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
-        </thead>
-        <tbody>
-            <tr th:each="m : ${rawList}" data-type="RAW">
-                <td th:text="${m.id}"></td>
-                <td>
-                    <span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span>
-                </td>
-                <td th:text="${m.unit}"></td>
-                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
-                <td>
-                    <a th:href="@{/masters/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
-                    <form th:id="'form_' + ${m.id}" th:action="@{/masters/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
-                        <button type="button" class="btn btn-delete" 
-                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
-                            削除
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
+		    <a th:href="@{/masters/materials/list(type='RAW')}" 
+		       th:classappend="${currentType == 'RAW'} ? 'active' : ''" 
+		       class="toggle-btn">原料</a>
+		       
+		    <a th:href="@{/masters/materials/list(type='ADDITIVE')}" 
+		       th:classappend="${currentType == 'ADDITIVE'} ? 'active' : ''" 
+		       class="toggle-btn">添加物</a>
+		</div>
 
-        <thead>
-            <tr data-type="ADDITIVE"><th colspan="5" style="background-color: #e0e0e0;">添加物</th></tr>
-            <tr data-type="ADDITIVE"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
-        </thead>
-        <tbody>
-            <tr th:each="m : ${additiveList}" data-type="ADDITIVE">
-                <td th:text="${m.id}"></td>
-                <td>
-                    <span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span>
-                </td>
-                <td th:text="${m.unit}"></td>
-                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
-                <td>
-                    <a th:href="@{/masters/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
-                    <form th:id="'form_' + ${m.id}" th:action="@{/masters/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
-                        <button type="button" class="btn btn-delete" 
-                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
-                            削除
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+	    <table class="content-table">
+	    	
+	    	<th:block th:if="${currentType == 'ALL' || currentType == 'RAW'}">
+		        <thead>
+		            <tr data-type="RAW"><th colspan="5" style="background-color: #e0e0e0;">原料</th></tr>
+		            <tr data-type="RAW"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
+		        </thead>
+		        <tbody>
+		            <tr th:each="m : ${rawList}" data-type="RAW">
+		                <td th:text="${m.id}"></td>
+		                <td><span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span></td>
+		                <td th:text="${m.unit}"></td>
+		                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
+		                <td>
+		                    <a th:href="@{/masters/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+		                    <form th:id="'form_' + ${m.id}" th:action="@{/masters/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
+		                        <button type="button" class="btn btn-delete" 
+		                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
+		                            削除
+		                        </button>
+		                    </form>
+		                </td>
+		            </tr>
+		        </tbody>
+	        </th:block>
+
+	    	<th:block th:if="${currentType == 'ALL' || currentType == 'ADDITIVE'}">
+		        <thead>
+		            <tr data-type="ADDITIVE"><th colspan="5" style="background-color: #e0e0e0;">添加物</th></tr>
+		            <tr data-type="ADDITIVE"><th>ID</th><th>名前</th><th>単位</th><th>形態</th><th>操作</th></tr>
+		        </thead>
+		        <tbody>
+		            <tr th:each="m : ${additiveList}" data-type="ADDITIVE">
+		                <td th:text="${m.id}"></td>
+		                <td><span th:text="${m.name}" th:id="'name_val_' + ${m.id}"></span></td>
+		                <td th:text="${m.unit}"></td>
+		                <td th:text="${m.isPowder} ? '粉体' : '液体'"></td>
+		                <td>
+		                    <a th:href="@{/masters/materials/edit/{id}(id=${m.id})}" class="btn btn-edit">編集</a>
+		                    <form th:id="'form_' + ${m.id}" th:action="@{/masters/materials/delete/{id}(id=${m.id})}" method="post" style="display:inline;">
+		                        <button type="button" class="btn btn-delete" 
+		                                th:onclick="'openConfirmModal(\'form_' + ${m.id} + '\', \'confirmModal\', \'confirmContent\', [\'name_val_' + ${m.id} + '\'], [\'名前\'], \'削除\')'">
+		                            削除
+		                        </button>
+		                    </form>
+		                </td>
+		            </tr>
+		        </tbody>
+	        </th:block>
+	    </table>
 
     <div th:replace="~{fragments/input :: confirm-modal}"></div>
 

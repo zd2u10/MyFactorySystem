@@ -19,7 +19,8 @@ public class MaterialServiceImpl implements MaterialService {
 
 	private final MaterialMapper materialMapper;
 
-	// 有効な一覧
+	@Override
+	// 原料・添加物別一覧
 	public List<Material> getMaterialsByType(String materialType) {
 		return materialMapper.findActiveMaterialsByType(materialType);
 	}
@@ -64,6 +65,12 @@ public class MaterialServiceImpl implements MaterialService {
 	@Override
 	public void registerMaterialFromForm(MaterialForm form) {
 		materialMapper.insert(form.toEntity());
+	}
+
+	@Override
+	public List<Material> getAllMaterials() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }

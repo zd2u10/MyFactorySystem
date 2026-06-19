@@ -27,6 +27,8 @@
 	    </a>
 	</div>
 	
+	<hr />
+	
     <div class="toggle-nav">
         <a th:href="@{/inventory/material/list(type='RAW')}" 
            th:classappend="${currentType == 'RAW'} ? 'active' : ''" 
@@ -36,6 +38,8 @@
            th:classappend="${currentType == 'ADDITIVE'} ? 'active' : ''" 
            class="toggle-btn">添加物<!--ADDITIVE--></a>
     </div>
+	
+	<hr />
 	
 	<div class="page-actions">
 		<a th:href="@{/inventory/transaction/arrival}" class="btn btn-save">+ 入荷記録を行う</a>

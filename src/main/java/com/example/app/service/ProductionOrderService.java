@@ -10,4 +10,7 @@ public interface ProductionOrderService {
 
 	// ロット番号からオーダーを1件取得
 	ProductionOrder findByLotNumber(String lotNumber);
+
+	// 有効在庫が適正在庫を下回っていれば、不足分の製造予定(MANUFACTURING)を自動生成する
+	void checkAndGenerateForItem(Long itemId);
 }

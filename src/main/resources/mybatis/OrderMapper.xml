@@ -18,7 +18,7 @@
             o.order_date AS orderDate,
             o.customer_name AS customerName,
             o.status AS status,
-            GROUP_CONCAT(CONCAT(i.name, ' x ', CAST(oi.quantity AS UNSIGNED), i.sales_unit) SEPARATOR ', ') AS itemSummary
+            GROUP_CONCAT(CONCAT(i.name, ' x ', CAST(oi.quantity AS UNSIGNED), i.sales_unit)SEPARATOR ', ') AS itemSummary
         FROM orders o
         JOIN order_items oi ON oi.order_id = o.id
         JOIN items i ON i.id = oi.item_id
@@ -54,10 +54,18 @@
         JOIN items i ON i.id = oi.item_id
         WHERE oi.order_id = #{orderId}
     </select>
-    
+
+    <select id="sumOpenQuantityByItemId" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(oi.quantity - oi.shipped_quantity), 0)
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        WHERE oi.item_id = #{itemId}
+          AND o.status = 'OPEN'
+    </select>
+
     <update id="updateStatus">
-        UPDATE orders 
-        SET status = #{newStatus} 
+        UPDATE orders
+        SET status = #{newStatus}
         WHERE id = #{orderId}
     </update>
 

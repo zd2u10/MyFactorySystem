@@ -20,6 +20,6 @@ public interface OrderService {
 	// 受注明細一覧取得
 	List<OrderItemDetailDto> getOrderItems(Long orderId);
 
-	// ステータス更新
-	void updateOrderStatus(Long OrderId, String newStatus);
+	// ステータス更新（出荷済/キャンセルなど）
+	void updateOrderStatus(Long orderId, String newStatus);
 }

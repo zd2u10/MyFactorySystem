@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderMapper orderMapper;
+	private final ProductionOrderService productionOrderService;
 
 	@Override
 	public List<OrderListDto> getOrderList(String status) {
@@ -39,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 		return orderMapper.findOrderItemsByOrderId(orderId);
 	}
 
-	// 受注登録（ヘッダー＋明細を1トランザクションで登録）
+	// 受注登録（ヘッダー＋明細を1トランザクションで登録し、不足していれば製造予定も自動生成する）
 	@Override
 	@Transactional
 	public void createOrder(OrderForm form) {
@@ -71,6 +72,13 @@ public class OrderServiceImpl implements OrderService {
 			orderItem.setQuantity(itemForm.getQuantity());
 			orderMapper.insertOrderItem(orderItem);
 		}
+
+		// 受注により有効在庫が減るため、対象itemごとに製造予定の自動生成判定を行う
+		// (同じ注文内に同じ商品が複数行あっても1回だけ判定すればよいのでdistinct)
+		validItems.stream()
+				.map(OrderItemForm::getItemId)
+				.distinct()
+				.forEach(productionOrderService::checkAndGenerateForItem);
 	}
 
 	@Override
@@ -79,3 +87,4 @@ public class OrderServiceImpl implements OrderService {
 		orderMapper.updateStatus(orderId, newStatus);
 	}
 }
+

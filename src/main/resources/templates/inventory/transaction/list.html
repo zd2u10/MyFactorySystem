@@ -18,7 +18,9 @@
         <a th:href="@{/inventory/material/list}" class="nav-btn">在庫確認</a>
         <a th:href="@{/inventory/transaction/list}" class="nav-btn active">入荷/消費履歴</a>
     </div>
-	
+
+	<hr />
+			
 	<div class="filter-container">
 	    <div class="toggle-nav">
 	        <a th:href="@{/inventory/transaction/list(type='RAW', txType=${currentTxType})}" 
@@ -38,6 +40,8 @@
 	           th:classappend="${currentTxType == null} ? 'active' : ''" class="toggle-btn">すべて</a>
 	    </div>
 	</div>
+	
+	<hr />
 	
     <table class="content-table">
         <thead>

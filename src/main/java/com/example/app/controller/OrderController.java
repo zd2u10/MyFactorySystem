@@ -28,6 +28,7 @@ public class OrderController {
 	@GetMapping("/list")
 	public String list(Model model) {
 		model.addAttribute("orderList", orderService.getOrderList("OPEN"));
+		model.addAttribute("currentPage", "list");
 		return "orders/list";
 	}
 
@@ -35,6 +36,7 @@ public class OrderController {
 	@GetMapping("/history")
 	public String history(Model model) {
 		model.addAttribute("orderList", orderService.getOrderList(null));
+		model.addAttribute("currentPage", "history");
 		return "orders/history";
 	}
 

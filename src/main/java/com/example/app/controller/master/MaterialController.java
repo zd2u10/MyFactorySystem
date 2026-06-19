@@ -31,16 +31,26 @@ public class MaterialController {
 
 	// 一覧表示（RAWとADDITIVEの両方を持ち、フロントでJS切り替えを行う）
 	@GetMapping("/list")
-	public String list(Model model) {
-		List<Material> allMaterials = new ArrayList<>();
+	public String list(@RequestParam(value = "type", defaultValue = "ALL") String type, Model model) {
 
-		// それぞれ取得して、allMaterialsにまとめて追加
-		allMaterials.addAll(materialService.getMaterialsByType("RAW"));
-		allMaterials.addAll(materialService.getMaterialsByType("ADDITIVE"));
+		List<Material> rawList = new ArrayList<>();
+		List<Material> additiveList = new ArrayList<>();
 
-		model.addAttribute("rawList", materialService.getMaterialsByType("RAW"));
-		model.addAttribute("additiveList", materialService.getMaterialsByType("ADDITIVE"));
+		// 「すべて」または「原料」の時に原料リストを取得
+		if ("ALL".equals(type) || "RAW".equals(type)) {
+			rawList = materialService.getMaterialsByType("RAW");
+		}
+
+		// 「すべて」または「添加物」の時に添加物リストを取得
+		if ("ALL".equals(type) || "ADDITIVE".equals(type)) {
+			additiveList = materialService.getMaterialsByType("ADDITIVE");
+		}
+
+		model.addAttribute("rawList", rawList);
+		model.addAttribute("additiveList", additiveList);
+		model.addAttribute("currentType", type); // ハイライト判定用
 		model.addAttribute("currentPage", "list");
+
 		return "masters/materials/list";
 	}
 
