@@ -186,14 +186,14 @@ CREATE TABLE `order_items` (
   `order_id` bigint NOT NULL,
   `item_id` bigint NOT NULL,
   `quantity` decimal(12,3) NOT NULL COMMENT '受注数量',
-  `shipped_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '出荷済数量',
+  `shipped_quantity` decimal(12,3) NOT NULL DEFAULT '0.000' COMMENT '出荷済数量（出荷機能実装まで未使用）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_oi_item` (`item_id`),
   KEY `fk_oi_order` (`order_id`),
   CONSTRAINT `fk_oi_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
   CONSTRAINT `fk_oi_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,6 +202,7 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
+INSERT INTO `order_items` VALUES (1,3,1,200.000,0.000,'2026-06-19 02:12:56'),(2,4,3,200.000,0.000,'2026-06-19 02:13:12');
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,11 +215,12 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `order_date` date NOT NULL,
+  `order_date` date NOT NULL COMMENT '受注日（自動付与）',
+  `customer_name` varchar(255) NOT NULL COMMENT '注文者名（自由入力、ユーザー管理機能なし）',
   `status` varchar(20) NOT NULL DEFAULT 'OPEN' COMMENT 'OPEN / SHIPPED / CANCELLED',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,6 +229,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (3,'2026-06-19','Admin1','OPEN','2026-06-19 02:12:56'),(4,'2026-06-19','Admin1','OPEN','2026-06-19 02:13:12');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -311,7 +314,7 @@ CREATE TABLE `recipe_origins` (
   PRIMARY KEY (`id`),
   KEY `fk_ro_recipe` (`recipe_id`),
   CONSTRAINT `fk_ro_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +323,6 @@ CREATE TABLE `recipe_origins` (
 
 LOCK TABLES `recipe_origins` WRITE;
 /*!40000 ALTER TABLE `recipe_origins` DISABLE KEYS */;
-INSERT INTO `recipe_origins` VALUES (14,1,'三重県'),(15,1,'愛知県');
 /*!40000 ALTER TABLE `recipe_origins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,7 +356,7 @@ CREATE TABLE `recipes` (
 
 LOCK TABLES `recipes` WRITE;
 /*!40000 ALTER TABLE `recipes` DISABLE KEYS */;
-INSERT INTO `recipes` VALUES (1,3,1,15000.000,9199.900,10036.200,55.00,60.00),(2,3,3,1200.000,9199.900,10036.200,55.00,60.00),(3,3,5,60.000,9199.900,10036.200,55.00,60.00),(4,3,6,450.000,9199.900,10036.200,55.00,60.00),(5,3,7,17.000,9199.900,10036.200,55.00,60.00),(6,3,9,81.000,9199.900,10036.200,55.00,60.00),(7,3,10,45.000,9199.900,10036.200,55.00,60.00),(8,3,11,450.000,9199.900,10036.200,55.00,60.00);
+INSERT INTO `recipes` VALUES (2,3,3,1200.000,9212.000,10049.400,55.00,60.00),(3,3,5,60.000,9212.000,10049.400,55.00,60.00),(4,3,6,450.000,9212.000,10049.400,55.00,60.00),(5,3,7,17.000,9212.000,10049.400,55.00,60.00),(6,3,9,81.000,9212.000,10049.400,55.00,60.00),(7,3,10,45.000,9212.000,10049.400,55.00,60.00),(8,3,11,450.000,9212.000,10049.400,55.00,60.00);
 /*!40000 ALTER TABLE `recipes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -398,4 +400,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-18 15:15:01
+-- Dump completed on 2026-06-19 11:30:03

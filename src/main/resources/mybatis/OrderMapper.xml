@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.app.mapper.OrderMapper">
+
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (order_date, customer_name, status)
+        VALUES (#{orderDate}, #{customerName}, #{status})
+    </insert>
+
+    <insert id="insertOrderItem" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_items (order_id, item_id, quantity)
+        VALUES (#{orderId}, #{itemId}, #{quantity})
+    </insert>
+
+    <select id="findOrderList" resultType="com.example.app.dto.OrderListDto">
+        SELECT
+            o.id AS id,
+            o.order_date AS orderDate,
+            o.customer_name AS customerName,
+            o.status AS status,
+            GROUP_CONCAT(CONCAT(i.name, ' x ', CAST(oi.quantity AS UNSIGNED), i.sales_unit) SEPARATOR ', ') AS itemSummary
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.id
+        JOIN items i ON i.id = oi.item_id
+        <where>
+            <if test="status != null">
+                o.status = #{status}
+            </if>
+        </where>
+        GROUP BY o.id, o.order_date, o.customer_name, o.status
+        ORDER BY o.order_date DESC, o.id DESC
+    </select>
+
+    <select id="findOrderById" resultType="com.example.app.domain.Order">
+        SELECT
+            id AS id,
+            order_date AS orderDate,
+            customer_name AS customerName,
+            status AS status,
+            created_at AS createdAt
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <select id="findOrderItemsByOrderId" resultType="com.example.app.dto.OrderItemDetailDto">
+        SELECT
+            oi.id AS id,
+            oi.item_id AS itemId,
+            i.name AS itemName,
+            i.sales_unit AS salesUnit,
+            oi.quantity AS quantity,
+            oi.shipped_quantity AS shippedQuantity
+        FROM order_items oi
+        JOIN items i ON i.id = oi.item_id
+        WHERE oi.order_id = #{orderId}
+    </select>
+    
+    <update id="updateStatus">
+        UPDATE orders 
+        SET status = #{newStatus} 
+        WHERE id = #{orderId}
+    </update>
+
+</mapper>

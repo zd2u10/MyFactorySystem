@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>受注一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+    <div class="header-nav">
+        <a th:href="@{/home}" class="btn btn-back">← ホームに戻る</a>
+    </div>
+
+    <div class="nav-container">
+        <h1>管理システム</h1>
+        <h2>受注一覧（未出荷）</h2>
+    </div>
+
+    <div th:if="${successMessage}" class="flash-message msg-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="flash-message msg-delete" th:text="${errorMessage}"></div>
+
+    <div style="margin-bottom: 16px;">
+        <a th:href="@{/orders/new}" class="btn btn-save">＋受注を入力する</a>
+        <a th:href="@{/orders/history}" class="btn btn-edit"style="margin-left: 10px;">履歴を見る</a>
+    </div>
+
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>注文番号</th>
+                <th>受注日</th>
+                <th>注文者</th>
+                <th>商品内容</th>
+                <th>状態</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${#lists.isEmpty(orderList)}">
+                <td colspan="6" style="text-align: center;">現在、未出荷の受注はありません。</td>
+            </tr>
+            <tr th:each="order : ${orderList}">
+                <td th:text="${order.id}">1</td>
+                <td th:text="${order.orderDate}">2026-06-18</td>
+                <td th:text="${order.customerName}">山田太郎</td>
+                <td th:text="${order.itemSummary}">うどん x10</td>
+                <td th:switch="${order.status}">
+					<span th:case="'OPEN'" class="status-badge open">未出荷</span>
+				</td>
+                <td>
+                    <a th:href="@{/orders/detail/{id}(id=${order.id})}" class="btn btn-edit">詳細</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>受注入力</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+    <div class="header-nav">
+        <a th:href="@{/home}" class="btn btn-back">←ホームに戻る</a>
+    </div>
+
+    <div class="nav-container">
+        <h1>管理システム</h1>
+        <h2>受注入力フォーム</h2>
+    </div>
+	<div style="margin-bottom:16px;">
+		<a th:href="@{/orders/list}" class="btn btn-edit">受注一覧に戻る</a>
+	</div>
+    <div th:if="${errorMessage}" class="flash-message msg-delete" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/orders}" method="post">
+
+        <div class="form-group">
+            <label>注文者名:</label>
+            <input type="text" name="customerName" class="form-control" placeholder="お客様名" required>
+        </div>
+
+        <h3>注文内容</h3>
+
+        <table class="content-table" id="itemRows">
+            <thead>
+                <tr>
+                    <th>商品</th>
+                    <th>数量</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="item-row">
+                    <td>
+                        <select name="items[0].itemId" class="form-control" required>
+                            <option value="">選択してください</option>
+                            <option th:each="i : ${items}" th:value="${i.id}"
+                                    th:text="${i.name} + '（' + ${i.salesUnit} + '）'"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="items[0].quantity" class="input-small" step="0.001" min="0.001" required>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-delete" onclick="removeRow(this)">削除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-back" onclick="addRow()">商品行を追加</button>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-save">受注を登録する</button>
+        </div>
+		
+    </form>
+
+    <script th:inline="none">
+        let rowIndex = 1;
+
+        function addRow() {
+            const tbody = document.querySelector('#itemRows tbody');
+            const baseRow = tbody.querySelector('.item-row');
+            const newRow = baseRow.cloneNode(true);
+
+            newRow.querySelectorAll('select, input').forEach(function (el) {
+                el.name = el.name.replace(/items\[\d+\]/, 'items[' + rowIndex + ']');
+                if (el.tagName === 'SELECT') {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = '';
+                }
+            });
+
+            tbody.appendChild(newRow);
+            rowIndex++;
+        }
+
+        function removeRow(button) {
+            const tbody = document.querySelector('#itemRows tbody');
+            if (tbody.querySelectorAll('.item-row').length > 1) {
+                button.closest('tr').remove();
+            }
+        }
+    </script>
+</body>
+</html>

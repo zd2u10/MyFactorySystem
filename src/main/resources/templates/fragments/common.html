@@ -3,7 +3,7 @@
 <body>
     <nav th:fragment="pageHeader(title, currentPage)" class="header-nav">
 		<div th:if="${currentPage != 'home'}">
-		        <a th:href="@{/home}" style="margin-bottom: 10px;">← ホームに戻る</a>
+		        <a th:href="@{/home}" class="btn btn-back">← ホームに戻る</a>
 		    </div>
 		
         <h1>管理システム</h1>
