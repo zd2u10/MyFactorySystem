@@ -1,6 +1,7 @@
 package com.example.app.mapper;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -20,6 +21,23 @@ public interface ProductionOrderMapper {
 	// 製造予定の新規登録（受注からの自動生成・手動追加の両方で使用）
 	void insertProductionOrder(ProductionOrder productionOrder);
 
-	// 指定itemの「製造中(MANUFACTURING)」の合計予定数量（二重生成防止用）
+	// 自動発行されている予定の計算
 	BigDecimal sumManufacturingQuantityByItemId(@Param("itemId") Long itemId);
+
+	// ---------------- パズル画面用 -----------------
+
+	// パズルボードに乗せる全予定(DRAFT と PLANNING)を取得
+	List<ProductionOrder> findSchedulingOrders();
+
+	// 1.IDでオーダー1件を取得(状態確認用)
+	ProductionOrder findById(@Param("id") Long id);
+
+	// 2.仮置き用：予定日(scheduledDate)だけを更新
+	void updateScheduledDate(@Param("id") Long id, @Param("scheduledDate") LocalDate scheduledDate);
+
+	//3.確定：予定日、ステータス、確定したロット番号を更新
+	void updateScheduleAndLot(@Param("id") Long id,
+			@Param("scheduledDate") LocalDate scheduledDate,
+			@Param("status") String status,
+			@Param("lotNumber") String lotNumber);
 }

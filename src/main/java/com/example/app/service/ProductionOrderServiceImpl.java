@@ -34,6 +34,12 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 		return productionOrderMapper.findByLotNumber(lotNumber);
 	}
 
+	@Override
+	public List<ProductionOrder> findSchedulingOrders() {
+		// ボード用の予定一覧(DRAFT, PLANNING)を取得して返す
+		return productionOrderMapper.findSchedulingOrders();
+	}
+
 	// 有効在庫 = 実在庫(出荷引当後) − 未出荷受注数
 	// 不足数 = 適正在庫(min_stock) − 有効在庫 − 既存のMANUFACTURING予定合計
 	// 製造回数 = 不足数 ÷ batch_size（繰り上げ）
@@ -60,11 +66,13 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
 		BigDecimal available = physicalAvailable.subtract(openOrderQty);
 
+		// 「DRAFT」や「PLANNING」の予定数も足し合わせる
 		BigDecimal scheduled = productionOrderMapper.sumManufacturingQuantityByItemId(itemId);
 		if (scheduled == null) {
 			scheduled = BigDecimal.ZERO;
 		}
 
+		// 不足数 = 適正在庫 - 有効在庫 - すでに予定されている全数(DRAFTを含む)
 		BigDecimal shortage = minStock.subtract(available).subtract(scheduled);
 
 		if (shortage.compareTo(BigDecimal.ZERO) <= 0) {
@@ -77,10 +85,49 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 			ProductionOrder order = new ProductionOrder();
 			order.setItemId(itemId);
 			order.setQuantity(batchSize);
-			order.setStatus("MANUFACTURING");
-			order.setProductionDate(LocalDate.now());
+			// 1:DRAFT状態にする
+			order.setStatus("DRAFT");
+			// 2:システムが自動振り出しした証
 			order.setTriggerSource("AUTO_ORDER");
+
 			productionOrderMapper.insertProductionOrder(order);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void updateScheduledDateOnly(Long orderId, LocalDate scheduledDate) {
+		ProductionOrder order = productionOrderMapper.findById(orderId);
+
+		// DRAFT（未確定）状態の時だけ、日付の変更（移動）を許す
+		if (order != null && "DRAFT".equals(order.getStatus())) {
+			productionOrderMapper.updateScheduledDate(orderId, scheduledDate);
+		} else {
+			throw new RuntimeException("この予定はすでに確定されているか、存在しません。");
+		}
+	}
+
+	@Override
+	@Transactional
+	public String confirmSchedule(Long orderId) {
+		ProductionOrder order = productionOrderMapper.findById(orderId);
+
+		if (order == null || !"DRAFT".equals(order.getStatus()) || order.getScheduledDate() == null) {
+			throw new RuntimeException("無効なオーダー、または予定日が未設定です。");
+		}
+
+		LocalDate scheduledDate = order.getScheduledDate();
+
+		// 日付文字列（例: 2026年6月25日 -> "20260625"）
+		String dateStr = scheduledDate.toString().replace("-", "");
+
+		// 新しいロット番号のルール ＝ "日付" ＋ "-" ＋ "商品ID(3桁ゼロ埋め)"
+		// (例: 商品IDが 3 なら "20260625-003" となる)
+		String newLotNumber = String.format("%s-%03d", dateStr, order.getItemId());
+
+		// DBを更新
+		productionOrderMapper.updateScheduleAndLot(orderId, scheduledDate, "PLANNING", newLotNumber);
+
+		return newLotNumber;
 	}
 }

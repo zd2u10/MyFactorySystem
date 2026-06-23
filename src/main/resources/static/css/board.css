@@ -1,0 +1,125 @@
+/* --- 1. 基本ボードレイアウト --- */
+.board-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: 80vh;
+}
+
+.pool-area {
+    width: 250px;
+    background-color: #f4f5f7;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.calendar-area {
+    display: flex;
+    gap: 15px;
+    flex-grow: 1;
+    overflow-x: auto;
+    background-color: #ebecf0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.day-column {
+    min-width: 200px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.day-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.batch-count {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: bold;
+}
+
+/* --- 2. カード・ボタン・バッジ --- */
+.btn-confirm {
+    background-color: #0052cc;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+.btn-confirm:hover { background-color: #0065ff; }
+
+.order-card {
+    background-color: white;
+    border: 1px solid #dfe1e6;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: grab;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.order-card:active { cursor: grabbing; }
+
+.order-card[draggable="false"] {
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+.badge.draft { background-color: #ffab00; color: #333; }
+.badge.planning { background-color: #36b37e; color: white; }
+
+/* --- 3. グループ化・機能用クラス --- */
+/* 折りたたみ用 */
+.collapsed { 
+    display: none !important; 
+}
+
+/* グループ親カードの装飾 */
+.order-card.grouped {
+    border: 2px solid #0052cc !important;
+    background-color: #eef6ff;
+    cursor: pointer;
+    position: relative;
+}
+
+/* グループ内の隠れ要素があることを示す印 */
+.order-card.grouped::after {
+    content: "▼";
+    font-size: 10px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    color: #0052cc;
+}
+
+/* --- 4. アニメーション --- */
+.highlight-flash {
+    animation: flash 1s ease-out;
+}
+@keyframes flash {
+    0% { background-color: #fff; }
+    50% { background-color: #ffe066; }
+    100% { background-color: #fff; }
+}

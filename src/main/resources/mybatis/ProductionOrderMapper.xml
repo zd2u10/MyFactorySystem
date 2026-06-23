@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.ProductionOrderMapper">
 
-    <select id="findManufacturingOrdersByItemId" resultType="ProductionOrder">
+    <select id="findById" resultType="ProductionOrder">
         SELECT 
             id, 
             item_id AS itemId, 
             lot_number AS lotNumber, 
             quantity, 
+            scheduled_date AS scheduledDate,
             production_date AS productionDate, 
-            status
+            status,
+            trigger_source AS triggerSource
         FROM production_orders
-        WHERE item_id = #{itemId} 
-          AND status = 'MANUFACTURING'
+        WHERE id = #{id}
     </select>
 
     <select id="findByLotNumber" resultType="ProductionOrder">
@@ -27,16 +28,53 @@
         WHERE lot_number = #{lotNumber}
     </select>
 
-    <insert id="insertProductionOrder" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO production_orders (item_id, quantity, production_date, status, trigger_source)
-        VALUES (#{itemId}, #{quantity}, #{productionDate}, #{status}, #{triggerSource})
-    </insert>
+    <select id="findManufacturingOrdersByItemId" resultType="ProductionOrder">
+        SELECT 
+            id, 
+            item_id AS itemId, 
+            lot_number AS lotNumber, 
+            quantity, 
+            scheduled_date AS scheduledDate,    production_date AS productionDate, 
+            status,                             trigger_source AS triggerSource
+        FROM production_orders
+        WHERE item_id = #{itemId} 
+          AND status = 'MANUFACTURING'
+    </select>
 
     <select id="sumManufacturingQuantityByItemId" resultType="java.math.BigDecimal">
         SELECT COALESCE(SUM(quantity), 0)
         FROM production_orders
         WHERE item_id = #{itemId}
-          AND status = 'MANUFACTURING'
+          AND status IN ('DRAFT', 'PLANNING', 'MANUFACTURING')
+    </select>
+
+
+    <insert id="insertProductionOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO production_orders 
+               (item_id, quantity, scheduled_date, production_date, status, trigger_source)
+        VALUES (#{itemId}, #{quantity}, #{scheduledDate}, #{productionDate}, #{status}, #{triggerSource})
+    </insert>
+
+    <update id="updateScheduledDate">
+        UPDATE production_orders 
+        SET scheduled_date = #{scheduledDate}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateScheduleAndLot">
+        UPDATE production_orders 
+        SET scheduled_date = #{scheduledDate},
+            status = #{status},
+            lot_number = #{lotNumber}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="findSchedulingOrders" resultType="ProductionOrder">
+        SELECT 
+            id, item_id AS itemId, lot_number AS lotNumber, 
+            quantity, scheduled_date AS scheduledDate, status
+        FROM production_orders
+        WHERE status IN ('DRAFT', 'PLANNING')
     </select>
 
 </mapper>

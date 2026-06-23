@@ -9,9 +9,20 @@ import lombok.Data;
 public class ProductionOrder {
 	private Long id;
 	private Long itemId;
+	private String itemName;
 	private String lotNumber;
 	private BigDecimal quantity;
-	private LocalDate productionDate; // 仮製造中(計画時)になった日
-	private String status; // "MANUFACTURING"(製造中), "COMPLETED"(完了)
+	private BigDecimal waterAmount;
+
+	// カレンダー上の「製造予定日」（パズルで決める日付）
+	private LocalDate scheduledDate;
+
+	//「 実際に製造された日」 MANUFACTURINGでセットする
+	private LocalDate productionDate;
+
+	// DRAFT, PLANNING, MANUFACTURING, COMPLETEDなど
+	private String status;
+
+	// 予定が自動生成か手動追加かを判別させる
 	private String triggerSource; // "AUTO_ORDER" または "MANUAL"
 }

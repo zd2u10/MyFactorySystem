@@ -86,5 +86,5 @@ public class OrderServiceImpl implements OrderService {
 	public void updateOrderStatus(Long orderId, String newStatus) {
 		orderMapper.updateStatus(orderId, newStatus);
 	}
-}
 
+}

@@ -1,0 +1,166 @@
+/* ボード全体のレイアウト */
+.board-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: 80vh;
+}
+
+/* 左側のプールエリア */
+.pool-area {
+    width: 250px;
+    background-color: #f4f5f7;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+/* 右側のカレンダーエリア（横スクロール） */
+.calendar-area {
+    display: flex;
+    gap: 15px;
+    flex-grow: 1;
+    overflow-x: auto;
+    background-color: #ebecf0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* 日付ごとのカラム */
+.day-column {
+    min-width: 200px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.day-header {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.btn-confirm {
+    background-color: #0052cc;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.btn-confirm:hover { background-color: #0065ff; }
+
+/* ドラッグするブロック（カード） */
+.order-card {
+    background-color: white;
+    border: 1px solid #dfe1e6;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: grab;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.order-card:active { cursor: grabbing; }
+
+/* 確定済みのカードは掴めなくする */
+.order-card[draggable="false"] {
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+}
+
+/* ステータスバッジ */
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+.badge.draft { background-color: #ffab00; color: #333; }
+.badge.planning { background-color: #36b37e; color: white; }
+
+.day-header {
+    display: flex;
+    flex-direction: column; /* 縦に並べる */
+    gap: 5px;               /* 要素間の余白 */
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.batch-count {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: bold;
+}
+
+.order-card.grouped {
+    border: 2px solid #0052cc; /* 青枠で強調 */
+    background-color: #eef6ff;
+    position: relative;
+}
+
+/* 隠れているカードがあることを示す */
+.order-card.grouped::after {
+    content: "▼";
+    font-size: 10px;
+    position: absolute;
+    right: 5px;
+    color: #0052cc;
+}
+
+.highlight-flash {
+    animation: flash 1s ease-out;
+}
+
+@keyframes flash {
+    0% { background-color: #fff; }
+    50% { background-color: #ffe066; } /* 薄い黄色で強調 */
+    100% { background-color: #fff; }
+}
+
+.order-card[style*="display: none"] {
+    display: none !important; 
+}
+
+.hidden-card {
+    display: none; /* 隠す時はdisplayを消す */
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-10px); /* 少し上に浮かせておく */
+}
+
+/* 展開された時のスタイル */
+.expanded-card {
+    display: flex !important; /* 強制的に表示 */
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 5px; /* 親カードとの間隔 */
+    border-left: 3px solid #ccc; /* 階層構造を視覚的に表現 */
+    background-color: #f9f9f9; /* 親と区別するための背景色 */
+}
+
+/* 親カード（グループ化のまとめ）のスタイル */
+.order-card.grouped {
+    border: 2px solid #0052cc; /* 枠を目立たせる */
+    background-color: #fff;
+}
+
+.collapsed { 
+    display: none !important; 
+}
+
+/* グループ化された親カードの視覚的強調 */
+.is-grouped { 
+    border: 2px solid #0052cc !important; 
+    cursor: pointer; 
+}

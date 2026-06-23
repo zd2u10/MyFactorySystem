@@ -141,7 +141,7 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
-INSERT INTO `items` VALUES (1,'うどん','個',198.000,70.000,200.000,1,400.000),(2,'玄米うどん','個',198.000,70.000,200.000,1,400.000),(3,'ラーメンウェーブ','個',195.000,70.200,200.000,1,800.000);
+INSERT INTO `items` VALUES (1,'うどん','個',198.000,70.000,200.000,1,600.000),(2,'玄米うどん','個',198.000,70.000,200.000,1,500.000),(3,'ラーメンウェーブ','個',195.000,70.200,200.000,1,800.000);
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,7 +283,8 @@ CREATE TABLE `production_orders` (
   `status` varchar(20) NOT NULL DEFAULT 'TEMP' COMMENT 'TEMP / DONE / DISPOSED',
   `trigger_source` varchar(20) NOT NULL DEFAULT 'MANUAL' COMMENT 'MANUAL / AUTO_ORDER',
   `water_amount` decimal(12,3) DEFAULT NULL COMMENT '使用した加水量',
-  `production_date` date NOT NULL,
+  `scheduled_date` date DEFAULT NULL,
+  `production_date` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_po_item` (`item_id`),
@@ -400,4 +401,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-19 14:23:44
+-- Dump completed on 2026-06-23 11:01:40
