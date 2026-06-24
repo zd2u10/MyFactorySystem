@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.order-card').forEach(card => {
         // 元のテキストの保存 
-        card.dataset.originalText = card.querySelector('span:first-child').innerText;
+        card.dataset.originalText = card.querySelector('.item-name').innerText;
     });
     updateBatchCounts();
 });
@@ -16,13 +16,14 @@ function resetGrouping() {
     document.querySelectorAll('.order-card').forEach(card => {
         // 全てのカードの状態をクリーンにする（PLANNING/DRAFT問わず）
         card.style.display = 'flex'; // 表示に戻す
-        card.classList.remove('grouped', 'hidden-card', 'highlight-flash');
+        card.classList.remove('grouped', 'collapsed', 'hidden-card', 'highlight-flash');
         card.onclick = null; // クリックイベント解除
 
-        // テキストを元に戻す
-        if (card.dataset.originalText) {
-            card.querySelector('span:first-child').innerText = card.dataset.originalText;
-        }
+        // HTMLに持たせた商品名を優先して表示(なければID
+        const displayName = card.dataset.productName || card.dataset.originalText;
+		if(displayName){
+			card.querySelector('.item-name').innerText = displayName;
+		}
     });
 }
 
@@ -32,57 +33,68 @@ function applyGrouping() {
     resetGrouping();
 
     const areas = document.querySelectorAll('.day-column, .pool-area');
-    
+	
+	// エリアごとにグループ化(キーの生成)    
     areas.forEach(column => {
         const groups = {}; 
-        const cards = Array.from(column.querySelectorAll('.order-card'));
-        
-        // (1). グループ情報の収集
+		const cards = Array.from(column.querySelectorAll('.order-card'));
+		        
+        // (1). 通常エリアのグループ化
         cards.forEach(card => {
-            const text = card.dataset.originalText;
-            const isPlanning = card.querySelector('.badge.planning') !== null;
-            const statusKey = isPlanning ? 'plan' : 'draft';
-            const groupKey = `${statusKey}_${text}`;
-            
-            if (!groups[groupKey]) groups[groupKey] = [];
-            groups[groupKey].push(card);
-        });
+            const isDraft = card.querySelector('.badge.draft') !== null;
+			const isPlanning = card.querySelector('.badge.planning') !== null;
+			const isExpired = card.closest('.expired-draft-list') !== null;
+			const isRescheduled = card.querySelector('.badge.rescheduled') !== null;
+			
+			const statusKey = isDraft ? 'DRAFT' : (isPlanning ? 'PLANNING' : 'OTHER');
+			// 「再調整済」かどうかが違うカードは絶対に同じ束にしない
+			const rescheduledKey = isRescheduled ? 'RESCHEDULED' : 'NORMAL';
+			const productKey = card.getAttribute('data-original-text');
+			
+			let key;
+			if(isExpired){
+				// 期限切れ用：製品＋日付＋再調整履歴をキーにする
+				const date = card.getAttribute('data-scheduled-date') || 'no-date';
+				key = 'EXP_' + statusKey + "_" + rescheduledKey + "_" + productKey + "_" + date;
+			} else {
+				// 通常用：製品＋再調整履歴でまとめる
+				key = statusKey + "_" + rescheduledKey + "_" + productKey;
+			}
+			
+			if(!groups[key]){
+				groups[key] = [];
+			}
+			groups[key].push(card);
+		});
 
-        // (2). グループごとにDOMを物理的に並び替えてから処理
+        // (3). グループごとにDOMを物理的に並び替えてから処理
         Object.keys(groups).forEach(key => {
             const list = groups[key];
             if (list.length > 1) {
-                const parent = list[0];
+                const mainCard = list[0];
+				mainCard.classList.add('grouped');
                 
-                // 【ここが重要】同じグループのカードを親の直下に物理移動させる
-                // リストの2番目から順に、親カードのすぐ後ろに差し込む
-                for (let i = 1; i < list.length; i++) {
-                    column.insertBefore(list[i], parent.nextSibling);
-                }
-
-                // グループ化のスタイル適用
-                parent.classList.add('grouped');
-                parent.querySelector('span:first-child').innerText = `${parent.dataset.originalText} (x${list.length})`;
-
-                // 2枚目以降を隠す
-                list.slice(1).forEach(card => {
-                    card.classList.add('hidden-card');
-                    card.style.display = 'none'; 
-                });
-
+				// 個数をテキストに追加
+				const span = mainCard.querySelector('.item-name');
+				if (span) {
+				    span.textContent = span.textContent + ' (x' + list.length + ')';
+				}	
+				
+				// 2枚目以降を隠す
+				for (let i = 1; i < list.length; i++) {
+				     list[i].classList.add('collapsed');
+				}
+				                				
                 // クリックでトグル
-                parent.onclick = (e) => {
-                    e.stopPropagation();
-                    const isHidden = list[1].style.display === 'none';
-                    list.slice(1).forEach(card => {
-                        if (isHidden) {
-                            card.classList.remove('hidden-card');
-                            card.style.display = 'flex'; // 表示に戻す
-                        } else {
-                            card.classList.add('hidden-card');
-                            card.style.display = 'none'; // 隠す
+                mainCard.onclick = function() {
+                    let isExpanded = !list[1].classList.contains('collapsed');
+					for (let i = 1; i < list.length; i++){
+		 				if(isExpanded){
+						   list[i].classList.add('collapsed');
+					    } else {
+                           list[i].classList.remove('collapsed');
                         }
-                    });
+                    }
                 };
             }
         });

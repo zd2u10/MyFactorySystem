@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.app.mapper.ProductionOrderMapper">
+	
+	<resultMap id="ProductionOrderResultMap" type="com.example.app.domain.ProductionOrder">
+        <id property="id" column="id" />
+        <result property="itemId" column="itemId" />
+        <result property="itemName" column="itemName" />
+        <result property="lotNumber" column="lotNumber" />
+        <result property="quantity" column="quantity" />
+        <result property="scheduledDate" column="scheduledDate" />
+        <result property="productionDate" column="productionDate" />
+        <result property="status" column="status" />
+        <result property="triggerSource" column="triggerSource" />
+        <result property="wasOverdue" column="wasOverdue" />
+    </resultMap>
 
-    <select id="findById" resultType="ProductionOrder">
-        SELECT 
-            id, 
-            item_id AS itemId, 
-            lot_number AS lotNumber, 
-            quantity, 
-            scheduled_date AS scheduledDate,
-            production_date AS productionDate, 
-            status,
-            trigger_source AS triggerSource
-        FROM production_orders
-        WHERE id = #{id}
+
+    <select id="findById" resultMap="ProductionOrderResultMap">
+       SELECT 
+            po.id, 
+            po.item_id AS itemId, 
+            i.name AS itemName,
+            po.lot_number AS lotNumber, 
+            po.quantity, 
+            po.scheduled_date AS scheduledDate,
+            po.production_date AS productionDate, 
+            po.status,
+            po.trigger_source AS triggerSource,
+            po.was_overdue AS wasOverdue
+        FROM production_orders po
+        LEFT JOIN items i ON po.item_id = i.id
+        WHERE po.id = #{id}
     </select>
 
-    <select id="findByLotNumber" resultType="ProductionOrder">
+    <select id="findByLotNumber" resultMap="ProductionOrderResultMap">
         SELECT 
-            id, 
-            item_id AS itemId, 
+            po.id, 
+            po.item_id AS itemId, 
             lot_number AS lotNumber, 
             quantity, 
             production_date AS productionDate, 
@@ -28,17 +45,20 @@
         WHERE lot_number = #{lotNumber}
     </select>
 
-    <select id="findManufacturingOrdersByItemId" resultType="ProductionOrder">
-        SELECT 
-            id, 
-            item_id AS itemId, 
-            lot_number AS lotNumber, 
-            quantity, 
-            scheduled_date AS scheduledDate,    production_date AS productionDate, 
-            status,                             trigger_source AS triggerSource
-        FROM production_orders
-        WHERE item_id = #{itemId} 
-          AND status = 'MANUFACTURING'
+    <select id="findManufacturingOrdersByItemId" resultMap="ProductionOrderResultMap">
+       SELECT 
+            po.id, 
+            po.item_id AS itemId, 
+            i.name AS itemName, po.lot_number AS lotNumber, 
+            po.quantity, 
+            po.scheduled_date AS scheduledDate,    
+            po.production_date AS productionDate, 
+            po.status,                             
+            po.trigger_source AS triggerSource
+        FROM production_orders po
+        LEFT JOIN items i ON po.item_id = i.id
+        WHERE po.item_id = #{itemId} 
+          AND po.status = 'MANUFACTURING'
     </select>
 
     <select id="sumManufacturingQuantityByItemId" resultType="java.math.BigDecimal">
@@ -57,7 +77,8 @@
 
     <update id="updateScheduledDate">
         UPDATE production_orders 
-        SET scheduled_date = #{scheduledDate}
+        SET scheduled_date = #{scheduledDate},
+            was_overdue = (was_overdue = 1 OR #{wasOverdue} = true)
         WHERE id = #{id}
     </update>
 
@@ -69,12 +90,18 @@
         WHERE id = #{id}
     </update>
     
-    <select id="findSchedulingOrders" resultType="ProductionOrder">
+    <select id="findSchedulingOrders" resultMap="ProductionOrderResultMap">
         SELECT 
-            id, item_id AS itemId, lot_number AS lotNumber, 
-            quantity, scheduled_date AS scheduledDate, status
-        FROM production_orders
-        WHERE status IN ('DRAFT', 'PLANNING')
+            po.id, 
+            po.item_id AS itemId, 
+            i.name AS itemName, po.lot_number AS lotNumber, 
+            po.quantity, 
+            po.scheduled_date AS scheduledDate, 
+            po.status,
+            po.was_overdue AS wasOverdue
+        FROM production_orders po
+        LEFT JOIN items i ON po.item_id = i.id
+        WHERE po.status IN ('DRAFT', 'PLANNING')
     </select>
 
 </mapper>

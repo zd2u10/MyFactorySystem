@@ -101,7 +101,12 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
 		// DRAFT（未確定）状態の時だけ、日付の変更（移動）を許す
 		if (order != null && "DRAFT".equals(order.getStatus())) {
-			productionOrderMapper.updateScheduledDate(orderId, scheduledDate);
+			// 上書き前の予定日が「今日より前」だった場合＝この時点で期限切れだった、という事実を残す。
+			// このフラグは一度trueになったら、再調整後もfalseに戻らない（履歴として保持）。
+			boolean wasOverdue = order.getScheduledDate() != null
+					&& order.getScheduledDate().isBefore(LocalDate.now());
+
+			productionOrderMapper.updateScheduledDate(orderId, scheduledDate, wasOverdue);
 		} else {
 			throw new RuntimeException("この予定はすでに確定されているか、存在しません。");
 		}

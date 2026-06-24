@@ -10,41 +10,74 @@
 
     <div class="board-container">
         <div class="pool-area" data-date="" ondragover="allowDrop(event)" ondrop="drop(event)">
-            <h2>未配置（ドラフト）</h2>
+            <h2>未確定（draft）</h2>
             
             <th:block th:each="order : ${orders}" th:if="${order.scheduledDate == null}">
                 <div class="order-card" draggable="true" ondragstart="drag(event)" 
-                     th:data-order-id="${order.id}">
-                    <span th:text="'商品ID: ' + ${order.itemId}"></span><br>
-                    <span class="badge draft">DRAFT</span>
+                     th:data-order-id="${order.id}"
+                     th:data-product-name="${order.itemName}"
+                     th:data-original-text="${order.itemId}">
+                    <span class="item-name" th:text="${order.itemName != null ? order.itemName : '商品ID: ' + order.itemId}"></span>
+                    <div class="card-badges">
+                        <span class="badge draft">未確定</span>
+                        <span th:if="${order.wasOverdue == true}" class="badge rescheduled" title="この予定は一度期限切れになり、再調整されました">⚠再調整済</span>
+                    </div>
                 </div>
             </th:block>
+
+            <div class="expired-draft-list" style="margin-top: 20px; border-top: 2px dashed #ff9999; padding-top: 10px;">
+                <h4 style="color: #d9534f; font-size: 0.9em; margin-bottom: 5px;">期限切れ (再調整)</h4>
+                
+				<div th:each="order : ${orders}" 
+				         th:if="${order.status == 'DRAFT' and order.scheduledDate != null and order.scheduledDate.isBefore(T(java.time.LocalDate).now())}"
+				         class="order-card" 
+				         draggable="true" 
+				         ondragstart="drag(event)" 
+				         th:data-order-id="${order.id}"
+				         th:data-scheduled-date="${order.scheduledDate}"
+				         th:data-product-name="${order.itemName}"
+				         th:data-original-text="${order.itemId}">
+				    <span class="item-name" th:text="${order.itemName}">アイテム名</span>
+				    <div class="card-badges">
+				        <span class="badge draft">未確定</span>
+				        <span th:if="${order.wasOverdue == true}" class="badge rescheduled" title="この予定は一度期限切れになり、再調整されました">⚠再調整済</span>
+				    </div>
+				    <div style="font-size: 0.75em; color: #d9534f;">
+				        元: [[${#temporals.format(order.scheduledDate, 'MM/dd')}]]
+				    </div>
+               </div>
+            </div>
         </div>
 
         <div class="calendar-area">
             <div class="day-column" th:each="day : ${nextDays}" 
-                 th:data-date="${day}" ondragover="allowDrop(event)" ondrop="drop(event)">
+                 th:data-date="${#temporals.format(day, 'yyyy-MM-dd')}"
+                 ondragover="allowDrop(event)" ondrop="drop(event)">
                 
                 <div class="day-header">
-                    <h3 th:text="${day}">2026-06-25</h3>
-                    
-					<div class="batch-count">
-					     製造回数: <span class="count-value">0</span> 回
-					</div>
-										
-					<button class="btn-confirm" 
-							th:data-date="${day}"
-							onclick="confirmDay(this.getAttribute('data-date'))">確定して発番</button>
+                    <h3 th:text="${#temporals.format(day, 'yyyy-MM-dd')}">2026-06-25</h3>
+                    <div class="batch-count">
+                         製造回数: <span class="count-value">0</span> 回
+                    </div>
+                    <button class="btn-confirm" 
+                            th:data-date="${#temporals.format(day, 'yyyy-MM-dd')}"
+                            onclick="confirmDay(this.getAttribute('data-date'))">確定して発番</button>           
                 </div>
 
-                <th:block th:each="order : ${orders}" th:if="${order.scheduledDate == day}">
-                    <div class="order-card" 
-						 th:attr="draggable=${order.status == 'DRAFT'} ? 'true' : 'false'" 
+                <th:block th:each="order : ${orders}" >
+                    <div class="order-card"
+                         th:if="${order.scheduledDate != null and #temporals.format(order.scheduledDate, 'yyyy-MM-dd') == #temporals.format(day, 'yyyy-MM-dd')}"
+                         th:attr="draggable=${order.status == 'DRAFT'} ? 'true' : 'false'" 
                          ondragstart="drag(event)" 
-						 th:data-order-id="${order.id}">
-                        <span th:text="${order.itemId}"></span>
-                        <span th:if="${order.status == 'DRAFT'}" class="badge draft">DRAFT</span>
-                        <span th:if="${order.status == 'PLANNING'}" class="badge planning" th:text="${order.lotNumber}"></span>
+                         th:data-order-id="${order.id}"
+                         th:data-product-name="${order.itemName}"
+                         th:data-original-text="${order.itemId}">
+                         <span class="item-name" th:text="${order.itemName != null ? order.itemName : order.itemId}"></span>
+                         <div class="card-badges">
+                             <span th:if="${order.status == 'DRAFT'}" class="badge draft">未確定</span>
+                             <span th:if="${order.status == 'PLANNING'}" class="badge planning" th:text="${order.lotNumber}"></span>
+                             <span th:if="${order.wasOverdue == true}" class="badge rescheduled" title="この予定は一度期限切れになり、再調整されました">⚠再調整済</span>
+                         </div>
                     </div>
                 </th:block>
             </div>

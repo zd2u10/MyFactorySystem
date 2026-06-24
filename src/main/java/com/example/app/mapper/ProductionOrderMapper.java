@@ -33,7 +33,9 @@ public interface ProductionOrderMapper {
 	ProductionOrder findById(@Param("id") Long id);
 
 	// 2.仮置き用：予定日(scheduledDate)だけを更新
-	void updateScheduledDate(@Param("id") Long id, @Param("scheduledDate") LocalDate scheduledDate);
+	// wasOverdue: 移動前に「期限切れ」だった場合はtrueを渡し、履歴として残す（一度trueになったら以後falseに戻らない）
+	void updateScheduledDate(@Param("id") Long id, @Param("scheduledDate") LocalDate scheduledDate,
+			@Param("wasOverdue") boolean wasOverdue);
 
 	//3.確定：予定日、ステータス、確定したロット番号を更新
 	void updateScheduleAndLot(@Param("id") Long id,

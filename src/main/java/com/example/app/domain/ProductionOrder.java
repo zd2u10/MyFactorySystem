@@ -25,4 +25,12 @@ public class ProductionOrder {
 
 	// 予定が自動生成か手動追加かを判別させる
 	private String triggerSource; // "AUTO_ORDER" または "MANUAL"
+
+	// 一度でも「期限切れ」状態になったことがあるかの履歴フラグ
+	// scheduledDateを更新（再調整）してもtrueのまま保持される
+	private Boolean wasOverdue;
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 }

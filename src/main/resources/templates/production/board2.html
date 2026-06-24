@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>製造予定スケジューラー</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body>
+    <h1>製造予定調整ボード</h1>
+
+    <div class="board-container">
+        <div class="pool-area" data-date="" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <h2>未確定（draft）</h2>
+            
+            <th:block th:each="order : ${orders}" th:if="${order.scheduledDate == null}">
+                <div class="order-card" draggable="true" ondragstart="drag(event)" 
+                     th:data-order-id="${order.id}"
+					 th:data-product-name="${order.itemName}"
+					 th:data-original-text="${order.itemId}">
+                    <span th:text="${order.itemName != null ? order.itemName : '商品ID: ' + order.itemId}"></span><br>
+                    <span class="badge draft">未確定</span>
+                </div>
+            </th:block>
+        </div>
+
+        <div class="calendar-area">
+			<div class="day-column" th:each="day : ${nextDays}" 
+			         th:data-date="${#temporals.format(day, 'yyyy-MM-dd')}"
+			         ondragover="allowDrop(event)" ondrop="drop(event)">
+			        
+			        <div class="day-header">
+			            <h3 th:text="${#temporals.format(day, 'yyyy-MM-dd')}">2026-06-25</h3>
+			            
+			            <div class="batch-count">
+			                 製造回数: <span class="count-value">0</span> 回
+			            </div>
+			                                
+			            <button class="btn-confirm" 
+			                    th:data-date="${#temporals.format(day, 'yyyy-MM-dd')}"
+			                    onclick="confirmDay(this.getAttribute('data-date'))">確定して発番</button>           
+                </div>
+
+                <th:block th:each="order : ${orders}" >
+					<div class="order-card"
+					     th:if="${order.scheduledDate != null and #temporals.format(order.scheduledDate, 'yyyy-MM-dd') == #temporals.format(day, 'yyyy-MM-dd')}"
+					     th:attr="draggable=${order.status == 'DRAFT'} ? 'true' : 'false'" 
+					     ondragstart="drag(event)" 
+					     th:data-order-id="${order.id}"
+					     th:data-product-name="${order.itemName}"
+					     th:data-original-text="${order.itemId}">                    
+						 
+						 <span th:text="${order.itemName != null ? order.itemName : order.itemId}"></span>
+						 <span th:if="${order.status == 'DRAFT'}" class="badge draft">未確定</span>
+						 <span th:if="${order.status == 'PLANNING'}" class="badge planning" th:text="${order.lotNumber}"></span>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/board.js}"></script>
+</body>
+</html>

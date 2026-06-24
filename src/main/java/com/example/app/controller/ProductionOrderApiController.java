@@ -23,6 +23,7 @@ public class ProductionOrderApiController {
 
 	@PostMapping("/move")
 	public ResponseEntity<?> moveSchedule(@RequestBody Map<String, Object> request) {
+		System.out.println("■■■ 受け取ったリクエストデータ: " + request);
 		try {
 			Long orderId = Long.valueOf(request.get("orderId").toString());
 

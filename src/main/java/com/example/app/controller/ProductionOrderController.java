@@ -26,6 +26,13 @@ public class ProductionOrderController {
 		// DRAFT と PLANNING の予定をすべて取得
 		List<ProductionOrder> orders = productionOrderService.findSchedulingOrders();
 
+		// 【デバッグ用】値が入っているか徹底的に確認
+		for (ProductionOrder order : orders) {
+			System.out.println("DEBUG: OrderID=" + order.getId() +
+					", ItemID=" + order.getItemId() +
+					", ItemName='" + order.getItemName() + "'");
+		}
+
 		// カレンダー表示用に「今日から5日間」の日付リストを作成
 		List<LocalDate> nextDays = new ArrayList<>();
 		LocalDate today = LocalDate.now();
