@@ -17,7 +17,10 @@
                      th:data-order-id="${order.id}"
                      th:data-product-name="${order.itemName}"
                      th:data-original-text="${order.itemId}">
-                    <span class="item-name" th:text="${order.itemName != null ? order.itemName : '商品ID: ' + order.itemId}"></span>
+                    <div class="card-name-row">
+                        <span class="item-name" th:text="${order.itemName != null ? order.itemName : '商品ID: ' + order.itemId}" th:title="${order.itemName != null ? order.itemName : '商品ID: ' + order.itemId}"></span>
+                        <span class="stack-count"></span>
+                    </div>
                     <div class="card-badges">
                         <span class="badge draft">未確定</span>
                         <span th:if="${order.wasOverdue == true}" class="badge rescheduled" title="この予定は一度期限切れになり、再調整されました">⚠再調整済</span>
@@ -37,7 +40,10 @@
 				         th:data-scheduled-date="${order.scheduledDate}"
 				         th:data-product-name="${order.itemName}"
 				         th:data-original-text="${order.itemId}">
-				    <span class="item-name" th:text="${order.itemName}">アイテム名</span>
+				    <div class="card-name-row">
+				        <span class="item-name" th:text="${order.itemName}" th:title="${order.itemName}">アイテム名</span>
+				        <span class="stack-count"></span>
+				    </div>
 				    <div class="card-badges">
 				        <span class="badge draft">未確定</span>
 				        <span th:if="${order.wasOverdue == true}" class="badge rescheduled" title="この予定は一度期限切れになり、再調整されました">⚠再調整済</span>
@@ -72,7 +78,10 @@
                          th:data-order-id="${order.id}"
                          th:data-product-name="${order.itemName}"
                          th:data-original-text="${order.itemId}">
-                         <span class="item-name" th:text="${order.itemName != null ? order.itemName : order.itemId}"></span>
+                         <div class="card-name-row">
+                             <span class="item-name" th:text="${order.itemName != null ? order.itemName : order.itemId}" th:title="${order.itemName != null ? order.itemName : order.itemId}"></span>
+                             <span class="stack-count"></span>
+                         </div>
                          <div class="card-badges">
                              <span th:if="${order.status == 'DRAFT'}" class="badge draft">未確定</span>
                              <span th:if="${order.status == 'PLANNING'}" class="badge planning" th:text="${order.lotNumber}"></span>

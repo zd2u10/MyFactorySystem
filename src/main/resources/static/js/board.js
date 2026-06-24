@@ -24,6 +24,12 @@ function resetGrouping() {
 		if(displayName){
 			card.querySelector('.item-name').innerText = displayName;
 		}
+
+		// スタック数バッジもリセット（再グループ化で正しい数に上書きされる）
+		const countEl = card.querySelector('.stack-count');
+		if (countEl) {
+			countEl.textContent = '';
+		}
     });
 }
 
@@ -74,10 +80,10 @@ function applyGrouping() {
                 const mainCard = list[0];
 				mainCard.classList.add('grouped');
                 
-				// 個数をテキストに追加
-				const span = mainCard.querySelector('.item-name');
-				if (span) {
-				    span.textContent = span.textContent + ' (x' + list.length + ')';
+				// 個数は専用バッジに表示（品名側は省略されてもこちらは絶対に隠れない）
+				const countEl = mainCard.querySelector('.stack-count');
+				if (countEl) {
+				    countEl.textContent = '(x' + list.length + ')';
 				}	
 				
 				// 2枚目以降を隠す
