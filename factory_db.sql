@@ -280,7 +280,7 @@ CREATE TABLE `production_orders` (
   `item_id` bigint NOT NULL,
   `lot_number` varchar(100) DEFAULT NULL COMMENT '製造ロット番号',
   `quantity` decimal(12,3) DEFAULT NULL COMMENT '製造予定数',
-  `status` varchar(20) NOT NULL DEFAULT 'TEMP' COMMENT 'TEMP / DONE / DISPOSED',
+  `status` varchar(20) NOT NULL DEFAULT 'DRAFT' COMMENT 'TEMP / DONE / DISPOSED',
   `trigger_source` varchar(20) NOT NULL DEFAULT 'MANUAL' COMMENT 'MANUAL / AUTO_ORDER',
   `water_amount` decimal(12,3) DEFAULT NULL COMMENT '使用した加水量',
   `scheduled_date` date DEFAULT NULL,
@@ -403,4 +403,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-24 15:33:08
+-- Dump completed on 2026-06-25 13:16:09
